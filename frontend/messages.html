@@ -9,7 +9,7 @@
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Sora:wght@400;600;700;800&display=swap"
         rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         :root {
@@ -1832,7 +1832,10 @@
         const ICE_SERVERS = {
             iceServers: [
                 { urls: 'stun:stun.l.google.com:19302' },
-                { urls: 'stun:stun1.l.google.com:19302' }
+                { urls: 'stun:stun1.l.google.com:19302' },
+                { urls: 'stun:stun2.l.google.com:19302' },
+                { urls: 'stun:stun3.l.google.com:19302' },
+                { urls: 'stun:stun4.l.google.com:19302' }
             ]
         };
 
@@ -2006,8 +2009,11 @@
             });
 
             socket.on('ice-candidate', async ({ candidate }) => {
-                try { if (peerConn && candidate) await peerConn.addIceCandidate(new RTCIceCandidate(candidate)); }
-                catch (e) { console.warn('ICE', e); }
+                try { 
+                    await ensurePeerConn(); // Ensure peerConn exists!
+                    if (candidate) await peerConn.addIceCandidate(new RTCIceCandidate(candidate)); 
+                }
+                catch (e) { console.warn('ICE Error', e); }
             });
 
             socket.on('chat-message', ({ message, name, role, time, socketId }) => {
@@ -2033,6 +2039,14 @@
                 stopTimer();
                 showToast(`Call ended by ${name}`);
                 setTimeout(() => leaveRoom(), 2000);
+            });
+
+            // Also listen for toggle events from video.js
+            socket.on('peer-video-toggle', ({ enabled, role }) => {
+                addSystemMsg(`${role} ${enabled ? 'turned on' : 'turned off'} their camera`);
+            });
+            socket.on('peer-audio-toggle', ({ enabled, role }) => {
+                addSystemMsg(`${role} ${enabled ? 'unmuted' : 'muted'} their microphone`);
             });
         }
 
