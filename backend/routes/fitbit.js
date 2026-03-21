@@ -132,7 +132,7 @@ router.get("/callback", async (req, res) => {
                     </style>
                 </head>
                 <body>
-                    <h1>✅ Fitbit Connected Successfully!</h1>
+                    <h1>Γ£à Fitbit Connected Successfully!</h1>
                     <p>Your HealthPulse application is now linked to your Fitbit account.</p>
                     <p>You can safely close this page and return to the dashboard.</p>
                     <button class="btn" onclick="window.close(); history.back();">Return to Dashboard</button>
@@ -167,7 +167,7 @@ router.get("/summary", async (req, res) => {
             client.get("/1.2/user/-/sleep/date/" + today + ".json")
         ]);
 
-        // 🔥 Random Mock Heart Rate for Pitch
+        // ≡ƒöÑ Random Mock Heart Rate for Pitch
         const mockHR = Math.floor(Math.random() * (90 - 74 + 1)) + 74;
 
         const data = {
@@ -196,7 +196,7 @@ router.get("/summary", async (req, res) => {
 router.get("/heartrate", async (req, res) => {
     try {
         const now = Date.now();
-        // 🔥 Live Mocked HeartRate for Pitch
+        // ≡ƒöÑ Live Mocked HeartRate for Pitch
         const mockCurrent = Math.floor(Math.random() * (90 - 74 + 1)) + 74;
         const data = {
             current: mockCurrent,
@@ -219,7 +219,7 @@ router.get("/heartrate", async (req, res) => {
 });
 
 router.get("/sleep", async (req, res) => {
-    // 💤 Using high-quality Mock Sleep Data only for this portion to ensure visual accuracy
+    // ≡ƒÆñ Using high-quality Mock Sleep Data only for this portion to ensure visual accuracy
     res.json({
         totalHours: 7.2, 
         score: 78, 

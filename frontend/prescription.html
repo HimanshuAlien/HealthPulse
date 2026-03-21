@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthPulse — Prescription Analyzer</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Sora:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --blue: #1B6FEB;
+            --blue-deep: #0D4FC4;
+            --blue-light: #EBF2FF;
+            --green: #10B981;
+            --green-light: #D1FAE5;
+            --coral: #FF6B6B;
+            --coral-light: #FFF0F0;
+            --amber: #F59E0B;
+            --amber-light: #FEF3C7;
+            --purple: #7C3AED;
+            --purple-light: #EDE9FE;
+            --red: #EF4444;
+            --red-light: #FEE2E2;
+            --teal: #0ABFBC;
+            --teal-light: #E6F9F9;
+            --bg: #F4F7FC;
+            --card: #fff;
+            --text: #0F1C3F;
+            --sub: #6B7A99;
+            --muted: #A0ABBE;
+            --border: #E8EDF5;
+            --sidebar-w: 260px;
+            --sh-sm: 0 2px 8px rgba(27, 111, 235, .07);
+            --sh-md: 0 8px 28px rgba(27, 111, 235, .11);
+            --sh-lg: 0 20px 50px rgba(27, 111, 235, .15);
+            --r: 14px;
+            --r-lg: 20px;
+            --r-xl: 28px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden
+        }
+
+        .shell {
+            display: flex;
+            min-height: 100vh
+        }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--card);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 200;
+            padding: 26px 0;
+            transition: transform .32s cubic-bezier(.4, 0, .2, 1);
+            overflow-y: auto
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 22px 24px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            box-shadow: 0 4px 12px rgba(27, 111, 235, .3);
+            flex-shrink: 0
+        }
+
+        .logo-text {
+            font-family: 'Sora', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--text)
+        }
+
+        .logo-text span {
+            color: var(--blue)
+        }
+
+        .sidebar-nav {
+            padding: 16px 12px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .12em;
+            color: var(--muted);
+            text-transform: uppercase;
+            padding: 10px 10px 4px;
+            margin-top: 4px
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 10px 13px;
+            border-radius: var(--r);
+            cursor: pointer;
+            transition: all .18s;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--sub);
+            text-decoration: none;
+            position: relative;
+            white-space: nowrap
+        }
+
+        .nav-item:hover {
+            background: var(--blue-light);
+            color: var(--blue)
+        }
+
+        .nav-item.active {
+            background: var(--blue-light);
+            color: var(--blue);
+            font-weight: 600
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 22%;
+            bottom: 22%;
+            width: 3px;
+            border-radius: 4px;
+            background: var(--blue)
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            background: var(--coral);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 20px
+        }
+
+        .sidebar-user {
+            padding: 14px 18px;
+            margin: 0 12px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .sidebar-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue), var(--teal));
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+            font-size: 13px;
+            color: #fff;
+            flex-shrink: 0
+        }
+
+        .sidebar-user-name {
+            font-size: 13px;
+            font-weight: 600
+        }
+
+        .sidebar-user-role {
+            font-size: 11px;
+            color: var(--muted)
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 28, 63, .38);
+            backdrop-filter: blur(4px);
+            z-index: 190
+        }
+
+        .overlay.show {
+            display: block
+        }
+
+        /* ── MAIN ── */
+        .main-content {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            display: flex;
+            flex-direction: column
+        }
+
+        .topbar {
+            background: rgba(255, 255, 255, .92);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 32px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            position: sticky;
+            top: 0;
+            z-index: 50
+        }
+
+        .topbar-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            background: linear-gradient(110deg, var(--text), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            flex: 1
+        }
+
+        .tav {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue), var(--teal));
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+            color: #fff;
+            font-size: 13px;
+            cursor: pointer
+        }
+
+        .icon-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            transition: all .2s;
+            position: relative
+        }
+
+        .icon-btn .dot {
+            position: absolute;
+            top: 7px;
+            right: 7px;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--coral);
+            border: 2px solid #fff
+        }
+
+        .mobile-topbar {
+            display: none;
+            background: rgba(255, 255, 255, .92);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 16px;
+            height: 60px;
+            align-items: center;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 50
+        }
+
+        .mob-ham {
+            width: 38px;
+            height: 38px;
+            border-radius: 11px;
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            display: grid;
+            place-items: center;
+            cursor: pointer
+        }
+
+        .mob-logo {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .mob-logo-ic {
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+            background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+            display: grid;
+            place-items: center
+        }
+
+        .mob-logo-txt {
+            font-family: 'Sora', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--text)
+        }
+
+        .mob-logo-txt span {
+            color: var(--blue)
+        }
+
+        /* ── PAGE ── */
+        .page {
+            padding: 28px 32px 60px;
+            max-width: 1100px;
+            width: 100%
+        }
+
+        /* ── UPLOAD SECTION ── */
+        .upload-wrap {
+            background: var(--card);
+            border-radius: var(--r-xl);
+            border: 2px dashed var(--border);
+            padding: 48px 32px;
+            text-align: center;
+            transition: all .25s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden
+        }
+
+        .upload-wrap:hover,
+        .upload-wrap.dragover {
+            border-color: var(--blue);
+            background: var(--blue-light)
+        }
+
+        .upload-wrap input[type=file] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%
+        }
+
+        .upload-icon {
+            width: 72px;
+            height: 72px;
+            background: var(--blue-light);
+            border-radius: 20px;
+            display: grid;
+            place-items: center;
+            margin: 0 auto 18px
+        }
+
+        .upload-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 6px
+        }
+
+        .upload-sub {
+            font-size: 13px;
+            color: var(--sub);
+            line-height: 1.6;
+            max-width: 380px;
+            margin: 0 auto 20px
+        }
+
+        .upload-formats {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap
+        }
+
+        .format-chip {
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1.5px solid var(--border);
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--sub);
+            background: var(--bg)
+        }
+
+        /* Preview */
+        .preview-wrap {
+            background: var(--card);
+            border-radius: var(--r-lg);
+            border: 1.5px solid var(--border);
+            padding: 16px;
+            display: none;
+            gap: 16px;
+            align-items: center
+        }
+
+        .preview-img {
+            width: 80px;
+            height: 80px;
+            border-radius: var(--r);
+            object-fit: cover;
+            border: 1.5px solid var(--border);
+            flex-shrink: 0
+        }
+
+        .preview-pdf {
+            width: 80px;
+            height: 80px;
+            border-radius: var(--r);
+            background: var(--red-light);
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            border: 1.5px solid rgba(239, 68, 68, .2)
+        }
+
+        .preview-info {
+            flex: 1;
+            min-width: 0
+        }
+
+        .preview-name {
+            font-size: 14px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis
+        }
+
+        .preview-size {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 2px
+        }
+
+        .analyze-btn {
+            padding: 12px 28px;
+            background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            box-shadow: 0 4px 18px rgba(27, 111, 235, .35);
+            transition: all .25s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(27, 111, 235, .45)
+        }
+
+        .analyze-btn:disabled {
+            background: #C5D5F5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none
+        }
+
+        .remove-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--red-light);
+            border: none;
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            transition: all .2s
+        }
+
+        .remove-btn:hover {
+            background: var(--red);
+            transform: scale(1.1)
+        }
+
+        /* ── LOADING ── */
+        #loadingSection {
+            display: none;
+            background: var(--card);
+            border-radius: var(--r-xl);
+            padding: 48px 32px;
+            text-align: center;
+            border: 1.5px solid var(--border)
+        }
+
+        .load-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--border);
+            border-top-color: var(--blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        .load-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-width: 280px;
+            margin: 16px auto 0
+        }
+
+        .load-step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: var(--r);
+            font-size: 13px;
+            color: var(--muted);
+            transition: all .4s
+        }
+
+        .load-step.active {
+            background: var(--blue-light);
+            color: var(--blue);
+            font-weight: 600
+        }
+
+        .load-step.done {
+            background: var(--green-light);
+            color: var(--green);
+            font-weight: 600
+        }
+
+        .step-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            flex-shrink: 0
+        }
+
+        /* ── RESULTS ── */
+        #resultsSection {
+            display: none
+        }
+
+        .results-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap
+        }
+
+        .results-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 22px;
+            font-weight: 800
+        }
+
+        .results-actions {
+            display: flex;
+            gap: 10px
+        }
+
+        .btn-outline {
+            padding: 9px 18px;
+            border: 1.5px solid var(--border);
+            border-radius: 30px;
+            background: var(--card);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--sub);
+            transition: all .2s;
+            display: flex;
+            align-items: center;
+            gap: 6px
+        }
+
+        .btn-outline:hover {
+            border-color: var(--blue);
+            color: var(--blue)
+        }
+
+        .btn-primary {
+            padding: 9px 20px;
+            background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 3px 12px rgba(27, 111, 235, .3);
+            transition: all .2s
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px)
+        }
+
+        /* Results grid */
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px
+        }
+
+        .results-grid.full {
+            grid-template-columns: 1fr
+        }
+
+        /* Cards */
+        .r-card {
+            background: var(--card);
+            border-radius: var(--r-lg);
+            border: 1.5px solid var(--border);
+            padding: 20px;
+            box-shadow: var(--sh-sm)
+        }
+
+        .r-card-title {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .07em;
+            color: var(--muted);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 7px
+        }
+
+        .r-card-title i {
+            flex-shrink: 0
+        }
+
+        /* Severity gauge */
+        .severity-wrap {
+            display: flex;
+            align-items: center;
+            gap: 20px
+        }
+
+        .gauge-wrap {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            flex-shrink: 0
+        }
+
+        .gauge-wrap canvas {
+            width: 120px !important;
+            height: 120px !important
+        }
+
+        .gauge-center {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center
+        }
+
+        .gauge-score {
+            font-family: 'Sora', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            line-height: 1
+        }
+
+        .gauge-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--muted);
+            margin-top: 2px
+        }
+
+        .severity-info {
+            flex: 1
+        }
+
+        .severity-level {
+            font-family: 'Sora', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 4px
+        }
+
+        .severity-exp {
+            font-size: 13px;
+            color: var(--sub);
+            line-height: 1.6
+        }
+
+        .severity-bar-wrap {
+            margin-top: 10px;
+            background: var(--border);
+            border-radius: 30px;
+            height: 6px;
+            overflow: hidden
+        }
+
+        .severity-bar {
+            height: 100%;
+            border-radius: 30px;
+            transition: width 1s cubic-bezier(.4, 0, .2, 1)
+        }
+
+        /* Diagnosis + meta */
+        .meta-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 12px
+        }
+
+        .meta-chip {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background: var(--blue-light);
+            color: var(--blue);
+            display: flex;
+            align-items: center;
+            gap: 5px
+        }
+
+        .diagnosis-name {
+            font-family: 'Sora', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 4px
+        }
+
+        .healing-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--green-light);
+            border: 1px solid rgba(16, 185, 129, .2);
+            border-radius: 30px;
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--green)
+        }
+
+        /* Tags */
+        .tags-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px
+        }
+
+        .tag {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600
+        }
+
+        .tag.symptom {
+            background: var(--red-light);
+            color: var(--red)
+        }
+
+        .tag.avoid {
+            background: var(--amber-light);
+            color: var(--amber)
+        }
+
+        .tag.warning {
+            background: var(--coral-light);
+            color: var(--coral)
+        }
+
+        /* Medications */
+        .med-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px
+        }
+
+        .med-item {
+            background: var(--bg);
+            border-radius: var(--r);
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+            align-items: flex-start
+        }
+
+        .med-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: var(--purple-light);
+            display: grid;
+            place-items: center;
+            flex-shrink: 0
+        }
+
+        .med-name {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 2px
+        }
+
+        .med-meta {
+            font-size: 11px;
+            color: var(--muted);
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 4px
+        }
+
+        .med-meta span {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 2px 8px
+        }
+
+        .med-purpose {
+            font-size: 12px;
+            color: var(--sub);
+            margin-top: 4px
+        }
+
+        /* Actions */
+        .action-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px
+        }
+
+        .action-item {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            padding: 12px 14px;
+            background: var(--bg);
+            border-radius: var(--r);
+            border: 1px solid var(--border)
+        }
+
+        .action-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+            color: #fff;
+            display: grid;
+            place-items: center;
+            font-size: 12px;
+            font-weight: 700;
+            flex-shrink: 0
+        }
+
+        .action-title {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 2px
+        }
+
+        .action-desc {
+            font-size: 12px;
+            color: var(--sub);
+            line-height: 1.5
+        }
+
+        /* Summary */
+        .summary-box {
+            background: linear-gradient(135deg, var(--blue-light), var(--purple-light));
+            border: 1.5px solid rgba(27, 111, 235, .15);
+            border-radius: var(--r-lg);
+            padding: 18px 20px;
+            font-size: 14px;
+            line-height: 1.75;
+            color: var(--text)
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: #0F1C3F;
+            color: #fff;
+            padding: 11px 22px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 999;
+            box-shadow: var(--sh-lg);
+            transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+            white-space: nowrap;
+            pointer-events: none
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0)
+        }
+
+        /* Bottom nav */
+        .bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, .96);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
+            padding: 8px 0 max(10px, env(safe-area-inset-bottom));
+            z-index: 150
+        }
+
+        .bnav-inner {
+            display: flex;
+            justify-content: space-around;
+            align-items: center
+        }
+
+        .bn-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            padding: 4px 12px;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--muted);
+            text-decoration: none;
+            transition: color .2s
+        }
+
+        .bn-item.active {
+            color: var(--blue)
+        }
+
+        .bn-center {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+            display: grid;
+            place-items: center;
+            box-shadow: 0 4px 18px rgba(27, 111, 235, .45);
+            cursor: pointer;
+            margin-top: -14px
+        }
+
+        /* Responsive */
+        @media(max-width:900px) {
+            .sidebar {
+                transform: translateX(-100%)
+            }
+
+            .sidebar.open {
+                transform: translateX(0)
+            }
+
+            .main-content {
+                margin-left: 0
+            }
+
+            .topbar {
+                display: none
+            }
+
+            .mobile-topbar {
+                display: flex
+            }
+
+            .page {
+                padding: 16px 16px 90px
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr
+            }
+
+            .severity-wrap {
+                flex-direction: column;
+                align-items: flex-start
+            }
+
+            .bottom-nav {
+                display: block
+            }
+        }
+
+        @media(max-width:480px) {
+            .upload-wrap {
+                padding: 32px 16px
+            }
+
+            .preview-wrap {
+                flex-wrap: wrap
+            }
+
+            .analyze-btn {
+                width: 100%;
+                justify-content: center
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="toast" id="toast"></div>
+
+    <div class="shell">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <div class="logo-icon"><i data-lucide="activity" style="width:18px;height:18px;color:#fff"></i></div>
+                <div class="logo-text">Health<span>Pulse</span> AI</div>
+            </div>
+            <nav class="sidebar-nav">
+                <span class="nav-label">Features</span>
+                <a class="nav-item" href="dashboard.html"><i data-lucide="layout-dashboard"
+                        style="width:17px;height:17px"></i>Dashboard</a>
+                <a class="nav-item" href="diagnosis.html"><i data-lucide="activity"
+                        style="width:17px;height:17px"></i>AI Diagnosis</a>
+                <a class="nav-item" href="escalation.html"><i data-lucide="alert-triangle"
+                        style="width:17px;height:17px"></i>Escalation</a>
+                <a class="nav-item" href="hospital-finder.html"><i data-lucide="map-pin"
+                        style="width:17px;height:17px"></i>Hospital Finder</a>
+                <a class="nav-item" href="specialist-routing.html"><i data-lucide="stethoscope"
+                        style="width:17px;height:17px"></i>Specialist Route</a>
+                <a class="nav-item" href="messages.html"><i data-lucide="message-circle"
+                        style="width:17px;height:17px"></i>Messages</a>
+                <a class="nav-item" href="wearables.html"><i data-lucide="watch"
+                        style="width:17px;height:17px"></i>Wearables</a>
+                <a class="nav-item" href="alerts.html"><i data-lucide="bell" style="width:17px;height:17px"></i>Health
+                    Alerts</a>
+                <a class="nav-item active" href="prescription.html"><i data-lucide="file-scan"
+                        style="width:17px;height:17px"></i>Prescription AI<span class="nav-badge">New</span></a>
+                <a class="nav-item" href="insights.html"><i data-lucide="brain" style="width:17px;height:17px"></i>AI
+                    Insights</a>
+                <span class="nav-label">Account</span>
+                <a class="nav-item" href="messages.html"><i data-lucide="mail"
+                        style="width:17px;height:17px"></i>Messages<span class="nav-badge">5</span></a>
+                <a class="nav-item" href="#"><i data-lucide="settings"
+                        style="width:17px;height:17px"></i>Preferences</a>
+                <a class="nav-item" href="#"><i data-lucide="user-circle" style="width:17px;height:17px"></i>Profile</a>
+            </nav>
+            <div class="sidebar-user">
+                <div class="sidebar-avatar">OB</div>
+                <div>
+                    <div class="sidebar-user-name">Oliver Brooks</div>
+                    <div class="sidebar-user-role">Patient #HP-2847</div>
+                </div>
+            </div>
+        </aside>
+        <div class="overlay" id="overlay"></div>
+
+        <div class="main-content">
+
+            <header class="topbar">
+                <div class="topbar-title">Prescription Analyzer</div>
+                <div style="display:flex;align-items:center;gap:10px">
+                    <div class="icon-btn"><i data-lucide="bell" style="width:16px;height:16px;color:var(--sub)"></i>
+                        <div class="dot"></div>
+                    </div>
+                    <div class="tav">OB</div>
+                </div>
+            </header>
+
+            <header class="mobile-topbar">
+                <div class="mob-ham" id="hamBtn"><i data-lucide="menu"
+                        style="width:19px;height:19px;color:var(--text)"></i></div>
+                <div class="mob-logo">
+                    <div class="mob-logo-ic"><i data-lucide="activity" style="width:14px;height:14px;color:#fff"></i>
+                    </div>
+                    <div class="mob-logo-txt">Prescription<span> AI</span></div>
+                </div>
+                <div class="tav" style="width:34px;height:34px;font-size:12px">OB</div>
+            </header>
+
+            <div class="page">
+
+
+
+                <!-- HERO IMAGE -->
+                <div style="text-align:center; margin-bottom:20px;">
+                    <img src="assets/medicine.png" alt="Medicine Image"
+                        style="width:auto; height:auto; max-width:100%;">
+                </div>
+
+                <!-- UPLOAD -->
+                <div id="uploadSection">
+                    <div class="upload-wrap" id="uploadZone">
+                        <input type="file" id="fileInput" accept="image/*,.pdf" onchange="handleFile(this.files[0])">
+                        <div class="upload-icon">
+                            <i data-lucide="upload-cloud" style="width:32px;height:32px;color:var(--blue)"></i>
+                        </div>
+                        <div class="upload-title">Drop your prescription here</div>
+                        <div class="upload-sub">Upload a photo of your prescription, medical report, or lab result.
+                            Supported formats below.</div>
+                        <div class="upload-formats">
+                            <div class="format-chip">📷 JPG / PNG</div>
+                            <div class="format-chip">📄 PDF</div>
+                            <div class="format-chip">🖼️ WEBP</div>
+                            <div class="format-chip">📸 HEIC</div>
+                        </div>
+                    </div>
+
+                    <!-- Preview bar -->
+                    <div class="preview-wrap" id="previewWrap" style="display:none;margin-top:14px">
+                        <img id="previewImg" class="preview-img" style="display:none">
+                        <div id="previewPdf" class="preview-pdf" style="display:none">
+                            <i data-lucide="file-text" style="width:28px;height:28px;color:var(--red)"></i>
+                        </div>
+                        <div class="preview-info">
+                            <div class="preview-name" id="previewName">—</div>
+                            <div class="preview-size" id="previewSize">—</div>
+                        </div>
+                        <button class="analyze-btn" id="analyzeBtn" onclick="analyze()">
+                            <i data-lucide="scan-line" style="width:16px;height:16px"></i>Analyze Prescription
+                        </button>
+                        <button class="remove-btn" onclick="removeFile()" title="Remove">
+                            <i data-lucide="x" style="width:14px;height:14px;color:var(--red)"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- LOADING -->
+                <div id="loadingSection">
+                    <div class="load-spinner"></div>
+                    <div style="font-family:'Sora',sans-serif;font-size:17px;font-weight:700;margin-bottom:6px">
+                        Analyzing your prescription…</div>
+                    <div style="font-size:13px;color:var(--sub)">Gemini AI is reading your document</div>
+                    <div class="load-steps">
+                        <div class="load-step" id="ls1">
+                            <div class="step-dot"></div>Reading document
+                        </div>
+                        <div class="load-step" id="ls2">
+                            <div class="step-dot"></div>Extracting medications
+                        </div>
+                        <div class="load-step" id="ls3">
+                            <div class="step-dot"></div>Assessing severity
+                        </div>
+                        <div class="load-step" id="ls4">
+                            <div class="step-dot"></div>Building action plan
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RESULTS -->
+                <div id="resultsSection">
+
+                    <div class="results-header">
+                        <div>
+                            <div class="results-title">Analysis Complete</div>
+                            <div style="font-size:13px;color:var(--sub)" id="resultsMeta">—</div>
+                        </div>
+                        <div class="results-actions">
+                            <button class="btn-outline" onclick="resetPage()">
+                                <i data-lucide="upload" style="width:14px;height:14px"></i>New Scan
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Row 1: Severity + Diagnosis -->
+                    <div class="results-grid" style="margin-bottom:16px">
+
+                        <!-- Severity card -->
+                        <div class="r-card">
+                            <div class="r-card-title">
+                                <i data-lucide="activity" style="width:14px;height:14px;color:var(--coral)"></i>
+                                Severity Score
+                            </div>
+                            <div class="severity-wrap">
+                                <div class="gauge-wrap">
+                                    <canvas id="severityChart"></canvas>
+                                    <div class="gauge-center">
+                                        <div class="gauge-score" id="gaugeScore">—</div>
+                                        <div class="gauge-label">/ 10</div>
+                                    </div>
+                                </div>
+                                <div class="severity-info">
+                                    <div class="severity-level" id="severityLevel">—</div>
+                                    <div class="severity-exp" id="severityExp">—</div>
+                                    <div class="severity-bar-wrap" style="margin-top:10px">
+                                        <div class="severity-bar" id="severityBar" style="width:0%"></div>
+                                    </div>
+                                    <div
+                                        style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:4px">
+                                        <span>Mild</span><span>Moderate</span><span>Severe</span><span>Critical</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Diagnosis card -->
+                        <div class="r-card">
+                            <div class="r-card-title">
+                                <i data-lucide="stethoscope" style="width:14px;height:14px;color:var(--blue)"></i>
+                                Diagnosis
+                            </div>
+                            <div class="meta-row" id="metaRow"></div>
+                            <div class="diagnosis-name" id="diagnosisName">—</div>
+                            <div style="margin:10px 0">
+                                <div class="healing-badge">
+                                    <i data-lucide="clock" style="width:13px;height:13px"></i>
+                                    <span id="healingTime">—</span>
+                                </div>
+                            </div>
+                            <div style="font-size:12px;color:var(--muted);margin-bottom:6px;font-weight:600">SUMMARY
+                            </div>
+                            <div style="font-size:13px;color:var(--sub);line-height:1.6" id="diagSummary">—</div>
+                        </div>
+                    </div>
+
+                    <!-- Row 2: Symptoms + Avoid -->
+                    <div class="results-grid" style="margin-bottom:16px">
+                        <div class="r-card">
+                            <div class="r-card-title">
+                                <i data-lucide="thermometer" style="width:14px;height:14px;color:var(--red)"></i>
+                                Symptoms
+                            </div>
+                            <div class="tags-wrap" id="symptomsWrap">—</div>
+                        </div>
+                        <div class="r-card">
+                            <div class="r-card-title">
+                                <i data-lucide="ban" style="width:14px;height:14px;color:var(--amber)"></i>
+                                What to Avoid
+                            </div>
+                            <div class="tags-wrap" id="avoidWrap">—</div>
+                        </div>
+                    </div>
+
+                    <!-- Medications full width -->
+                    <div class="r-card" style="margin-bottom:16px">
+                        <div class="r-card-title">
+                            <i data-lucide="pill" style="width:14px;height:14px;color:var(--purple)"></i>
+                            Medications Prescribed
+                        </div>
+                        <div class="med-list" id="medList">—</div>
+                    </div>
+
+                    <!-- Actions full width -->
+                    <div class="r-card" style="margin-bottom:16px">
+                        <div class="r-card-title">
+                            <i data-lucide="clipboard-list" style="width:14px;height:14px;color:var(--green)"></i>
+                            Actions to Take
+                        </div>
+                        <div class="action-list" id="actionList">—</div>
+                    </div>
+
+                    <!-- Warnings -->
+                    <div class="r-card" id="warningsCard" style="margin-bottom:16px;display:none">
+                        <div class="r-card-title">
+                            <i data-lucide="alert-triangle" style="width:14px;height:14px;color:var(--coral)"></i>
+                            Important Warnings
+                        </div>
+                        <div class="tags-wrap" id="warningsWrap"></div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav">
+        <div class="bnav-inner">
+            <a class="bn-item" href="dashboard.html"><i data-lucide="layout-dashboard"
+                    style="width:20px;height:20px"></i>Home</a>
+            <a class="bn-item" href="specialist-routing.html"><i data-lucide="stethoscope"
+                    style="width:20px;height:20px"></i>Doctors</a>
+            <div style="display:flex;flex-direction:column;align-items:center">
+                <div class="bn-center" onclick="window.location.href='diagnosis.html'">
+                    <i data-lucide="activity" style="width:22px;height:22px;color:#fff"></i>
+                </div>
+            </div>
+            <a class="bn-item active" href="prescription.html"><i data-lucide="file-scan"
+                    style="width:20px;height:20px"></i>Rx AI</a>
+            <div class="bn-item"><i data-lucide="user-circle" style="width:20px;height:20px"></i>Profile</div>
+        </div>
+    </nav>
+
+    <script>
+        /* ─── STATE ─── */
+        let selectedFile = null;
+        let severityChartInstance = null;
+
+        /* ─── DRAG & DROP ─── */
+        const zone = document.getElementById('uploadZone');
+        zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+        zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+        zone.addEventListener('drop', e => {
+            e.preventDefault();
+            zone.classList.remove('dragover');
+            const f = e.dataTransfer.files[0];
+            if (f) handleFile(f);
+        });
+
+        /* ─── FILE HANDLING ─── */
+        function handleFile(file) {
+            if (!file) return;
+            const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'application/pdf'];
+            if (!allowed.includes(file.type) && !file.name.match(/\.(jpg|jpeg|png|webp|pdf|heic)$/i)) {
+                showToast('⚠️ Please upload an image or PDF file');
+                return;
+            }
+            selectedFile = file;
+
+            // Show preview
+            document.getElementById('previewWrap').style.display = 'flex';
+            document.getElementById('previewName').textContent = file.name;
+            document.getElementById('previewSize').textContent = formatBytes(file.size);
+
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    document.getElementById('previewImg').src = e.target.result;
+                    document.getElementById('previewImg').style.display = 'block';
+                    document.getElementById('previewPdf').style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                document.getElementById('previewImg').style.display = 'none';
+                document.getElementById('previewPdf').style.display = 'grid';
+            }
+            lucide.createIcons();
+        }
+
+        function removeFile() {
+            selectedFile = null;
+            document.getElementById('previewWrap').style.display = 'none';
+            document.getElementById('previewImg').src = '';
+            document.getElementById('fileInput').value = '';
+        }
+
+        /* ─── ANALYZE ─── */
+        async function analyze() {
+            if (!selectedFile) { showToast('⚠️ Please select a file first'); return; }
+
+            // Show loading
+            document.getElementById('uploadSection').style.display = 'none';
+            document.getElementById('loadingSection').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
+            animateLoadSteps();
+
+            try {
+                // Convert file to base64
+                const base64 = await fileToBase64(selectedFile);
+                const mimeType = selectedFile.type || 'image/jpeg';
+
+                const res = await fetch('/api/prescription/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ imageBase64: base64, mimeType })
+                });
+
+                const data = await res.json();
+                if (!res.ok || !data.success) {
+                    throw new Error(data.error || 'Analysis failed');
+                }
+
+                renderResults(data.report);
+
+            } catch (err) {
+                console.error(err);
+                showToast('❌ ' + err.message);
+                document.getElementById('loadingSection').style.display = 'none';
+                document.getElementById('uploadSection').style.display = 'block';
+            }
+        }
+
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        /* ─── LOADING ANIMATION ─── */
+        function animateLoadSteps() {
+            const steps = ['ls1', 'ls2', 'ls3', 'ls4'];
+            steps.forEach(id => {
+                document.getElementById(id).className = 'load-step';
+            });
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i > 0) document.getElementById(steps[i - 1]).className = 'load-step done';
+                if (i < steps.length) {
+                    document.getElementById(steps[i]).className = 'load-step active';
+                    i++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 700);
+        }
+
+        /* ─── RENDER RESULTS ─── */
+        function renderResults(r) {
+            document.getElementById('loadingSection').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'block';
+
+            // Meta
+            const now = new Date().toLocaleString();
+            document.getElementById('resultsMeta').textContent =
+                `Analyzed ${now}${r.patientName && r.patientName !== 'Unknown' ? ' · ' + r.patientName : ''}`;
+
+            // ── Severity gauge ──
+            const score = parseInt(r.severity?.score) || 5;
+            const level = r.severity?.level || 'Moderate';
+            const severityColors = {
+                'Mild': { color: '#10B981', bar: '#10B981', bg: 'rgba(16,185,129,.15)' },
+                'Moderate': { color: '#F59E0B', bar: '#F59E0B', bg: 'rgba(245,158,11,.15)' },
+                'Severe': { color: '#EF4444', bar: '#EF4444', bg: 'rgba(239,68,68,.15)' },
+                'Critical': { color: '#7C3AED', bar: '#7C3AED', bg: 'rgba(124,58,237,.15)' },
+            };
+            const sc = severityColors[level] || severityColors['Moderate'];
+
+            document.getElementById('gaugeScore').textContent = score;
+            document.getElementById('severityLevel').textContent = level;
+            document.getElementById('severityLevel').style.color = sc.color;
+            document.getElementById('severityExp').textContent = r.severity?.explanation || '—';
+            document.getElementById('severityBar').style.width = (score * 10) + '%';
+            document.getElementById('severityBar').style.background = sc.color;
+
+            // Destroy old chart
+            if (severityChartInstance) severityChartInstance.destroy();
+            const ctx = document.getElementById('severityChart').getContext('2d');
+            severityChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [score, 10 - score],
+                        backgroundColor: [sc.color, '#E8EDF5'],
+                        borderWidth: 0,
+                        circumference: 270,
+                        rotation: 225,
+                    }]
+                },
+                options: {
+                    cutout: '75%',
+                    responsive: false,
+                    plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                    animation: { duration: 1000, easing: 'easeInOutQuart' }
+                }
+            });
+
+            // ── Diagnosis ──
+            document.getElementById('diagnosisName').textContent = r.diagnosis || '—';
+            document.getElementById('healingTime').textContent = r.healingTime || 'Consult doctor';
+            document.getElementById('diagSummary').textContent = r.summary || '—';
+
+            // Meta chips (patient / doctor / date)
+            const metaRow = document.getElementById('metaRow');
+            metaRow.innerHTML = '';
+            if (r.patientName && r.patientName !== 'Unknown') {
+                metaRow.innerHTML += `<div class="meta-chip"><i data-lucide="user" style="width:11px;height:11px"></i>${esc(r.patientName)}</div>`;
+            }
+            if (r.doctorName && r.doctorName !== 'Unknown') {
+                metaRow.innerHTML += `<div class="meta-chip" style="background:var(--green-light);color:var(--green)"><i data-lucide="stethoscope" style="width:11px;height:11px"></i>${esc(r.doctorName)}</div>`;
+            }
+            if (r.date && r.date !== 'Unknown') {
+                metaRow.innerHTML += `<div class="meta-chip" style="background:var(--bg);color:var(--sub)"><i data-lucide="calendar" style="width:11px;height:11px"></i>${esc(r.date)}</div>`;
+            }
+
+            // ── Symptoms ──
+            const symptomsWrap = document.getElementById('symptomsWrap');
+            symptomsWrap.innerHTML = (r.symptoms || []).length
+                ? r.symptoms.map(s => `<span class="tag symptom">${esc(s)}</span>`).join('')
+                : '<span style="color:var(--muted);font-size:13px">None reported</span>';
+
+            // ── Avoid ──
+            const avoidWrap = document.getElementById('avoidWrap');
+            avoidWrap.innerHTML = (r.avoidFoods || []).length
+                ? r.avoidFoods.map(a => `<span class="tag avoid">🚫 ${esc(a)}</span>`).join('')
+                : '<span style="color:var(--muted);font-size:13px">No restrictions noted</span>';
+
+            // ── Medications ──
+            const medList = document.getElementById('medList');
+            medList.innerHTML = (r.medications || []).length
+                ? r.medications.map(m => `
+        <div class="med-item">
+          <div class="med-icon"><i data-lucide="pill" style="width:18px;height:18px;color:var(--purple)"></i></div>
+          <div style="flex:1">
+            <div class="med-name">${esc(m.name || 'Unknown')}</div>
+            <div class="med-meta">
+              <span>💊 ${esc(m.dosage || '—')}</span>
+              <span>🕐 ${esc(m.frequency || '—')}</span>
+              <span>📅 ${esc(m.duration || '—')}</span>
+            </div>
+            <div class="med-purpose">${esc(m.purpose || '')}</div>
+          </div>
+        </div>`).join('')
+                : '<div style="color:var(--muted);font-size:13px">No medications found</div>';
+
+            // ── Actions ──
+            const actionList = document.getElementById('actionList');
+            actionList.innerHTML = (r.actions || []).length
+                ? r.actions.map((a, i) => `
+        <div class="action-item">
+          <div class="action-num">${i + 1}</div>
+          <div>
+            <div class="action-title">${esc(a.title || 'Action')}</div>
+            <div class="action-desc">${esc(a.description || '')}</div>
+          </div>
+        </div>`).join('')
+                : '<div style="color:var(--muted);font-size:13px">No specific actions noted</div>';
+
+            // ── Warnings ──
+            const warnings = r.warnings || [];
+            if (warnings.length) {
+                document.getElementById('warningsCard').style.display = 'block';
+                document.getElementById('warningsWrap').innerHTML =
+                    warnings.map(w => `<span class="tag warning">⚠️ ${esc(w)}</span>`).join('');
+            }
+
+            lucide.createIcons();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /* ─── RESET ─── */
+        function resetPage() {
+            selectedFile = null;
+            document.getElementById('fileInput').value = '';
+            document.getElementById('previewWrap').style.display = 'none';
+            document.getElementById('uploadSection').style.display = 'block';
+            document.getElementById('loadingSection').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('warningsCard').style.display = 'none';
+            if (severityChartInstance) { severityChartInstance.destroy(); severityChartInstance = null; }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /* ─── HELPERS ─── */
+        function esc(str) {
+            return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+        function formatBytes(b) {
+            if (b < 1024) return b + ' B';
+            if (b < 1048576) return (b / 1024).toFixed(1) + ' KB';
+            return (b / 1048576).toFixed(1) + ' MB';
+        }
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3200);
+        }
+
+        /* ─── SIDEBAR ─── */
+        lucide.createIcons();
+        const sidebarEl = document.getElementById('sidebar');
+        const overlayEl = document.getElementById('overlay');
+        document.getElementById('hamBtn').addEventListener('click', () => {
+            sidebarEl.classList.add('open'); overlayEl.classList.add('show'); document.body.style.overflow = 'hidden';
+        });
+        overlayEl.addEventListener('click', () => {
+            sidebarEl.classList.remove('open'); overlayEl.classList.remove('show'); document.body.style.overflow = '';
+        });
+        document.querySelectorAll('.nav-item').forEach(el => el.addEventListener('click', () => {
+            if (window.innerWidth <= 900) { sidebarEl.classList.remove('open'); overlayEl.classList.remove('show'); document.body.style.overflow = ''; }
+        }));
+    </script>
+</body>
+
+</html>

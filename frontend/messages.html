@@ -1,0 +1,2412 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthPulse — Messages & Video Call</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Sora:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --blue: #1B6FEB;
+            --blue-deep: #0D4FC4;
+            --blue-light: #EBF2FF;
+            --green: #10B981;
+            --green-light: #D1FAE5;
+            --coral: #FF6B6B;
+            --coral-light: #FFF0F0;
+            --amber: #F59E0B;
+            --amber-light: #FEF3C7;
+            --purple: #7C3AED;
+            --purple-light: #EDE9FE;
+            --red: #EF4444;
+            --red-light: #FEE2E2;
+            --teal: #0ABFBC;
+            --bg: #F4F7FC;
+            --card: #fff;
+            --text: #0F1C3F;
+            --sub: #6B7A99;
+            --muted: #A0ABBE;
+            --border: #E8EDF5;
+            --sidebar-w: 260px;
+            --sh-sm: 0 2px 8px rgba(27, 111, 235, .07);
+            --sh-md: 0 8px 28px rgba(27, 111, 235, .11);
+            --r: 14px;
+            --r-lg: 20px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden
+        }
+
+        .shell {
+            display: flex;
+            min-height: 100vh
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--card);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 200;
+            padding: 26px 0;
+            transition: transform .32s cubic-bezier(.4, 0, .2, 1);
+            overflow-y: auto
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 22px 24px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            box-shadow: 0 4px 12px rgba(27, 111, 235, .3);
+            flex-shrink: 0
+        }
+
+        .logo-text {
+            font-family: 'Sora', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--text)
+        }
+
+        .logo-text span {
+            color: var(--blue)
+        }
+
+        .sidebar-nav {
+            padding: 16px 12px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .12em;
+            color: var(--muted);
+            text-transform: uppercase;
+            padding: 10px 10px 4px;
+            margin-top: 4px
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 10px 13px;
+            border-radius: var(--r);
+            cursor: pointer;
+            transition: all .18s;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--sub);
+            text-decoration: none;
+            position: relative;
+            white-space: nowrap
+        }
+
+        .nav-item:hover {
+            background: var(--blue-light);
+            color: var(--blue)
+        }
+
+        .nav-item.active {
+            background: var(--blue-light);
+            color: var(--blue);
+            font-weight: 600
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 22%;
+            bottom: 22%;
+            width: 3px;
+            border-radius: 4px;
+            background: var(--blue)
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            background: var(--coral);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 20px
+        }
+
+        .sidebar-user {
+            padding: 14px 18px;
+            margin: 0 12px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .sidebar-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue), var(--teal));
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+            font-size: 13px;
+            color: #fff;
+            flex-shrink: 0
+        }
+
+        .sidebar-user-name {
+            font-size: 13px;
+            font-weight: 600
+        }
+
+        .sidebar-user-role {
+            font-size: 11px;
+            color: var(--muted)
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 28, 63, .38);
+            backdrop-filter: blur(4px);
+            z-index: 190
+        }
+
+        .overlay.show {
+            display: block
+        }
+
+        /* MAIN */
+        .main-content {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            display: flex;
+            flex-direction: column
+        }
+
+        .topbar {
+            background: rgba(255, 255, 255, .92);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 32px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            position: sticky;
+            top: 0;
+            z-index: 50
+        }
+
+        .topbar-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            background: linear-gradient(110deg, var(--text), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            flex: 1
+        }
+
+        .tav {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue), var(--teal));
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+            color: #fff;
+            font-size: 13px;
+            cursor: pointer
+        }
+
+        .icon-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            transition: all .2s;
+            position: relative
+        }
+
+        .icon-btn .dot {
+            position: absolute;
+            top: 7px;
+            right: 7px;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--coral);
+            border: 2px solid #fff
+        }
+
+        .mobile-topbar {
+            display: none;
+            background: rgba(255, 255, 255, .92);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 16px;
+            height: 60px;
+            align-items: center;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 50
+        }
+
+        .mob-ham {
+            width: 38px;
+            height: 38px;
+            border-radius: 11px;
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            display: grid;
+            place-items: center;
+            cursor: pointer
+        }
+
+        .mob-logo {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .mob-logo-ic {
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+            background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+            display: grid;
+            place-items: center
+        }
+
+        .mob-logo-txt {
+            font-family: 'Sora', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--text)
+        }
+
+        .mob-logo-txt span {
+            color: var(--blue)
+        }
+
+        /* PAGE */
+        .page {
+            padding: 28px 32px 40px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 24px
+        }
+
+        /* LOBBY */
+        #lobbyScreen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            gap: 24px
+        }
+
+        .lobby-card {
+            background: var(--card);
+            border-radius: var(--r-lg);
+            border: 1.5px solid var(--border);
+            box-shadow: var(--sh-md);
+            padding: 36px 40px;
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px
+        }
+
+        .lobby-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            text-align: center
+        }
+
+        .lobby-sub {
+            font-size: 13px;
+            color: var(--sub);
+            text-align: center;
+            line-height: 1.6
+        }
+
+        .lobby-input {
+            border: 1.5px solid var(--border);
+            border-radius: var(--r);
+            padding: 11px 16px;
+            font-size: 14px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--text);
+            outline: none;
+            transition: all .2s;
+            background: var(--bg);
+            width: 100%
+        }
+
+        .lobby-input:focus {
+            border-color: var(--blue);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(27, 111, 235, .08)
+        }
+
+        .lobby-input::placeholder {
+            color: var(--muted)
+        }
+
+        .role-pick {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px
+        }
+
+        .role-btn {
+            padding: 14px;
+            border-radius: var(--r);
+            border: 2px solid var(--border);
+            background: var(--bg);
+            cursor: pointer;
+            transition: all .2s;
+            text-align: center;
+            font-family: 'Plus Jakarta Sans', sans-serif
+        }
+
+        .role-btn:hover {
+            border-color: var(--blue);
+            background: var(--blue-light)
+        }
+
+        .role-btn.selected.doctor {
+            border-color: var(--blue);
+            background: var(--blue-light)
+        }
+
+        .role-btn.selected.patient {
+            border-color: var(--green);
+            background: var(--green-light)
+        }
+
+        .role-icon {
+            font-size: 28px;
+            margin-bottom: 6px
+        }
+
+        .role-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text)
+        }
+
+        .role-desc {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 2px
+        }
+
+        .join-btn {
+            padding: 14px;
+            background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            box-shadow: 0 4px 18px rgba(27, 111, 235, .35);
+            transition: all .25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px
+        }
+
+        .join-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(27, 111, 235, .45)
+        }
+
+        .join-btn:disabled {
+            background: #C5D5F5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none
+        }
+
+        .room-info {
+            background: var(--bg);
+            border-radius: var(--r);
+            padding: 12px 16px;
+            font-size: 12px;
+            color: var(--sub);
+            text-align: center;
+            border: 1px dashed var(--border)
+        }
+
+        /* CALL SCREEN */
+        #callScreen {
+            display: none;
+            flex-direction: column;
+            flex: 1;
+            gap: 16px
+        }
+
+        .call-layout {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 16px;
+            flex: 1;
+            min-height: 0
+        }
+
+        /* VIDEO */
+        .video-area {
+            background: #0A0F1E;
+            border-radius: var(--r-lg);
+            position: relative;
+            overflow: hidden;
+            min-height: 460px;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        #remoteVideo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            inset: 0
+        }
+
+        #localVideo {
+            position: absolute;
+            bottom: 80px;
+            right: 16px;
+            width: 130px;
+            height: 96px;
+            object-fit: cover;
+            border-radius: var(--r);
+            border: 2.5px solid rgba(255, 255, 255, .3);
+            z-index: 10;
+            background: #1A2035
+        }
+
+        .peer-badge {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: rgba(0, 0, 0, .5);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, .15);
+            border-radius: 30px;
+            padding: 6px 14px;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            z-index: 10
+        }
+
+        .peer-live-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #4ADE80;
+            animation: blink 1.5s infinite
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1)
+            }
+
+            50% {
+                opacity: .4;
+                transform: scale(1.3)
+            }
+        }
+
+        .call-status-bar {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(0, 0, 0, .45);
+            backdrop-filter: blur(6px);
+            border-radius: 30px;
+            padding: 5px 12px;
+            color: rgba(255, 255, 255, .8);
+            font-size: 11px;
+            font-weight: 600;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 6px
+        }
+
+        #callTimer {
+            font-variant-numeric: tabular-nums
+        }
+
+        /* Voice indicator on video */
+        .voice-indicator {
+            position: absolute;
+            bottom: 80px;
+            left: 16px;
+            background: rgba(0, 0, 0, .55);
+            backdrop-filter: blur(8px);
+            border-radius: 30px;
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            z-index: 10;
+            transition: opacity .3s
+        }
+
+        .voice-indicator.hidden {
+            opacity: 0;
+            pointer-events: none
+        }
+
+        .voice-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 14px
+        }
+
+        .vbar {
+            width: 3px;
+            border-radius: 2px;
+            background: #4ADE80;
+            animation: vbar 0.8s ease-in-out infinite
+        }
+
+        .vbar:nth-child(1) {
+            height: 4px;
+            animation-delay: 0s
+        }
+
+        .vbar:nth-child(2) {
+            height: 8px;
+            animation-delay: .1s
+        }
+
+        .vbar:nth-child(3) {
+            height: 12px;
+            animation-delay: .2s
+        }
+
+        .vbar:nth-child(4) {
+            height: 8px;
+            animation-delay: .3s
+        }
+
+        .vbar:nth-child(5) {
+            height: 4px;
+            animation-delay: .4s
+        }
+
+        @keyframes vbar {
+
+            0%,
+            100% {
+                transform: scaleY(0.4)
+            }
+
+            50% {
+                transform: scaleY(1)
+            }
+        }
+
+        .voice-label {
+            color: rgba(255, 255, 255, .8);
+            font-size: 11px;
+            font-weight: 600
+        }
+
+        /* Controls */
+        .video-controls {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 20
+        }
+
+        .ctrl-btn {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+            transition: all .2s
+        }
+
+        .ctrl-btn.mic {
+            background: rgba(255, 255, 255, .15);
+            backdrop-filter: blur(8px)
+        }
+
+        .ctrl-btn.cam {
+            background: rgba(255, 255, 255, .15);
+            backdrop-filter: blur(8px)
+        }
+
+        .ctrl-btn.end {
+            background: var(--coral);
+            box-shadow: 0 4px 14px rgba(255, 107, 107, .5)
+        }
+
+        .ctrl-btn.report-btn {
+            background: rgba(16, 185, 129, .85);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 14px rgba(16, 185, 129, .4)
+        }
+
+        .ctrl-btn.mic.off,
+        .ctrl-btn.cam.off {
+            background: rgba(255, 107, 107, .3)
+        }
+
+        .ctrl-btn:hover {
+            transform: scale(1.1)
+        }
+
+        .ctrl-btn.end:hover {
+            transform: scale(1.08)
+        }
+
+        /* Waiting */
+        .waiting-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(10, 15, 30, .85);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            z-index: 15
+        }
+
+        .waiting-overlay.hidden {
+            display: none
+        }
+
+        .waiting-spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid rgba(255, 255, 255, .15);
+            border-top-color: #1B6FEB;
+            border-radius: 50%;
+            animation: spin 1s linear infinite
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        .waiting-text {
+            color: rgba(255, 255, 255, .7);
+            font-size: 13px;
+            font-weight: 500
+        }
+
+        .waiting-room-id {
+            color: rgba(255, 255, 255, .4);
+            font-size: 11px
+        }
+
+        /* RIGHT PANEL (tabs: chat / transcript) */
+        .right-panel {
+            background: var(--card);
+            border-radius: var(--r-lg);
+            border: 1.5px solid var(--border);
+            box-shadow: var(--sh-sm);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden
+        }
+
+        .panel-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0
+        }
+
+        .panel-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--muted);
+            cursor: pointer;
+            transition: all .2s;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px
+        }
+
+        .panel-tab.active {
+            color: var(--blue);
+            border-bottom-color: var(--blue);
+            background: var(--blue-light)
+        }
+
+        .panel-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            min-height: 0
+        }
+
+        /* Chat */
+        #chatPane {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            overflow: hidden
+        }
+
+        .chat-msgs {
+            flex: 1;
+            overflow-y: auto;
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            scroll-behavior: smooth;
+            max-height: 320px
+        }
+
+        .chat-msgs::-webkit-scrollbar {
+            width: 4px
+        }
+
+        .chat-msgs::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px
+        }
+
+        .chat-msg {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            animation: msgIn .25s ease
+        }
+
+        @keyframes msgIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .chat-msg.me {
+            align-items: flex-end
+        }
+
+        .chat-msg.them {
+            align-items: flex-start
+        }
+
+        .chat-bubble {
+            padding: 9px 14px;
+            max-width: 85%;
+            font-size: 13px;
+            line-height: 1.55;
+            word-break: break-word
+        }
+
+        .chat-msg.me .chat-bubble {
+            background: var(--blue);
+            color: #fff;
+            border-radius: 16px 2px 16px 16px
+        }
+
+        .chat-msg.them .chat-bubble {
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            border-radius: 2px 16px 16px 16px;
+            color: var(--text)
+        }
+
+        .chat-meta {
+            font-size: 10px;
+            color: var(--muted);
+            padding: 0 4px
+        }
+
+        .chat-system {
+            text-align: center;
+            font-size: 11px;
+            color: var(--muted);
+            padding: 4px 0
+        }
+
+        .chat-input-row {
+            padding: 12px 14px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-shrink: 0
+        }
+
+        .chat-input {
+            flex: 1;
+            border: 1.5px solid var(--border);
+            border-radius: 30px;
+            padding: 9px 14px;
+            font-size: 13px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--text);
+            outline: none;
+            transition: all .2s;
+            background: var(--bg)
+        }
+
+        .chat-input:focus {
+            border-color: var(--blue);
+            background: #fff
+        }
+
+        .chat-input::placeholder {
+            color: var(--muted)
+        }
+
+        .send-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+            display: grid;
+            place-items: center;
+            border: none;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all .2s
+        }
+
+        .send-btn:hover {
+            transform: scale(1.08)
+        }
+
+        /* Transcript pane */
+        #transcriptPane {
+            display: none;
+            flex-direction: column;
+            flex: 1;
+            overflow: hidden
+        }
+
+        .transcript-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 320px
+        }
+
+        .transcript-scroll::-webkit-scrollbar {
+            width: 4px
+        }
+
+        .transcript-scroll::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px
+        }
+
+        .transcript-entry {
+            font-size: 12px;
+            line-height: 1.6;
+            padding: 8px 12px;
+            border-radius: var(--r);
+            background: var(--bg);
+            border-left: 3px solid var(--border)
+        }
+
+        .transcript-entry.voice {
+            border-left-color: var(--green)
+        }
+
+        .transcript-entry.chat {
+            border-left-color: var(--blue)
+        }
+
+        .transcript-speaker {
+            font-weight: 700;
+            font-size: 11px;
+            margin-bottom: 2px
+        }
+
+        .transcript-speaker.voice {
+            color: var(--green)
+        }
+
+        .transcript-speaker.chat {
+            color: var(--blue)
+        }
+
+        .transcript-text {
+            color: var(--sub)
+        }
+
+        .transcript-empty {
+            text-align: center;
+            padding: 30px 16px;
+            color: var(--muted);
+            font-size: 12px
+        }
+
+        .transcript-controls {
+            padding: 10px 14px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0
+        }
+
+        .transcript-btn {
+            flex: 1;
+            padding: 8px;
+            border-radius: 30px;
+            border: 1.5px solid var(--border);
+            background: var(--bg);
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--sub);
+            transition: all .2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px
+        }
+
+        .transcript-btn:hover {
+            border-color: var(--blue);
+            color: var(--blue)
+        }
+
+        .transcript-btn.active {
+            border-color: var(--green);
+            color: var(--green);
+            background: var(--green-light)
+        }
+
+        /* Report modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 28, 63, .5);
+            backdrop-filter: blur(6px);
+            z-index: 600;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px
+        }
+
+        .modal-overlay.open {
+            display: flex;
+            animation: fadeIn .2s
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        .report-modal {
+            background: var(--card);
+            border-radius: var(--r-lg);
+            width: 100%;
+            max-width: 560px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(15, 28, 63, .25);
+            display: flex;
+            flex-direction: column
+        }
+
+        .report-modal::-webkit-scrollbar {
+            width: 4px
+        }
+
+        .report-modal::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px
+        }
+
+        .report-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0
+        }
+
+        .report-header-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: var(--green-light);
+            display: grid;
+            place-items: center;
+            flex-shrink: 0
+        }
+
+        .report-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 17px;
+            font-weight: 800
+        }
+
+        .report-sub {
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        .report-body {
+            padding: 20px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px
+        }
+
+        .report-section {
+            background: var(--bg);
+            border-radius: var(--r);
+            padding: 14px 16px;
+            border: 1px solid var(--border)
+        }
+
+        .report-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: var(--muted);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px
+        }
+
+        .report-section-content {
+            font-size: 13px;
+            color: var(--text);
+            line-height: 1.7
+        }
+
+        .report-tag {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            margin: 2px
+        }
+
+        .report-tag.symptom {
+            background: var(--red-light);
+            color: var(--red)
+        }
+
+        .report-tag.condition {
+            background: var(--amber-light);
+            color: var(--amber)
+        }
+
+        .report-tag.rec {
+            background: var(--green-light);
+            color: var(--green)
+        }
+
+        .report-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 10px;
+            flex-shrink: 0
+        }
+
+        .dl-btn {
+            flex: 1;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            box-shadow: 0 4px 18px rgba(27, 111, 235, .35);
+            transition: all .25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px
+        }
+
+        .dl-btn:hover {
+            transform: translateY(-2px)
+        }
+
+        .close-btn {
+            padding: 12px 18px;
+            border: 1.5px solid var(--border);
+            border-radius: 30px;
+            background: var(--bg);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--sub);
+            transition: all .2s
+        }
+
+        .close-btn:hover {
+            border-color: var(--coral);
+            color: var(--coral)
+        }
+
+        /* Generating state */
+        .gen-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            padding: 40px 24px;
+            text-align: center
+        }
+
+        .gen-spinner {
+            width: 52px;
+            height: 52px;
+            border: 3px solid var(--border);
+            border-top-color: var(--blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite
+        }
+
+        .gen-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 16px;
+            font-weight: 700
+        }
+
+        .gen-sub {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.6
+        }
+
+        /* Gemini API key input */
+        .api-key-bar {
+            background: var(--amber-light);
+            border: 1.5px solid var(--amber);
+            border-radius: var(--r);
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 4px
+        }
+
+        .api-key-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 13px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--text);
+            outline: none
+        }
+
+        .api-key-input::placeholder {
+            color: var(--amber)
+        }
+
+        /* People chips */
+        .person-chip {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            border-radius: 30px;
+            padding: 5px 12px;
+            font-size: 12px;
+            font-weight: 600
+        }
+
+        .person-chip.doctor {
+            border-color: rgba(27, 111, 235, .3);
+            background: var(--blue-light);
+            color: var(--blue)
+        }
+
+        .person-chip.patient {
+            border-color: rgba(16, 185, 129, .3);
+            background: var(--green-light);
+            color: var(--green)
+        }
+
+        .person-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: currentColor
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: #0F1C3F;
+            color: #fff;
+            padding: 11px 22px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 999;
+            box-shadow: var(--sh-md);
+            transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+            white-space: nowrap;
+            pointer-events: none
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0)
+        }
+
+        /* Bottom nav */
+        .bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, .96);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
+            padding: 8px 0 max(10px, env(safe-area-inset-bottom));
+            z-index: 150
+        }
+
+        .bnav-inner {
+            display: flex;
+            justify-content: space-around;
+            align-items: center
+        }
+
+        .bn-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            padding: 4px 12px;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--muted);
+            text-decoration: none;
+            transition: color .2s
+        }
+
+        .bn-item.active {
+            color: var(--blue)
+        }
+
+        .bn-center {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+            display: grid;
+            place-items: center;
+            box-shadow: 0 4px 18px rgba(27, 111, 235, .45);
+            cursor: pointer;
+            margin-top: -14px
+        }
+
+        @media(max-width:900px) {
+            .sidebar {
+                transform: translateX(-100%)
+            }
+
+            .sidebar.open {
+                transform: translateX(0)
+            }
+
+            .main-content {
+                margin-left: 0
+            }
+
+            .topbar {
+                display: none
+            }
+
+            .mobile-topbar {
+                display: flex
+            }
+
+            .page {
+                padding: 16px 16px 90px
+            }
+
+            .call-layout {
+                grid-template-columns: 1fr
+            }
+
+            .video-area {
+                min-height: 260px
+            }
+
+            .bottom-nav {
+                display: block
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="toast" id="toast"></div>
+
+    <!-- REPORT MODAL -->
+    <div class="modal-overlay" id="reportOverlay">
+        <div class="report-modal" id="reportModal">
+            <!-- generating state -->
+            <div class="gen-state" id="genState">
+                <div class="gen-spinner"></div>
+                <div class="gen-title">Analyzing consultation…</div>
+                <div class="gen-sub">Gemini AI is reading the transcript and generating your medical report.</div>
+            </div>
+            <!-- report content (hidden until ready) -->
+            <div id="reportContent" style="display:none">
+                <div class="report-header">
+                    <div class="report-header-icon">
+                        <i data-lucide="file-heart" style="width:22px;height:22px;color:var(--green)"></i>
+                    </div>
+                    <div>
+                        <div class="report-title">Consultation Report</div>
+                        <div class="report-sub" id="reportMeta">—</div>
+                    </div>
+                </div>
+                <div class="report-body">
+                    <div class="report-section">
+                        <div class="report-section-title"><i data-lucide="user"
+                                style="width:13px;height:13px"></i>Patients & Participants</div>
+                        <div class="report-section-content" id="rParticipants">—</div>
+                    </div>
+                    <div class="report-section">
+                        <div class="report-section-title"><i data-lucide="activity"
+                                style="width:13px;height:13px"></i>Symptoms Reported</div>
+                        <div class="report-section-content" id="rSymptoms">—</div>
+                    </div>
+                    <div class="report-section">
+                        <div class="report-section-title"><i data-lucide="stethoscope"
+                                style="width:13px;height:13px"></i>Possible Conditions</div>
+                        <div class="report-section-content" id="rConditions">—</div>
+                    </div>
+                    <div class="report-section">
+                        <div class="report-section-title"><i data-lucide="clipboard-list"
+                                style="width:13px;height:13px"></i>Doctor's Recommendations</div>
+                        <div class="report-section-content" id="rRecommendations">—</div>
+                    </div>
+                    <div class="report-section">
+                        <div class="report-section-title"><i data-lucide="calendar-check"
+                                style="width:13px;height:13px"></i>Follow-up Actions</div>
+                        <div class="report-section-content" id="rFollowup">—</div>
+                    </div>
+                    <div class="report-section">
+                        <div class="report-section-title"><i data-lucide="file-text"
+                                style="width:13px;height:13px"></i>Consultation Summary</div>
+                        <div class="report-section-content" id="rSummary">—</div>
+                    </div>
+                </div>
+                <div class="report-footer">
+                    <button class="dl-btn" onclick="downloadPDF()">
+                        <i data-lucide="download" style="width:16px;height:16px"></i>Download PDF Report
+                    </button>
+                    <button class="close-btn" onclick="closeReport()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SHELL -->
+    <div class="shell">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <div class="logo-icon"><i data-lucide="activity" style="width:18px;height:18px;color:#fff"></i></div>
+                <div class="logo-text">Health<span>Pulse</span> AI</div>
+            </div>
+            <nav class="sidebar-nav">
+                <span class="nav-label">Features</span>
+                <a class="nav-item" href="dashboard.html"><i data-lucide="layout-dashboard"
+                        style="width:17px;height:17px"></i>Dashboard</a>
+                <a class="nav-item" href="diagnosis.html"><i data-lucide="activity"
+                        style="width:17px;height:17px"></i>AI Diagnosis</a>
+                <a class="nav-item" href="escalation.html"><i data-lucide="alert-triangle"
+                        style="width:17px;height:17px"></i>Escalation</a>
+                <a class="nav-item" href="hospital-finder.html"><i data-lucide="map-pin"
+                        style="width:17px;height:17px"></i>Hospital Finder</a>
+                <a class="nav-item" href="specialist-routing.html"><i data-lucide="stethoscope"
+                        style="width:17px;height:17px"></i>Specialist Route</a>
+                <a class="nav-item active" href="messages.html"><i data-lucide="message-circle"
+                        style="width:17px;height:17px"></i>Messages<span class="nav-badge">Live</span></a>
+                <a class="nav-item" href="wearables.html"><i data-lucide="watch"
+                        style="width:17px;height:17px"></i>Wearables</a>
+                <a class="nav-item" href="alerts.html"><i data-lucide="bell" style="width:17px;height:17px"></i>Health
+                    Alerts</a>
+                <a class="nav-item" href="insights.html"><i data-lucide="brain" style="width:17px;height:17px"></i>AI
+                    Insights</a>
+                <span class="nav-label">Account</span>
+                <a class="nav-item" href="#"><i data-lucide="settings"
+                        style="width:17px;height:17px"></i>Preferences</a>
+                <a class="nav-item" href="#"><i data-lucide="user-circle" style="width:17px;height:17px"></i>Profile</a>
+            </nav>
+            <div class="sidebar-user">
+                <div class="sidebar-avatar">OB</div>
+                <div>
+                    <div class="sidebar-user-name">Oliver Brooks</div>
+                    <div class="sidebar-user-role">Patient #HP-2847</div>
+                </div>
+            </div>
+        </aside>
+        <div class="overlay" id="overlay"></div>
+
+        <div class="main-content">
+            <header class="topbar">
+                <div class="topbar-title">Messages & Video Call</div>
+                <div style="display:flex;align-items:center;gap:10px">
+                    <div class="icon-btn"><i data-lucide="bell" style="width:16px;height:16px;color:var(--sub)"></i>
+                        <div class="dot"></div>
+                    </div>
+                    <div class="tav">OB</div>
+                </div>
+            </header>
+            <header class="mobile-topbar">
+                <div class="mob-ham" id="hamBtn"><i data-lucide="menu"
+                        style="width:19px;height:19px;color:var(--text)"></i></div>
+                <div class="mob-logo">
+                    <div class="mob-logo-ic"><i data-lucide="activity" style="width:14px;height:14px;color:#fff"></i>
+                    </div>
+                    <div class="mob-logo-txt">Messages<span> & Video</span></div>
+                </div>
+                <div class="tav" style="width:34px;height:34px;font-size:12px">OB</div>
+            </header>
+
+            <div class="page">
+
+                <!-- ══ LOBBY ══ -->
+                <div id="lobbyScreen">
+                    <div class="lobby-card">
+                        <div style="text-align:center">
+                            <div
+                                style="width:56px;height:56px;background:var(--blue-light);border-radius:16px;display:grid;place-items:center;margin:0 auto 16px">
+                                <i data-lucide="video" style="width:26px;height:26px;color:var(--blue)"></i>
+                            </div>
+                            <div class="lobby-title">HealthPulse Video Call</div>
+                            <div class="lobby-sub">Join as a doctor or patient. Voice + chat are recorded and analyzed
+                                by Gemini AI to generate a medical report.</div>
+                        </div>
+
+                        <!-- Gemini API Key -->
+                        <div>
+                            <label
+                                style="font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Gemini
+                                API Key</label>
+                            <div class="api-key-bar">
+                                <i data-lucide="key"
+                                    style="width:14px;height:14px;color:var(--amber);flex-shrink:0"></i>
+                                <input class="api-key-input" id="geminiKey" type="password"
+                                    placeholder="Paste your Gemini API key here…">
+                            </div>
+                        </div>
+
+                        <!-- Room ID -->
+                        <div>
+                            <label
+                                style="font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Room
+                                ID</label>
+                            <div style="display:flex;gap:8px">
+                                <input class="lobby-input" id="roomInput" placeholder="e.g. HP-ROOM-001" style="flex:1">
+                                <button onclick="generateRoom()"
+                                    style="padding:11px 14px;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r);cursor:pointer;font-size:12px;font-weight:600;color:var(--sub);white-space:nowrap;font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s"
+                                    onmouseover="this.style.borderColor='var(--blue)';this.style.color='var(--blue)'"
+                                    onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--sub)'">Generate</button>
+                            </div>
+                        </div>
+
+                        <!-- Name -->
+                        <div>
+                            <label
+                                style="font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Your
+                                Name</label>
+                            <input class="lobby-input" id="nameInput" placeholder="Dr. Smith / Oliver Brooks">
+                        </div>
+
+                        <!-- Role -->
+                        <div>
+                            <label
+                                style="font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:8px">Join
+                                As</label>
+                            <div class="role-pick">
+                                <div class="role-btn doctor" id="roleDoctor" onclick="selectRole('doctor')">
+                                    <div class="role-icon">🩺</div>
+                                    <div class="role-label">Doctor</div>
+                                    <div class="role-desc">Start / manage call</div>
+                                </div>
+                                <div class="role-btn patient" id="rolePatient" onclick="selectRole('patient')">
+                                    <div class="role-icon">🧑‍⚕️</div>
+                                    <div class="role-label">Patient</div>
+                                    <div class="role-desc">Join consultation</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="room-info" id="roomInfo">Enter a Room ID or click Generate, then pick your role.
+                        </div>
+                        <button class="join-btn" id="joinBtn" onclick="joinRoom()" disabled>
+                            <i data-lucide="video" style="width:18px;height:18px"></i>Join Room
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ══ CALL SCREEN ══ -->
+                <div id="callScreen">
+
+                    <!-- top bar -->
+                    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                        <div
+                            style="background:var(--card);border:1.5px solid var(--border);border-radius:30px;padding:6px 16px;font-size:12px;font-weight:700;color:var(--sub);display:flex;align-items:center;gap:6px">
+                            <i data-lucide="hash" style="width:13px;height:13px"></i><span id="displayRoomId">—</span>
+                        </div>
+                        <div id="myChip" class="person-chip">
+                            <div class="person-dot"></div><span id="myChipLabel">You</span>
+                        </div>
+                        <div id="peerChip" class="person-chip" style="display:none">
+                            <div class="person-dot"></div><span id="peerChipLabel">Waiting…</span>
+                        </div>
+                        <div style="margin-left:auto;display:flex;gap:8px">
+                            <button onclick="openReport()"
+                                style="padding:7px 14px;border-radius:30px;border:1.5px solid var(--green);background:var(--green-light);font-size:12px;font-weight:700;color:var(--green);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:6px;transition:all .2s">
+                                <i data-lucide="file-heart" style="width:14px;height:14px"></i>Generate Report
+                            </button>
+                            <button onclick="leaveRoom()"
+                                style="padding:7px 16px;border-radius:30px;border:1.5px solid var(--border);background:var(--card);font-size:12px;font-weight:700;color:var(--sub);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:6px;transition:all .2s"
+                                onmouseover="this.style.borderColor='var(--coral)';this.style.color='var(--coral)'"
+                                onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--sub)'">
+                                <i data-lucide="log-out" style="width:14px;height:14px"></i>Leave
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="call-layout">
+
+                        <!-- VIDEO -->
+                        <div class="video-area" id="videoArea">
+                            <video id="remoteVideo" autoplay playsinline></video>
+                            <div class="peer-badge" id="peerBadge" style="display:none">
+                                <div class="peer-live-dot"></div><span id="peerBadgeName">Peer</span>
+                            </div>
+                            <div class="call-status-bar" id="callStatusBar" style="display:none">
+                                <div style="width:7px;height:7px;border-radius:50%;background:#4ADE80"></div>
+                                <span id="callTimer">00:00</span>
+                            </div>
+                            <!-- Voice indicator -->
+                            <div class="voice-indicator hidden" id="voiceIndicator">
+                                <div class="voice-bars">
+                                    <div class="vbar"></div>
+                                    <div class="vbar"></div>
+                                    <div class="vbar"></div>
+                                    <div class="vbar"></div>
+                                    <div class="vbar"></div>
+                                </div>
+                                <span class="voice-label">Listening…</span>
+                            </div>
+                            <div class="waiting-overlay" id="waitingOverlay">
+                                <div class="waiting-spinner"></div>
+                                <div class="waiting-text" id="waitingText">Waiting for the other person to join…</div>
+                                <div class="waiting-room-id" id="waitingRoomLabel"></div>
+                            </div>
+                            <video id="localVideo" autoplay playsinline muted></video>
+                            <div class="video-controls">
+                                <button class="ctrl-btn mic" id="micBtn" onclick="toggleMic()" title="Toggle mic">
+                                    <i data-lucide="mic" style="width:18px;height:18px;color:#fff" id="micIcon"></i>
+                                </button>
+                                <button class="ctrl-btn cam" id="camBtn" onclick="toggleCam()" title="Toggle camera">
+                                    <i data-lucide="video" style="width:18px;height:18px;color:#fff" id="camIcon"></i>
+                                </button>
+                                <button class="ctrl-btn report-btn" onclick="openReport()" title="Generate Report">
+                                    <i data-lucide="file-heart" style="width:18px;height:18px;color:#fff"></i>
+                                </button>
+                                <button class="ctrl-btn end" onclick="endCall()" title="End call">
+                                    <i data-lucide="phone-off" style="width:20px;height:20px;color:#fff"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- RIGHT PANEL -->
+                        <div class="right-panel">
+                            <div class="panel-tabs">
+                                <div class="panel-tab active" id="tabChat" onclick="switchTab('chat')">💬 Live Chat
+                                </div>
+                                <div class="panel-tab" id="tabTranscript" onclick="switchTab('transcript')">🎙️
+                                    Transcript</div>
+                            </div>
+                            <div class="panel-body">
+
+                                <!-- CHAT PANE -->
+                                <div id="chatPane">
+                                    <div class="chat-msgs" id="chatMsgs">
+                                        <div class="chat-system">Chat ready. Messages appear here.</div>
+                                    </div>
+                                    <div class="chat-input-row">
+                                        <input class="chat-input" id="chatInput" placeholder="Type a message…"
+                                            autocomplete="off"
+                                            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMsg()}">
+                                        <button class="send-btn" onclick="sendChatMsg()">
+                                            <i data-lucide="send" style="width:14px;height:14px;color:#fff"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- TRANSCRIPT PANE -->
+                                <div id="transcriptPane">
+                                    <div class="transcript-scroll" id="transcriptScroll">
+                                        <div class="transcript-empty">Start the call — voice & chat will appear here
+                                            automatically.</div>
+                                    </div>
+                                    <div class="transcript-controls">
+                                        <button class="transcript-btn" id="voiceToggleBtn" onclick="toggleVoice()">
+                                            <i data-lucide="mic" style="width:13px;height:13px"></i>
+                                            <span id="voiceBtnLabel">Start Voice</span>
+                                        </button>
+                                        <button class="transcript-btn" onclick="clearTranscript()">
+                                            <i data-lucide="trash-2" style="width:13px;height:13px"></i>Clear
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="bnav-inner">
+            <a class="bn-item" href="dashboard.html"><i data-lucide="layout-dashboard"
+                    style="width:20px;height:20px"></i>Home</a>
+            <a class="bn-item" href="specialist-routing.html"><i data-lucide="stethoscope"
+                    style="width:20px;height:20px"></i>Doctors</a>
+            <div style="display:flex;flex-direction:column;align-items:center">
+                <div class="bn-center" onclick="window.location.href='diagnosis.html'">
+                    <i data-lucide="activity" style="width:22px;height:22px;color:#fff"></i>
+                </div>
+            </div>
+            <div class="bn-item active"><i data-lucide="message-circle" style="width:20px;height:20px"></i>Messages
+            </div>
+            <div class="bn-item"><i data-lucide="user-circle" style="width:20px;height:20px"></i>Profile</div>
+        </div>
+    </nav>
+
+    <script>
+        /* ═══════════════════════════════════════════════
+           STATE
+        ═══════════════════════════════════════════════ */
+        let socket = null;
+        let localStream = null;
+        let peerConn = null;
+        let myRole = null;
+        let myName = '';
+        let myRoomId = '';
+        let micOn = true;
+        let camOn = true;
+        let callActive = false;
+        let timerInterval = null;
+        let callSeconds = 0;
+
+        // Transcript & AI
+        let transcript = [];   // { type:'voice'|'chat', speaker, text, time }
+        let recognition = null;
+        let voiceOn = false;
+        let currentReport = null;
+
+        const ICE_SERVERS = {
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' },
+                { urls: 'stun:stun1.l.google.com:19302' }
+            ]
+        };
+
+        /* ═══════════════════════════════════════════════
+           LOBBY
+        ═══════════════════════════════════════════════ */
+        function generateRoom() {
+            document.getElementById('roomInput').value = 'HP-' + Math.random().toString(36).slice(2, 6).toUpperCase();
+            validateLobby();
+        }
+        function selectRole(role) {
+            myRole = role;
+            document.getElementById('roleDoctor').classList.toggle('selected', role === 'doctor');
+            document.getElementById('rolePatient').classList.toggle('selected', role === 'patient');
+            validateLobby();
+        }
+        function validateLobby() {
+            const room = document.getElementById('roomInput').value.trim();
+            const name = document.getElementById('nameInput').value.trim();
+            document.getElementById('joinBtn').disabled = !(room && name && myRole);
+            if (room) document.getElementById('roomInfo').textContent = `Room "${room}" · Share this ID with the ${myRole === 'doctor' ? 'patient' : 'doctor'}`;
+        }
+        document.getElementById('roomInput').addEventListener('input', validateLobby);
+        document.getElementById('nameInput').addEventListener('input', validateLobby);
+
+        async function joinRoom() {
+            myRoomId = document.getElementById('roomInput').value.trim();
+            myName = document.getElementById('nameInput').value.trim();
+
+            document.getElementById('lobbyScreen').style.display = 'none';
+            document.getElementById('callScreen').style.display = 'flex';
+            lucide.createIcons();
+
+            document.getElementById('displayRoomId').textContent = myRoomId;
+            document.getElementById('myChip').className = `person-chip ${myRole}`;
+            document.getElementById('myChipLabel').textContent = `${myName} (You)`;
+            document.getElementById('waitingRoomLabel').textContent = `Room ID: ${myRoomId}`;
+
+            try {
+                localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            } catch (e) {
+                showToast('⚠️ Camera/mic denied — text chat only');
+                localStream = null;
+            }
+            if (localStream) document.getElementById('localVideo').srcObject = localStream;
+
+            // Auto-start voice recognition
+            initSpeechRecognition();
+
+            socket = io('http://localhost:3000');
+            setupSocket();
+            socket.emit('join-room', { roomId: myRoomId, role: myRole, name: myName });
+        }
+
+        /* ═══════════════════════════════════════════════
+           SPEECH RECOGNITION
+        ═══════════════════════════════════════════════ */
+        function initSpeechRecognition() {
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SR) { showToast('⚠️ Voice recognition not supported in this browser'); return; }
+
+            recognition = new SR();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US';
+
+            let interim = '';
+            recognition.onresult = (e) => {
+                interim = '';
+                let final = '';
+                for (let i = e.resultIndex; i < e.results.length; i++) {
+                    if (e.results[i].isFinal) final += e.results[i][0].transcript;
+                    else interim += e.results[i][0].transcript;
+                }
+                if (final.trim()) {
+                    addTranscriptEntry('voice', myName, final.trim());
+                }
+            };
+
+            recognition.onerror = (e) => {
+                if (e.error === 'not-allowed') showToast('⚠️ Microphone permission denied for speech');
+            };
+
+            recognition.onend = () => {
+                // Auto-restart if still supposed to be on
+                if (voiceOn) recognition.start();
+            };
+
+            // Auto start
+            startVoice();
+        }
+
+        function startVoice() {
+            if (!recognition) return;
+            try { recognition.start(); voiceOn = true; } catch (e) { }
+            document.getElementById('voiceToggleBtn').classList.add('active');
+            document.getElementById('voiceBtnLabel').textContent = 'Stop Voice';
+            document.getElementById('voiceIndicator').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function stopVoice() {
+            if (!recognition) return;
+            voiceOn = false;
+            try { recognition.stop(); } catch (e) { }
+            document.getElementById('voiceToggleBtn').classList.remove('active');
+            document.getElementById('voiceBtnLabel').textContent = 'Start Voice';
+            document.getElementById('voiceIndicator').classList.add('hidden');
+        }
+
+        function toggleVoice() {
+            voiceOn ? stopVoice() : startVoice();
+        }
+
+        /* ═══════════════════════════════════════════════
+           TRANSCRIPT
+        ═══════════════════════════════════════════════ */
+        function addTranscriptEntry(type, speaker, text) {
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            transcript.push({ type, speaker, text, time });
+
+            const scroll = document.getElementById('transcriptScroll');
+            // Remove empty placeholder
+            const empty = scroll.querySelector('.transcript-empty');
+            if (empty) empty.remove();
+
+            const div = document.createElement('div');
+            div.className = `transcript-entry ${type}`;
+            div.innerHTML = `
+    <div class="transcript-speaker ${type}">${type === 'voice' ? '🎙️' : '💬'} ${escHtml(speaker)} · ${time}</div>
+    <div class="transcript-text">${escHtml(text)}</div>`;
+            scroll.appendChild(div);
+            scroll.scrollTop = scroll.scrollHeight;
+        }
+
+        function clearTranscript() {
+            transcript = [];
+            document.getElementById('transcriptScroll').innerHTML = '<div class="transcript-empty">Transcript cleared.</div>';
+        }
+
+        /* ═══════════════════════════════════════════════
+           SOCKET
+        ═══════════════════════════════════════════════ */
+        function setupSocket() {
+            socket.on('peer-joined', async ({ role, name }) => {
+                showPeer(name, role);
+                addSystemMsg(`${name} joined as ${role}`);
+                addTranscriptEntry('chat', 'System', `${name} joined as ${role}`);
+                if (myRole === 'doctor') await startCall();
+            });
+
+            socket.on('room-state', async (state) => {
+                const other = myRole === 'doctor' ? 'patient' : 'doctor';
+                if (state[other]) {
+                    showPeer(state[other].name, other);
+                    addSystemMsg(`${state[other].name} is already in the room`);
+                    if (myRole === 'doctor') await startCall();
+                }
+            });
+
+            socket.on('offer', async ({ offer }) => {
+                await ensurePeerConn();
+                await peerConn.setRemoteDescription(new RTCSessionDescription(offer));
+                const answer = await peerConn.createAnswer();
+                await peerConn.setLocalDescription(answer);
+                socket.emit('answer', { answer, roomId: myRoomId });
+            });
+
+            socket.on('answer', async ({ answer }) => {
+                await peerConn.setRemoteDescription(new RTCSessionDescription(answer));
+            });
+
+            socket.on('ice-candidate', async ({ candidate }) => {
+                try { if (peerConn && candidate) await peerConn.addIceCandidate(new RTCIceCandidate(candidate)); }
+                catch (e) { console.warn('ICE', e); }
+            });
+
+            socket.on('chat-message', ({ message, name, role, time, socketId }) => {
+                const isMe = socketId === socket.id;
+                addChatBubble(message, name, role, time, isMe);
+                // Also add to transcript
+                addTranscriptEntry('chat', name, message);
+            });
+
+            socket.on('peer-left', ({ role, name }) => {
+                addSystemMsg(`${name} left the call`);
+                addTranscriptEntry('chat', 'System', `${name} left the call`);
+                hidePeer();
+                stopTimer(); callActive = false;
+                document.getElementById('waitingOverlay').classList.remove('hidden');
+                document.getElementById('waitingText').textContent = `${name} disconnected. Waiting…`;
+                document.getElementById('remoteVideo').srcObject = null;
+                showToast(`${name} left the call`);
+            });
+
+            socket.on('call-ended', ({ name }) => {
+                addSystemMsg(`${name} ended the call`);
+                stopTimer();
+                showToast(`Call ended by ${name}`);
+                setTimeout(() => leaveRoom(), 2000);
+            });
+        }
+
+        /* ═══════════════════════════════════════════════
+           WebRTC
+        ═══════════════════════════════════════════════ */
+        async function ensurePeerConn() {
+            if (peerConn) return;
+            peerConn = new RTCPeerConnection(ICE_SERVERS);
+            if (localStream) localStream.getTracks().forEach(t => peerConn.addTrack(t, localStream));
+
+            peerConn.onicecandidate = ({ candidate }) => {
+                if (candidate) socket.emit('ice-candidate', { candidate, roomId: myRoomId });
+            };
+            peerConn.ontrack = ({ streams }) => {
+                document.getElementById('remoteVideo').srcObject = streams[0];
+                document.getElementById('waitingOverlay').classList.add('hidden');
+                document.getElementById('callStatusBar').style.display = 'flex';
+                document.getElementById('peerBadge').style.display = 'flex';
+                if (!callActive) { callActive = true; startTimer(); }
+                lucide.createIcons();
+            };
+            peerConn.onconnectionstatechange = () => {
+                if (['failed', 'disconnected', 'closed'].includes(peerConn.connectionState)) {
+                    document.getElementById('waitingOverlay').classList.remove('hidden');
+                    stopTimer(); callActive = false;
+                }
+            };
+        }
+
+        async function startCall() {
+            await ensurePeerConn();
+            const offer = await peerConn.createOffer();
+            await peerConn.setLocalDescription(offer);
+            socket.emit('offer', { offer, roomId: myRoomId });
+        }
+
+        /* ═══════════════════════════════════════════════
+           CONTROLS
+        ═══════════════════════════════════════════════ */
+        function toggleMic() {
+            if (!localStream) return;
+            micOn = !micOn;
+            localStream.getAudioTracks().forEach(t => t.enabled = micOn);
+            document.getElementById('micBtn').classList.toggle('off', !micOn);
+            document.getElementById('micIcon').setAttribute('data-lucide', micOn ? 'mic' : 'mic-off');
+            lucide.createIcons();
+            if (socket) socket.emit('toggle-audio', { roomId: myRoomId, enabled: micOn });
+        }
+        function toggleCam() {
+            if (!localStream) return;
+            camOn = !camOn;
+            localStream.getVideoTracks().forEach(t => t.enabled = camOn);
+            document.getElementById('camBtn').classList.toggle('off', !camOn);
+            document.getElementById('camIcon').setAttribute('data-lucide', camOn ? 'video' : 'video-off');
+            lucide.createIcons();
+            if (socket) socket.emit('toggle-video', { roomId: myRoomId, enabled: camOn });
+        }
+        function endCall() {
+            if (socket) socket.emit('end-call', { roomId: myRoomId });
+            cleanup(); leaveRoom();
+        }
+        function leaveRoom() {
+            cleanup();
+            stopVoice();
+            document.getElementById('callScreen').style.display = 'none';
+            document.getElementById('lobbyScreen').style.display = 'flex';
+            document.getElementById('waitingOverlay').classList.remove('hidden');
+            document.getElementById('waitingText').textContent = 'Waiting for the other person to join…';
+            document.getElementById('chatMsgs').innerHTML = '<div class="chat-system">Chat ready.</div>';
+            document.getElementById('transcriptScroll').innerHTML = '<div class="transcript-empty">Start the call — voice & chat will appear here automatically.</div>';
+            myRole = null;
+            document.getElementById('roleDoctor').classList.remove('selected');
+            document.getElementById('rolePatient').classList.remove('selected');
+            document.getElementById('joinBtn').disabled = true;
+            lucide.createIcons();
+        }
+        function cleanup() {
+            stopTimer();
+            if (peerConn) { peerConn.close(); peerConn = null; }
+            if (localStream) { localStream.getTracks().forEach(t => t.stop()); localStream = null; }
+            if (socket) { socket.disconnect(); socket = null; }
+            callActive = false;
+        }
+
+        /* ═══════════════════════════════════════════════
+           CHAT
+        ═══════════════════════════════════════════════ */
+        function sendChatMsg() {
+            const input = document.getElementById('chatInput');
+            const msg = input.value.trim();
+            if (!msg || !socket) return;
+            input.value = '';
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            socket.emit('chat-message', { roomId: myRoomId, message: msg, name: myName, role: myRole, time });
+        }
+        function addChatBubble(message, name, role, time, isMe) {
+            const msgs = document.getElementById('chatMsgs');
+            const div = document.createElement('div');
+            div.className = `chat-msg ${isMe ? 'me' : 'them'}`;
+            div.innerHTML = `<div class="chat-bubble">${escHtml(message)}</div><div class="chat-meta">${isMe ? 'You' : escHtml(name)} · ${time}</div>`;
+            msgs.appendChild(div);
+            msgs.scrollTop = msgs.scrollHeight;
+        }
+        function addSystemMsg(text) {
+            const msgs = document.getElementById('chatMsgs');
+            const div = document.createElement('div');
+            div.className = 'chat-system'; div.textContent = text;
+            msgs.appendChild(div);
+            msgs.scrollTop = msgs.scrollHeight;
+        }
+
+        /* ═══════════════════════════════════════════════
+           GEMINI AI REPORT
+        ═══════════════════════════════════════════════ */
+        async function openReport() {
+            const apiKey = document.getElementById('geminiKey').value.trim();
+            if (!apiKey) { showToast('⚠️ Please enter your Gemini API key in the lobby first'); return; }
+            if (transcript.length === 0) { showToast('⚠️ No transcript yet — start talking first!'); return; }
+
+            // Show modal in loading state
+            document.getElementById('genState').style.display = 'flex';
+            document.getElementById('reportContent').style.display = 'none';
+            document.getElementById('reportOverlay').classList.add('open');
+            lucide.createIcons();
+
+            // Build transcript text
+            const transcriptText = transcript.map(e => `[${e.time}] ${e.speaker} (${e.type}): ${e.text}`).join('\n');
+
+            const prompt = `You are a medical AI assistant. Analyze this doctor-patient consultation transcript and return a JSON object ONLY (no markdown, no extra text).
+
+Transcript:
+${transcriptText}
+
+Return this exact JSON structure:
+{
+  "participants": "Names and roles of people in the call",
+  "symptoms": ["symptom 1", "symptom 2"],
+  "conditions": ["possible condition 1", "possible condition 2"],
+  "recommendations": ["recommendation 1", "recommendation 2"],
+  "followup": ["follow-up action 1", "follow-up action 2"],
+  "summary": "2-3 sentence plain English summary of the consultation"
+}`;
+
+            try {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+
+                if (!res.ok) throw new Error(`Gemini API error: ${res.status}`);
+                const data = await res.json();
+                let raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+
+                // Strip markdown code fences if present
+                raw = raw.replace(/```json|```/g, '').trim();
+                const report = JSON.parse(raw);
+                currentReport = report;
+                renderReport(report);
+
+            } catch (e) {
+                console.error(e);
+                document.getElementById('reportOverlay').classList.remove('open');
+                showToast('❌ Error: ' + (e.message || 'Could not generate report'));
+            }
+        }
+
+        function renderReport(r) {
+            const now = new Date().toLocaleString();
+            document.getElementById('reportMeta').textContent = `Generated ${now} · Room ${myRoomId}`;
+            document.getElementById('rParticipants').textContent = r.participants || '—';
+
+            // Symptoms as tags
+            document.getElementById('rSymptoms').innerHTML =
+                (r.symptoms || []).map(s => `<span class="report-tag symptom">${escHtml(s)}</span>`).join('') || 'None reported';
+
+            // Conditions as tags
+            document.getElementById('rConditions').innerHTML =
+                (r.conditions || []).map(c => `<span class="report-tag condition">${escHtml(c)}</span>`).join('') || '—';
+
+            // Recommendations
+            document.getElementById('rRecommendations').innerHTML =
+                (r.recommendations || []).map(rec => `<div style="padding:4px 0;border-bottom:1px solid var(--border)">✓ ${escHtml(rec)}</div>`).join('') || '—';
+
+            // Follow-up
+            document.getElementById('rFollowup').innerHTML =
+                (r.followup || []).map(f => `<div style="padding:4px 0;border-bottom:1px solid var(--border)">→ ${escHtml(f)}</div>`).join('') || '—';
+
+            document.getElementById('rSummary').textContent = r.summary || '—';
+
+            // Switch to report view
+            document.getElementById('genState').style.display = 'none';
+            document.getElementById('reportContent').style.display = 'block';
+            lucide.createIcons();
+        }
+
+        function closeReport() {
+            document.getElementById('reportOverlay').classList.remove('open');
+        }
+
+        /* ═══════════════════════════════════════════════
+           PDF DOWNLOAD
+        ═══════════════════════════════════════════════ */
+        function downloadPDF() {
+            if (!currentReport) { showToast('Generate the report first'); return; }
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+
+            const blue = [27, 111, 235];
+            const dark = [15, 28, 63];
+            const gray = [107, 122, 153];
+            const light = [244, 247, 252];
+            const green = [16, 185, 129];
+
+            // Header bar
+            doc.setFillColor(...blue);
+            doc.rect(0, 0, 210, 28, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(18);
+            doc.text('HealthPulse AI', 14, 12);
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'normal');
+            doc.text('Medical Consultation Report', 14, 20);
+            doc.text(`Room: ${myRoomId}  ·  ${new Date().toLocaleDateString()}`, 14, 26);
+
+            let y = 36;
+
+            function sectionTitle(title) {
+                doc.setFillColor(...light);
+                doc.rect(10, y - 4, 190, 8, 'F');
+                doc.setTextColor(...blue);
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(9);
+                doc.text(title.toUpperCase(), 14, y + 1);
+                y += 10;
+                doc.setTextColor(...dark);
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(11);
+            }
+
+            function bodyText(text) {
+                const lines = doc.splitTextToSize(text, 180);
+                lines.forEach(l => { doc.text(l, 14, y); y += 6; });
+                y += 2;
+            }
+
+            function tags(arr, r, g, b) {
+                let x = 14;
+                arr.forEach(tag => {
+                    const w = doc.getTextWidth(tag) + 8;
+                    if (x + w > 195) { x = 14; y += 8; }
+                    doc.setFillColor(r, g, b);
+                    doc.setDrawColor(r, g, b);
+                    doc.roundedRect(x, y - 4, w, 7, 2, 2, 'FD');
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(9);
+                    doc.text(tag, x + 4, y + 0.5);
+                    doc.setFontSize(11);
+                    doc.setTextColor(...dark);
+                    x += w + 4;
+                });
+                y += 10;
+            }
+
+            // Participants
+            sectionTitle('Participants');
+            bodyText(currentReport.participants || '—');
+
+            // Symptoms
+            sectionTitle('Symptoms Reported');
+            if (currentReport.symptoms?.length) tags(currentReport.symptoms, 239, 68, 68);
+            else bodyText('None reported');
+
+            // Conditions
+            sectionTitle('Possible Conditions');
+            if (currentReport.conditions?.length) tags(currentReport.conditions, 245, 158, 11);
+            else bodyText('—');
+
+            // Recommendations
+            sectionTitle('Recommendations');
+            (currentReport.recommendations || []).forEach(r => { bodyText('✓  ' + r); });
+            if (!currentReport.recommendations?.length) bodyText('—');
+
+            // Follow-up
+            sectionTitle('Follow-up Actions');
+            (currentReport.followup || []).forEach(f => { bodyText('→  ' + f); });
+            if (!currentReport.followup?.length) bodyText('—');
+
+            // Summary
+            sectionTitle('Consultation Summary');
+            bodyText(currentReport.summary || '—');
+
+            // Full transcript
+            if (transcript.length > 0) {
+                y += 4;
+                sectionTitle('Full Transcript');
+                doc.setFontSize(9);
+                doc.setTextColor(...gray);
+                transcript.forEach(e => {
+                    const line = `[${e.time}] ${e.speaker} (${e.type}): ${e.text}`;
+                    const lines = doc.splitTextToSize(line, 182);
+                    lines.forEach(l => {
+                        if (y > 270) { doc.addPage(); y = 20; }
+                        doc.text(l, 14, y); y += 5;
+                    });
+                });
+            }
+
+            // Footer
+            doc.setFontSize(8);
+            doc.setTextColor(...gray);
+            doc.text('Generated by HealthPulse AI · This report is for informational purposes only.', 14, 290);
+
+            doc.save(`HealthPulse-Report-${myRoomId}-${Date.now()}.pdf`);
+            showToast('✅ PDF downloaded!');
+        }
+
+        /* ═══════════════════════════════════════════════
+           UI HELPERS
+        ═══════════════════════════════════════════════ */
+        function switchTab(tab) {
+            document.getElementById('chatPane').style.display = tab === 'chat' ? 'flex' : 'none';
+            document.getElementById('transcriptPane').style.display = tab === 'transcript' ? 'flex' : 'none';
+            document.getElementById('tabChat').classList.toggle('active', tab === 'chat');
+            document.getElementById('tabTranscript').classList.toggle('active', tab === 'transcript');
+        }
+        function showPeer(name, role) {
+            document.getElementById('peerChip').style.display = 'flex';
+            document.getElementById('peerChip').className = `person-chip ${role}`;
+            document.getElementById('peerChipLabel').textContent = `${name} (${role})`;
+            document.getElementById('peerBadgeName').textContent = `${name} · ${role}`;
+        }
+        function hidePeer() {
+            document.getElementById('peerChip').style.display = 'none';
+            document.getElementById('peerBadge').style.display = 'none';
+            document.getElementById('callStatusBar').style.display = 'none';
+        }
+        function startTimer() {
+            callSeconds = 0;
+            timerInterval = setInterval(() => {
+                callSeconds++;
+                const m = String(Math.floor(callSeconds / 60)).padStart(2, '0');
+                const s = String(callSeconds % 60).padStart(2, '0');
+                document.getElementById('callTimer').textContent = `${m}:${s}`;
+            }, 1000);
+        }
+        function stopTimer() { clearInterval(timerInterval); timerInterval = null; }
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3200);
+        }
+        function escHtml(str) {
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        /* ═══════════════════════════════════════════════
+           SIDEBAR
+        ═══════════════════════════════════════════════ */
+        lucide.createIcons();
+        const sidebarEl = document.getElementById('sidebar');
+        const overlayEl = document.getElementById('overlay');
+        document.getElementById('hamBtn').addEventListener('click', () => {
+            sidebarEl.classList.add('open'); overlayEl.classList.add('show'); document.body.style.overflow = 'hidden';
+        });
+        overlayEl.addEventListener('click', () => {
+            sidebarEl.classList.remove('open'); overlayEl.classList.remove('show'); document.body.style.overflow = '';
+        });
+        document.querySelectorAll('.nav-item').forEach(el => el.addEventListener('click', () => {
+            if (window.innerWidth <= 900) { sidebarEl.classList.remove('open'); overlayEl.classList.remove('show'); document.body.style.overflow = ''; }
+        }));
+    </script>
+</body>
+
+</html>

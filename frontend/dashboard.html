@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -56,7 +56,7 @@
       overflow-x: hidden
     }
 
-    /* ── LAYOUT ── */
+    /* ΓöÇΓöÇ LAYOUT ΓöÇΓöÇ */
     .app-shell {
       display: flex;
       min-height: 100vh
@@ -238,7 +238,7 @@
       flex-direction: column
     }
 
-    /* ── DESKTOP TOPBAR ── */
+    /* ΓöÇΓöÇ DESKTOP TOPBAR ΓöÇΓöÇ */
     .topbar {
       background: rgba(255, 255, 255, .88);
       backdrop-filter: blur(20px);
@@ -359,7 +359,7 @@
       box-shadow: 0 0 0 4px rgba(27, 111, 235, .3), 0 4px 18px rgba(27, 111, 235, .4)
     }
 
-    /* ── MOBILE TOPBAR ── */
+    /* ΓöÇΓöÇ MOBILE TOPBAR ΓöÇΓöÇ */
     .mobile-topbar {
       display: none;
       background: rgba(255, 255, 255, .92);
@@ -647,7 +647,7 @@
       margin-top: 1px
     }
 
-    /* ── AI INSIGHT — MODERN ── */
+    /* ΓöÇΓöÇ AI INSIGHT ΓÇö MODERN ΓöÇΓöÇ */
     .ai-insight {
       background: linear-gradient(135deg, rgba(27, 111, 235, 0.06) 0%, rgba(124, 58, 237, 0.04) 100%);
       border-radius: var(--r-xl);
@@ -1379,7 +1379,7 @@
     }
 
     .med-check.done::after {
-      content: '✓';
+      content: 'Γ£ô';
       font-size: 11px;
       color: #fff;
       font-weight: 700
@@ -1671,11 +1671,11 @@
       <!-- DESKTOP TOPBAR -->
       <header class="topbar">
         <div class="topbar-greeting">
-          <h1>Good Morning, Oliver 👋</h1>
+          <h1>Good Morning, Oliver </h1>
         </div>
         <div class="search-pill">
           <i data-lucide="search" style="width:15px;height:15px;color:var(--text-muted)"></i>
-          <input placeholder="Search doctors, specialties…">
+          <input placeholder="Search doctors, specialtiesΓÇª">
         </div>
         <div class="topbar-actions">
           <div class="icon-btn" title="Notifications">
@@ -1719,7 +1719,7 @@
               check-up.</div>
           </div>
 
-          <img src="assets/Screenshot 2026-03-20 130218.png" alt="Medical Media Center Banner"
+          <img src="assets/dashboard.png" alt="Medical Media Center Banner"
             style="width:100%; display:block; margin-bottom:32px; border-radius:8px;">
 
           <!-- AI INSIGHT -->
@@ -1741,7 +1741,7 @@
                   <i data-lucide="brain-circuit" style="width:22px;height:22px;color:#fff"></i>
                 </div>
                 <div>
-                  <div class="ai-eyebrow"><span class="dot-blink"></span>HealthPulse AI · Live Analysis</div>
+                  <div class="ai-eyebrow"><span class="dot-blink"></span>HealthPulse AI Live Analysis</div>
                   <div class="ai-title">Your wellness score is improving</div>
                 </div>
               </div>
@@ -1757,7 +1757,7 @@
                   </div>
                 </div>
                 <div class="ai-content">
-                  <p>Based on your sleep, activity and vitals — you're trending positively. Improve sleep consistency to
+                  <p>Based on your sleep, activity and vitals you're trending positively. Improve sleep consistency to
                     push past 90 next week.</p>
                   <div class="ai-metrics">
                     <div class="ai-metric up">
@@ -1853,31 +1853,31 @@
               <div class="stat-tile heart">
                 <div><i data-lucide="heart-pulse" style="width:19px;height:19px;color:var(--coral)"></i></div>
                 <div class="stat-value">78</div>
-                <div class="stat-label">Heart Rate · bpm</div>
+                <div class="stat-label">Heart Rate bpm</div>
                 <div class="stat-trend trend-ok">Normal</div>
               </div>
               <div class="stat-tile oxygen">
                 <div><i data-lucide="droplets" style="width:19px;height:19px;color:var(--blue-primary)"></i></div>
                 <div class="stat-value">98%</div>
-                <div class="stat-label">SpO₂ Level</div>
-                <div class="stat-trend trend-up">↑ Good</div>
+                <div class="stat-label">SpOΓéé Level</div>
+                <div class="stat-trend trend-up">Γåæ Good</div>
               </div>
               <div class="stat-tile sleep">
                 <div><i data-lucide="moon" style="width:19px;height:19px;color:var(--purple)"></i></div>
                 <div class="stat-value">6.4h</div>
                 <div class="stat-label">Sleep</div>
-                <div class="stat-trend trend-down">↓ Low</div>
+                <div class="stat-trend trend-down">Γåô Low</div>
               </div>
               <div class="stat-tile steps">
                 <div><i data-lucide="footprints" style="width:19px;height:19px;color:var(--green)"></i></div>
                 <div class="stat-value">7.2k</div>
                 <div class="stat-label">Steps Today</div>
-                <div class="stat-trend trend-up">↑ On track</div>
+                <div class="stat-trend trend-up">On track</div>
               </div>
             </div>
             <div style="margin-top:15px">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">
-                <span style="font-size:12px;font-weight:600;color:var(--text-secondary)">Heart Rate · 7 Days</span>
+                <span style="font-size:12px;font-weight:600;color:var(--text-secondary)">Heart Rate 7 Days</span>
                 <span style="font-size:11px;color:var(--text-muted)">Avg 76 bpm</span>
               </div>
               <canvas class="pulse-chart" id="heartChart"></canvas>

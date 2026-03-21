@@ -1,7 +1,7 @@
-const express = require("express");
+﻿const express = require("express");
 const router = express.Router();
 
-// 🔹 Get nearby hospitals using Overpass API (FREE - OpenStreetMap data)
+// ≡ƒö╣ Get nearby hospitals using Overpass API (FREE - OpenStreetMap data)
 router.get("/nearby", async (req, res) => {
     try {
         const { lat, lng } = req.query;
@@ -64,7 +64,7 @@ router.get("/nearby", async (req, res) => {
     }
 });
 
-// 🔹 Get photos (using Wikimedia Commons)
+// ≡ƒö╣ Get photos (using Wikimedia Commons)
 router.get("/photos", async (req, res) => {
     try {
         const { id } = req.query;
@@ -88,7 +88,7 @@ router.get("/photos", async (req, res) => {
     }
 });
 
-// 🔹 Get hospital details
+// ≡ƒö╣ Get hospital details
 router.get("/details", async (req, res) => {
     try {
         const { id } = req.query;

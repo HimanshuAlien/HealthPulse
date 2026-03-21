@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HealthPulse AI — Hospital Finder</title>
+    <title>HealthPulse AI ΓÇö Hospital Finder</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Sora:wght@400;600;700;800&display=swap"
@@ -16,7 +16,7 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <style>
-        /* ─── TOKENS ─── */
+        /* ΓöÇΓöÇΓöÇ TOKENS ΓöÇΓöÇΓöÇ */
         :root {
             --blue: #1B6FEB;
             --blue-deep: #0D4FC4;
@@ -64,14 +64,14 @@
             overflow: hidden
         }
 
-        /* ─── SHELL ─── */
+        /* ΓöÇΓöÇΓöÇ SHELL ΓöÇΓöÇΓöÇ */
         .shell {
             display: flex;
             height: 100vh;
             overflow: hidden
         }
 
-        /* ─── SIDEBAR ─── */
+        /* ΓöÇΓöÇΓöÇ SIDEBAR ΓöÇΓöÇΓöÇ */
         .sidebar {
             width: var(--sidebar-w);
             background: var(--card);
@@ -229,7 +229,7 @@
             display: block
         }
 
-        /* ─── MAIN ─── */
+        /* ΓöÇΓöÇΓöÇ MAIN ΓöÇΓöÇΓöÇ */
         .main-content {
             margin-left: var(--sidebar-w);
             flex: 1;
@@ -491,7 +491,7 @@
             overflow: hidden
         }
 
-        /* ─── LIST PANEL ─── */
+        /* ΓöÇΓöÇΓöÇ LIST PANEL ΓöÇΓöÇΓöÇ */
         .list-panel {
             display: flex;
             flex-direction: column;
@@ -536,7 +536,7 @@
             border-radius: 4px
         }
 
-        /* ─── HOSPITAL CARD ─── */
+        /* ΓöÇΓöÇΓöÇ HOSPITAL CARD ΓöÇΓöÇΓöÇ */
         .hcard {
             background: var(--card);
             border-radius: var(--r-lg);
@@ -849,7 +849,7 @@
             }
         }
 
-        /* ─── MAP PANEL ─── */
+        /* ΓöÇΓöÇΓöÇ MAP PANEL ΓöÇΓöÇΓöÇ */
         .map-panel {
             position: relative;
             overflow: hidden
@@ -945,7 +945,7 @@
             box-shadow: 0 4px 18px rgba(0, 0, 0, .15)
         }
 
-        /* ─── LOADING SCREEN ─── */
+        /* ΓöÇΓöÇΓöÇ LOADING SCREEN ΓöÇΓöÇΓöÇ */
         .loading-screen {
             position: absolute;
             inset: 0;
@@ -1261,7 +1261,7 @@
 
     <div class="shell">
 
-        <!-- ─── SIDEBAR ─── -->
+        <!-- ΓöÇΓöÇΓöÇ SIDEBAR ΓöÇΓöÇΓöÇ -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-logo">
                 <div class="logo-icon"><i data-lucide="activity" style="width:18px;height:18px;color:#fff"></i></div>
@@ -1304,7 +1304,7 @@
         </aside>
         <div class="overlay" id="overlay"></div>
 
-        <!-- ─── MAIN ─── -->
+        <!-- ΓöÇΓöÇΓöÇ MAIN ΓöÇΓöÇΓöÇ -->
         <div class="main-content">
 
             <!-- DESKTOP TOPBAR -->
@@ -1312,7 +1312,7 @@
                 <div class="topbar-title">Hospital Finder</div>
                 <div class="search-pill">
                     <i data-lucide="search" style="width:14px;height:14px;color:var(--muted)"></i>
-                    <input id="searchInput" placeholder="Search by hospital name…" oninput="filterCards()">
+                    <input id="searchInput" placeholder="Search by hospital nameΓÇª" oninput="filterCards()">
                 </div>
                 <div style="display:flex;align-items:center;gap:10px">
                     <div class="icon-btn" title="Refresh" onclick="startAll()">
@@ -1349,7 +1349,7 @@
                     <i data-lucide="navigation" style="width:13px;height:13px"></i>Nearest
                 </div>
                 <div class="chip" id="chipName" onclick="sortBy('name',this)">
-                    <i data-lucide="text" style="width:13px;height:13px"></i>A–Z
+                    <i data-lucide="text" style="width:13px;height:13px"></i>AΓÇôZ
                 </div>
                 <div class="chip" id="chipSaved" onclick="showSaved(this)">
                     <i data-lucide="heart" style="width:13px;height:13px"></i>Saved
@@ -1366,7 +1366,7 @@
                 <div class="list-panel">
                     <div class="list-stats">
                         <div>
-                            <div class="stats-txt" id="statsTxt">Finding hospitals…</div>
+                            <div class="stats-txt" id="statsTxt">Finding hospitals</div>
                             <div class="stats-sub" id="statsSub">Requesting your location</div>
                         </div>
                     </div>
@@ -1408,7 +1408,7 @@
                         <div class="ld-mesh"></div>
                         <div class="ld-spinner"></div>
                         <div class="ld-title">Finding Hospitals Near You</div>
-                        <div class="ld-sub">Allow location access when prompted — we never store it.</div>
+                        <div class="ld-sub">Allow location access when prompted ΓÇö we never store it.</div>
                         <div class="ld-steps">
                             <div class="ls active" id="ls0">
                                 <div class="ls-ic">1</div><span>Requesting your location</span>
@@ -1427,7 +1427,7 @@
 
                     <!-- Error overlay -->
                     <div class="error-screen" id="errScreen">
-                        <div style="font-size:44px">📍</div>
+                        <div style="font-size:44px">≡ƒôì</div>
                         <div style="font-family:'Sora',sans-serif;font-size:17px;font-weight:700" id="errTitle">Location
                             Needed</div>
                         <div style="font-size:13px;color:var(--sub);max-width:300px;line-height:1.6" id="errSub">Please
@@ -1449,7 +1449,7 @@
                     </div>
                     <div class="map-loc-pill" id="mapLocPill" style="display:none">
                         <div class="loc-dot"></div>
-                        <span id="locPillTxt">Locating…</span>
+                        <span id="locPillTxt">Locating</span>
                     </div>
                 </div>
 
@@ -1475,13 +1475,13 @@
     </nav>
 
     <script>
-        /* ══════════════════════════════════════════════════
-           CONFIG — set this to your Express server URL
+        /* ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ
+           CONFIG ΓÇö set this to your Express server URL
            Leave '' if frontend is served from the same origin
-        ══════════════════════════════════════════════════ */
+        ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ */
         const API_BASE = 'http://localhost:3000';   // Backend server URL
 
-        /* ─── STATE ─── */
+        /* ΓöÇΓöÇΓöÇ STATE ΓöÇΓöÇΓöÇ */
         let map, userMarker, userCircle;
         let allHospitals = [];   // full list from /api/hospitals/nearby
         let displayList = [];   // after filter/sort
@@ -1492,19 +1492,19 @@
         let showingSaved = false;
         let lsStep = 0;
 
-        /* ─── LOADING STEPS ─── */
+        /* ΓöÇΓöÇΓöÇ LOADING STEPS ΓöÇΓöÇΓöÇ */
         const LS = ['ls0', 'ls1', 'ls2', 'ls3'];
         function advLS() {
             if (lsStep > 0) {
                 const p = document.getElementById(LS[lsStep - 1]);
-                if (p) { p.classList.remove('active'); p.classList.add('done'); p.querySelector('.ls-ic').textContent = '✓'; }
+                if (p) { p.classList.remove('active'); p.classList.add('done'); p.querySelector('.ls-ic').textContent = 'Γ£ô'; }
             }
             const c = document.getElementById(LS[lsStep]);
             if (c) c.classList.add('active');
             lsStep++;
         }
 
-        /* ─── ENTRY POINT ─── */
+        /* ΓöÇΓöÇΓöÇ ENTRY POINT ΓöÇΓöÇΓöÇ */
         function startAll() {
             // Reset
             lsStep = 0;
@@ -1521,7 +1521,7 @@
             document.getElementById('mapRecenter').style.display = 'none';
             document.getElementById('mapCount').style.display = 'none';
             document.getElementById('mapLocPill').style.display = 'none';
-            document.getElementById('statsTxt').textContent = 'Finding hospitals…';
+            document.getElementById('statsTxt').textContent = 'Finding hospitalsΓÇª';
             document.getElementById('statsSub').textContent = 'Requesting your location';
             allHospitals = []; displayList = [];
             clearMarkers();
@@ -1551,7 +1551,7 @@
             document.getElementById('loadingScreen').classList.add('hidden');
             document.getElementById('skelWrap').style.display = 'none';
             document.getElementById('listScroll').style.display = 'block';
-            document.getElementById('listScroll').innerHTML = `<div style="text-align:center;padding:48px 20px;color:var(--muted)"><div style="font-size:36px;margin-bottom:12px">📍</div><div style="font-size:14px;font-weight:600;color:var(--sub);margin-bottom:6px">${t}</div><div style="font-size:12.5px;line-height:1.6">${s}</div></div>`;
+            document.getElementById('listScroll').innerHTML = `<div style="text-align:center;padding:48px 20px;color:var(--muted)"><div style="font-size:36px;margin-bottom:12px">≡ƒôì</div><div style="font-size:14px;font-weight:600;color:var(--sub);margin-bottom:6px">${t}</div><div style="font-size:12.5px;line-height:1.6">${s}</div></div>`;
             document.getElementById('statsTxt').textContent = 'Error';
             document.getElementById('statsSub').textContent = t;
             document.getElementById('errTitle').textContent = t;
@@ -1559,7 +1559,7 @@
             document.getElementById('errScreen').classList.add('show');
         }
 
-        /* ─── GOT LOCATION ─── */
+        /* ΓöÇΓöÇΓöÇ GOT LOCATION ΓöÇΓöÇΓöÇ */
         function gotLocation(pos) {
             userLat = pos.coords.latitude;
             userLng = pos.coords.longitude;
@@ -1570,7 +1570,7 @@
             fetchHospitals();
         }
 
-        /* ─── LEAFLET MAP ─── */
+        /* ΓöÇΓöÇΓöÇ LEAFLET MAP ΓöÇΓöÇΓöÇ */
         function initLeaflet() {
             if (map) {
                 map.setView([userLat, userLng], 14);
@@ -1586,13 +1586,13 @@
 
             // Satellite map with 3D-like appearance - Esri World Imagery
             L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-                attribution: '© Esri, DigitalGlobe, Earthstar Geographics',
+                attribution: '┬⌐ Esri, DigitalGlobe, Earthstar Geographics',
                 maxZoom: 19
             }).addTo(map);
 
             // Add labels layer on top for readability
             L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
-                attribution: '© Esri',
+                attribution: '┬⌐ Esri',
                 maxZoom: 19,
                 opacity: 0.7
             }).addTo(map);
@@ -1615,13 +1615,13 @@
             advLS(); // step 3 done (map ready)
         }
 
-        /* ─── REVERSE GEOCODE (OpenStreetMap Nominatim — free) ─── */
+        /* ΓöÇΓöÇΓöÇ REVERSE GEOCODE (OpenStreetMap Nominatim ΓÇö free) ΓöÇΓöÇΓöÇ */
         async function reverseGeocode() {
             try {
                 const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${userLat}&lon=${userLng}&format=json`);
                 const d = await r.json();
                 const addr = d.display_name || `${userLat.toFixed(4)}, ${userLng.toFixed(4)}`;
-                document.getElementById('locPillTxt').textContent = addr.length > 55 ? addr.slice(0, 52) + '…' : addr;
+                document.getElementById('locPillTxt').textContent = addr.length > 55 ? addr.slice(0, 52) + 'ΓÇª' : addr;
                 document.getElementById('mapLocPill').style.display = 'flex';
             } catch {
                 document.getElementById('locPillTxt').textContent = `${userLat.toFixed(4)}, ${userLng.toFixed(4)}`;
@@ -1629,9 +1629,9 @@
             }
         }
 
-        /* ══════════════════════════════════════════════════
-           FOURSQUARE — your 3 backend routes
-        ══════════════════════════════════════════════════ */
+        /* ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ
+           FOURSQUARE ΓÇö your 3 backend routes
+        ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ */
 
         /* Route 1: GET /api/hospitals/nearby?lat=&lng= */
         async function fetchHospitals() {
@@ -1672,7 +1672,7 @@
 
             } catch (err) {
                 console.error('fetchHospitals error:', err);
-                showErr('Backend Error', err.message + ' — check console and ensure your server is running.');
+                showErr('Backend Error', err.message + ' ΓÇö check console and ensure your server is running.');
             }
         }
 
@@ -1707,7 +1707,7 @@
                     position: relative;
                     font-weight: bold;
                 ">
-                    🏥
+                    HOSPITAL
                 </div>
                 <div class="photo-overlay"></div>
             `;
@@ -1739,7 +1739,7 @@
             } catch { /* silently ignore */ }
         }
 
-        /* ─── RENDER CARDS ─── */
+        /* ΓöÇΓöÇΓöÇ RENDER CARDS ΓöÇΓöÇΓöÇ */
         function renderList(hospitals) {
             displayList = hospitals;
             const scroll = document.getElementById('listScroll');
@@ -1748,7 +1748,7 @@
             scroll.style.display = 'block';
 
             if (hospitals.length === 0) {
-                scroll.innerHTML = `<div style="text-align:center;padding:48px 20px;color:var(--muted)"><div style="font-size:36px;margin-bottom:12px">🏥</div><div style="font-size:14px;font-weight:600;color:var(--sub);margin-bottom:6px">No hospitals found</div><div style="font-size:12.5px;line-height:1.6">Try refreshing or checking your connection.</div></div>`;
+                scroll.innerHTML = `<div style="text-align:center;padding:48px 20px;color:var(--muted)"><div style="font-size:36px;margin-bottom:12px">≡ƒÅÑ</div><div style="font-size:14px;font-weight:600;color:var(--sub);margin-bottom:6px">No hospitals found</div><div style="font-size:12.5px;line-height:1.6">Try refreshing or checking your connection.</div></div>`;
                 return;
             }
 
@@ -1762,12 +1762,12 @@
             card.className = 'hcard';
             card.dataset.id = h.id;
 
-            const dist = h.distKm != null ? h.distKm.toFixed(2) : '—';
+            const dist = h.distKm != null ? h.distKm.toFixed(2) : 'ΓÇö';
             const isSaved = savedSet.has(h.id);
 
             card.innerHTML = `
     <div class="hcard-photo" id="photo-${h.id}">
-      <div class="hcard-photo-fallback">🏥</div>
+      <div class="hcard-photo-fallback">≡ƒÅÑ</div>
     </div>
 
     <div class="hcard-body">
@@ -1814,7 +1814,7 @@
             return card;
         }
 
-        /* ─── MARKERS ─── */
+        /* ΓöÇΓöÇΓöÇ MARKERS ΓöÇΓöÇΓöÇ */
         const H_ICON_HTML = (num, isSelected) => `
   <div style="
     width:32px;height:40px;position:relative;
@@ -1858,15 +1858,15 @@
         }
 
         function buildPopupHTML(h, photoUrl) {
-            const dist = h.distKm != null ? `${h.distKm.toFixed(2)} km` : '—';
+            const dist = h.distKm != null ? `${h.distKm.toFixed(2)} km` : 'ΓÇö';
             const photo = photoUrl ? `<img src="${photoUrl}" style="width:100%;height:80px;object-fit:cover;border-radius:8px;margin-bottom:8px">` : '';
             return `${photo}
     <div style="font-weight:800;font-size:13.5px;margin-bottom:3px;color:#0F1C3F">${h.name}</div>
     <div style="font-size:11.5px;color:#6B7A99;margin-bottom:5px;line-height:1.4">${h.address || ''}</div>
     <div style="font-size:11px;display:flex;align-items:center;gap:4px;color:#1B6FEB;font-weight:700">
-      <span>📍</span> ${dist} away
+      <span>≡ƒôì</span> ${dist} away
     </div>
-    ${h.phone ? `<div style="font-size:11px;color:#10B981;margin-top:3px;font-weight:600">📞 ${h.phone}</div>` : ''}`;
+    ${h.phone ? `<div style="font-size:11px;color:#10B981;margin-top:3px;font-weight:600">≡ƒô₧ ${h.phone}</div>` : ''}`;
         }
 
         function clearMarkers() {
@@ -1874,7 +1874,7 @@
             leafletMarkers = {};
         }
 
-        /* ─── SELECT ─── */
+        /* ΓöÇΓöÇΓöÇ SELECT ΓöÇΓöÇΓöÇ */
         function selectHospital(id) {
             // Highlight card
             document.querySelectorAll('.hcard').forEach(c => c.classList.remove('selected'));
@@ -1900,7 +1900,7 @@
             }
         }
 
-        /* ─── SORT / FILTER ─── */
+        /* ΓöÇΓöÇΓöÇ SORT / FILTER ΓöÇΓöÇΓöÇ */
         function sortBy(by, el) {
             document.querySelectorAll('.filter-bar .chip').forEach(c => c.classList.remove('active'));
             el.classList.add('active');
@@ -1936,7 +1936,7 @@
             applySort();
         }
 
-        /* ─── SAVE ─── */
+        /* ΓöÇΓöÇΓöÇ SAVE ΓöÇΓöÇΓöÇ */
         function toggleSave(id, btn) {
             if (savedSet.has(id)) {
                 savedSet.delete(id);
@@ -1947,12 +1947,12 @@
                 savedSet.add(id);
                 btn.classList.add('saved');
                 btn.innerHTML = '<i data-lucide="heart" style="width:15px;height:15px;color:var(--coral)"></i>';
-                showToast('Saved ❤️');
+                showToast('Saved Γ¥ñ∩╕Å');
             }
             lucide.createIcons();
         }
 
-        /* ─── HELPERS ─── */
+        /* ΓöÇΓöÇΓöÇ HELPERS ΓöÇΓöÇΓöÇ */
         function directions(lat, lng, name) {
             window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving`, '_blank');
         }
@@ -1960,7 +1960,7 @@
         function callHosp(id) {
             const h = allHospitals.find(x => x.id === id);
             if (h?.phone) window.location.href = `tel:${h.phone.replace(/\s/g, '')}`;
-            else showToast('Loading phone number…');
+            else showToast('Loading phone numberΓÇª');
         }
 
         function recenter() {
@@ -1972,7 +1972,7 @@
             document.getElementById('loadingScreen').classList.add('hidden');
             document.getElementById('skelWrap').style.display = 'none';
             document.getElementById('listScroll').style.display = 'block';
-            document.getElementById('listScroll').innerHTML = `<div style="text-align:center;padding:48px 20px;color:var(--muted)"><div style="font-size:36px;margin-bottom:12px">🏥</div><div style="font-size:14px;font-weight:600;color:var(--sub);margin-bottom:6px">No hospitals found</div><div style="font-size:12.5px;line-height:1.6">No results returned from Foursquare for this location.</div></div>`;
+            document.getElementById('listScroll').innerHTML = `<div style="text-align:center;padding:48px 20px;color:var(--muted)"><div style="font-size:36px;margin-bottom:12px">≡ƒÅÑ</div><div style="font-size:14px;font-weight:600;color:var(--sub);margin-bottom:6px">No hospitals found</div><div style="font-size:12.5px;line-height:1.6">No results returned from Foursquare for this location.</div></div>`;
             document.getElementById('statsTxt').textContent = 'No results';
             document.getElementById('statsSub').textContent = 'Try a different location';
         }
@@ -1988,7 +1988,7 @@
             setTimeout(() => t.classList.remove('show'), 3000);
         }
 
-        /* ─── SIDEBAR ─── */
+        /* ΓöÇΓöÇΓöÇ SIDEBAR ΓöÇΓöÇΓöÇ */
         lucide.createIcons();
         const sidebarEl = document.getElementById('sidebar');
         const overlayEl = document.getElementById('overlay');
@@ -2005,7 +2005,7 @@
             document.querySelectorAll('.bn-item').forEach(i => i.classList.remove('active')); this.classList.add('active');
         }));
 
-        /* ─── KICK OFF ─── */
+        /* ΓöÇΓöÇΓöÇ KICK OFF ΓöÇΓöÇΓöÇ */
         startAll();
     </script>
 </body>

@@ -10,7 +10,6 @@
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Sora:wght@400;600;700;800&display=swap"
         rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-
     <style>
         /* ─── TOKENS ─── */
         :root {
@@ -48,11 +47,11 @@
         *::after {
             box-sizing: border-box;
             margin: 0;
-            padding: 0
+            padding: 0;
         }
 
         html {
-            scroll-behavior: smooth
+            scroll-behavior: smooth;
         }
 
         body {
@@ -60,12 +59,12 @@
             background: var(--bg);
             color: var(--text);
             min-height: 100vh;
-            overflow-x: hidden
+            overflow-x: hidden;
         }
 
         .shell {
             display: flex;
-            min-height: 100vh
+            min-height: 100vh;
         }
 
         /* ─── SIDEBAR ─── */
@@ -82,7 +81,7 @@
             z-index: 200;
             padding: 26px 0;
             transition: transform .32s cubic-bezier(.4, 0, .2, 1);
-            overflow-y: auto
+            overflow-y: auto;
         }
 
         .sidebar-logo {
@@ -90,7 +89,7 @@
             align-items: center;
             gap: 10px;
             padding: 0 22px 24px;
-            border-bottom: 1px solid var(--border)
+            border-bottom: 1px solid var(--border);
         }
 
         .logo-icon {
@@ -101,18 +100,18 @@
             display: grid;
             place-items: center;
             box-shadow: 0 4px 12px rgba(27, 111, 235, .3);
-            flex-shrink: 0
+            flex-shrink: 0;
         }
 
         .logo-text {
             font-family: 'Sora', sans-serif;
             font-weight: 700;
             font-size: 16px;
-            color: var(--text)
+            color: var(--text);
         }
 
         .logo-text span {
-            color: var(--blue)
+            color: var(--blue);
         }
 
         .sidebar-nav {
@@ -120,7 +119,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 2px
+            gap: 2px;
         }
 
         .nav-label {
@@ -130,7 +129,7 @@
             color: var(--muted);
             text-transform: uppercase;
             padding: 10px 10px 4px;
-            margin-top: 4px
+            margin-top: 4px;
         }
 
         .nav-item {
@@ -146,18 +145,18 @@
             color: var(--sub);
             text-decoration: none;
             position: relative;
-            white-space: nowrap
+            white-space: nowrap;
         }
 
         .nav-item:hover {
             background: var(--blue-light);
-            color: var(--blue)
+            color: var(--blue);
         }
 
         .nav-item.active {
             background: var(--blue-light);
             color: var(--blue);
-            font-weight: 600
+            font-weight: 600;
         }
 
         .nav-item.active::before {
@@ -168,7 +167,7 @@
             bottom: 22%;
             width: 3px;
             border-radius: 4px;
-            background: var(--blue)
+            background: var(--blue);
         }
 
         .nav-badge {
@@ -178,7 +177,7 @@
             font-size: 10px;
             font-weight: 700;
             padding: 2px 7px;
-            border-radius: 20px
+            border-radius: 20px;
         }
 
         .sidebar-user {
@@ -187,7 +186,7 @@
             border-top: 1px solid var(--border);
             display: flex;
             align-items: center;
-            gap: 10px
+            gap: 10px;
         }
 
         .sidebar-avatar {
@@ -200,17 +199,17 @@
             font-weight: 700;
             font-size: 13px;
             color: #fff;
-            flex-shrink: 0
+            flex-shrink: 0;
         }
 
         .sidebar-user-name {
             font-size: 13px;
-            font-weight: 600
+            font-weight: 600;
         }
 
         .sidebar-user-role {
             font-size: 11px;
-            color: var(--muted)
+            color: var(--muted);
         }
 
         .overlay {
@@ -219,21 +218,21 @@
             inset: 0;
             background: rgba(15, 28, 63, .38);
             backdrop-filter: blur(4px);
-            z-index: 190
+            z-index: 190;
         }
 
         .overlay.show {
             display: block;
-            animation: fadeIn .2s
+            animation: fadeIn .2s;
         }
 
         @keyframes fadeIn {
             from {
-                opacity: 0
+                opacity: 0;
             }
 
             to {
-                opacity: 1
+                opacity: 1;
             }
         }
 
@@ -242,7 +241,7 @@
             margin-left: var(--sidebar-w);
             flex: 1;
             display: flex;
-            flex-direction: column
+            flex-direction: column;
         }
 
         /* TOPBAR */
@@ -258,7 +257,7 @@
             gap: 16px;
             position: sticky;
             top: 0;
-            z-index: 50
+            z-index: 50;
         }
 
         .topbar-title {
@@ -269,7 +268,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            flex: 1
+            flex: 1;
         }
 
         .icon-btn {
@@ -282,12 +281,12 @@
             place-items: center;
             cursor: pointer;
             transition: all .2s;
-            position: relative
+            position: relative;
         }
 
         .icon-btn:hover {
             background: var(--blue-light);
-            border-color: var(--blue)
+            border-color: var(--blue);
         }
 
         .icon-btn .dot {
@@ -298,7 +297,7 @@
             height: 7px;
             border-radius: 50%;
             background: var(--coral);
-            border: 2px solid #fff
+            border: 2px solid #fff;
         }
 
         .tav {
@@ -313,7 +312,7 @@
             font-size: 13px;
             box-shadow: 0 0 0 3px rgba(27, 111, 235, .2);
             cursor: pointer;
-            flex-shrink: 0
+            flex-shrink: 0;
         }
 
         /* MOBILE TOPBAR */
@@ -329,7 +328,7 @@
             gap: 12px;
             position: sticky;
             top: 0;
-            z-index: 50
+            z-index: 50;
         }
 
         .mob-hamburger {
@@ -342,19 +341,19 @@
             place-items: center;
             cursor: pointer;
             transition: all .2s;
-            flex-shrink: 0
+            flex-shrink: 0;
         }
 
         .mob-hamburger:hover {
             background: var(--blue-light);
-            border-color: var(--blue)
+            border-color: var(--blue);
         }
 
         .mob-logo {
             flex: 1;
             display: flex;
             align-items: center;
-            gap: 8px
+            gap: 8px;
         }
 
         .mob-logo-icon {
@@ -364,18 +363,18 @@
             background: linear-gradient(135deg, var(--blue), var(--blue-deep));
             display: grid;
             place-items: center;
-            box-shadow: 0 3px 10px rgba(27, 111, 235, .3)
+            box-shadow: 0 3px 10px rgba(27, 111, 235, .3);
         }
 
         .mob-logo-text {
             font-family: 'Sora', sans-serif;
             font-weight: 700;
             font-size: 15px;
-            color: var(--text)
+            color: var(--text);
         }
 
         .mob-logo-text span {
-            color: var(--blue)
+            color: var(--blue);
         }
 
         .mob-notif {
@@ -387,7 +386,7 @@
             display: grid;
             place-items: center;
             position: relative;
-            cursor: pointer
+            cursor: pointer;
         }
 
         .mob-notif .dot {
@@ -398,7 +397,7 @@
             height: 7px;
             border-radius: 50%;
             background: var(--coral);
-            border: 2px solid #fff
+            border: 2px solid #fff;
         }
 
         .mob-avatar {
@@ -412,27 +411,27 @@
             color: #fff;
             font-size: 12px;
             box-shadow: 0 0 0 3px rgba(27, 111, 235, .18);
-            cursor: pointer
+            cursor: pointer;
         }
 
         /* ─── PAGE ─── */
         .page-body {
             padding: 28px 32px 48px;
             max-width: 1200px;
-            width: 100%
+            width: 100%;
         }
 
         /* STEP BAR */
         .step-bar {
             display: flex;
             align-items: center;
-            margin-bottom: 28px
+            margin-bottom: 28px;
         }
 
         .step {
             display: flex;
             align-items: center;
-            gap: 8px
+            gap: 8px;
         }
 
         .step-circle {
@@ -447,32 +446,32 @@
             border: 2px solid var(--border);
             color: var(--muted);
             background: #fff;
-            flex-shrink: 0
+            flex-shrink: 0;
         }
 
         .step.done .step-circle {
             background: var(--green);
             border-color: var(--green);
-            color: #fff
+            color: #fff;
         }
 
         .step.active .step-circle {
             background: var(--blue);
             border-color: var(--blue);
             color: #fff;
-            box-shadow: 0 0 0 4px rgba(27, 111, 235, .15)
+            box-shadow: 0 0 0 4px rgba(27, 111, 235, .15);
         }
 
         .step-label {
             font-size: 12px;
             font-weight: 600;
             color: var(--muted);
-            white-space: nowrap
+            white-space: nowrap;
         }
 
         .step.done .step-label,
         .step.active .step-label {
-            color: var(--text)
+            color: var(--text);
         }
 
         .step-line {
@@ -481,11 +480,11 @@
             background: var(--border);
             margin: 0 10px;
             min-width: 16px;
-            transition: background .3s
+            transition: background .3s;
         }
 
         .step-line.done {
-            background: var(--green)
+            background: var(--green);
         }
 
         /* FLOW CARD */
@@ -495,22 +494,22 @@
             padding: 28px;
             box-shadow: var(--sh-md);
             display: none;
-            animation: slideUp .4s cubic-bezier(.4, 0, .2, 1)
+            animation: slideUp .4s cubic-bezier(.4, 0, .2, 1);
         }
 
         .flow-card.active {
-            display: block
+            display: block;
         }
 
         @keyframes slideUp {
             from {
                 opacity: 0;
-                transform: translateY(14px)
+                transform: translateY(14px);
             }
 
             to {
                 opacity: 1;
-                transform: translateY(0)
+                transform: translateY(0);
             }
         }
 
@@ -523,7 +522,7 @@
             letter-spacing: .12em;
             color: var(--blue);
             text-transform: uppercase;
-            margin-bottom: 6px
+            margin-bottom: 6px;
         }
 
         .pulse-dot {
@@ -532,7 +531,7 @@
             border-radius: 50%;
             background: #4ADE80;
             animation: blink 1.5s infinite;
-            flex-shrink: 0
+            flex-shrink: 0;
         }
 
         @keyframes blink {
@@ -540,12 +539,12 @@
             0%,
             100% {
                 opacity: 1;
-                transform: scale(1)
+                transform: scale(1);
             }
 
             50% {
                 opacity: .4;
-                transform: scale(1.3)
+                transform: scale(1.3);
             }
         }
 
@@ -554,7 +553,7 @@
             font-size: 24px;
             font-weight: 800;
             color: var(--text);
-            line-height: 1.2
+            line-height: 1.2;
         }
 
         .flow-sub {
@@ -562,7 +561,7 @@
             color: var(--sub);
             margin-top: 5px;
             line-height: 1.55;
-            margin-bottom: 20px
+            margin-bottom: 20px;
         }
 
         /* ─── SYMPTOM GRID ─── */
@@ -570,7 +569,7 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 12px;
-            margin-bottom: 20px
+            margin-bottom: 20px;
         }
 
         .sym-card {
@@ -584,23 +583,22 @@
             transition: all .22s cubic-bezier(.4, 0, .2, 1);
             display: flex;
             flex-direction: column;
-            align-items: center
+            align-items: center;
         }
 
         .sym-card:hover {
             border-color: var(--blue);
             transform: translateY(-3px);
-            box-shadow: var(--sh-md)
+            box-shadow: var(--sh-md);
         }
 
         .sym-card.selected {
             border-color: var(--blue);
             background: var(--blue-light);
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(27, 111, 235, .15)
+            box-shadow: 0 6px 20px rgba(27, 111, 235, .15);
         }
 
-        /* Image slot — swap emoji for real <img> later */
         .sym-img-wrap {
             width: 100%;
             height: 72px;
@@ -611,33 +609,31 @@
             position: relative;
             overflow: hidden;
             margin-bottom: 10px;
-            border-bottom: 1px solid var(--border)
+            border-bottom: 1px solid var(--border);
         }
 
         .sym-card.selected .sym-img-wrap {
             background: rgba(27, 111, 235, .07);
-            border-color: rgba(27, 111, 235, .15)
+            border-color: rgba(27, 111, 235, .15);
         }
 
         .sym-emoji {
             font-size: 30px;
             transition: transform .2s;
-            user-select: none
+            user-select: none;
         }
 
         .sym-card:hover .sym-emoji,
         .sym-card.selected .sym-emoji {
-            transform: scale(1.12)
+            transform: scale(1.12);
         }
 
-        /* Real image — uncomment when ready:
-.sym-real-img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0} */
         .sym-name {
             font-size: 12px;
             font-weight: 600;
             color: var(--text);
             padding: 0 8px;
-            line-height: 1.3
+            line-height: 1.3;
         }
 
         /* INPUT ROW */
@@ -649,13 +645,13 @@
             border: 1.5px solid var(--border);
             border-radius: 30px;
             padding: 10px 16px;
-            transition: all .2s
+            transition: all .2s;
         }
 
         .input-row:focus-within {
             border-color: var(--blue);
             background: #fff;
-            box-shadow: 0 0 0 4px rgba(27, 111, 235, .08)
+            box-shadow: 0 0 0 4px rgba(27, 111, 235, .08);
         }
 
         .input-row input {
@@ -665,11 +661,11 @@
             background: transparent;
             font-size: 14px;
             font-family: 'Plus Jakarta Sans', sans-serif;
-            color: var(--text)
+            color: var(--text);
         }
 
         .input-row input::placeholder {
-            color: var(--muted)
+            color: var(--muted);
         }
 
         .send-btn {
@@ -683,11 +679,11 @@
             border: none;
             flex-shrink: 0;
             box-shadow: 0 3px 10px rgba(27, 111, 235, .3);
-            transition: all .2s
+            transition: all .2s;
         }
 
         .send-btn:hover {
-            transform: scale(1.08)
+            transform: scale(1.08);
         }
 
         .mic-btn {
@@ -699,7 +695,7 @@
             cursor: pointer;
             display: grid;
             place-items: center;
-            color: var(--sub)
+            color: var(--sub);
         }
 
         /* TAGS */
@@ -708,7 +704,7 @@
             gap: 7px;
             flex-wrap: wrap;
             margin-bottom: 16px;
-            min-height: 28px
+            min-height: 28px;
         }
 
         .sel-tag {
@@ -722,18 +718,18 @@
             font-weight: 600;
             padding: 5px 11px;
             border-radius: 20px;
-            animation: popIn .2s ease
+            animation: popIn .2s ease;
         }
 
         @keyframes popIn {
             from {
                 transform: scale(.8);
-                opacity: 0
+                opacity: 0;
             }
 
             to {
                 transform: scale(1);
-                opacity: 1
+                opacity: 1;
             }
         }
 
@@ -745,7 +741,7 @@
             font-size: 14px;
             line-height: 1;
             padding: 0;
-            margin-left: 2px
+            margin-left: 2px;
         }
 
         /* BODY MAP */
@@ -754,53 +750,36 @@
             flex-direction: column;
             align-items: center;
             gap: 16px;
-            margin-bottom: 20px
+            margin-bottom: 20px;
         }
 
         .body-svg-container {
             position: relative;
             width: 200px;
-            cursor: pointer
+            cursor: pointer;
         }
 
         .body-svg-container svg {
             width: 100%;
-            filter: drop-shadow(0 8px 24px rgba(0, 0, 0, .08))
+            filter: drop-shadow(0 8px 24px rgba(0, 0, 0, .08));
         }
 
         .body-area-btn {
-            fill: rgba(0, 0, 0, 0);
+            fill: transparent;
             stroke: none;
             transition: fill .2s;
-            cursor: pointer
+            cursor: pointer;
         }
 
         .body-area-btn:hover {
-            fill: rgba(27, 111, 235, .18)
-        }
-
-        .body-area-btn.highlighted {
-            fill: rgba(239, 68, 68, .25);
-            animation: areaPulse 2s ease-in-out infinite
-        }
-
-        @keyframes areaPulse {
-
-            0%,
-            100% {
-                fill: rgba(239, 68, 68, .2)
-            }
-
-            50% {
-                fill: rgba(239, 68, 68, .38)
-            }
+            fill: rgba(27, 111, 235, .15);
         }
 
         .body-tabs {
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
-            justify-content: center
+            justify-content: center;
         }
 
         .body-tab {
@@ -813,31 +792,31 @@
             background: #fff;
             color: var(--sub);
             transition: all .2s;
-            font-family: 'Plus Jakarta Sans', sans-serif
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         .body-tab:hover {
             border-color: var(--blue);
-            color: var(--blue)
+            color: var(--blue);
         }
 
-        .body-tab.selected {
+        .body-tab.active {
             background: var(--blue);
             border-color: var(--blue);
             color: #fff;
-            box-shadow: 0 4px 14px rgba(27, 111, 235, .3)
+            box-shadow: 0 4px 14px rgba(27, 111, 235, .3);
         }
 
         .body-tab.no-pain {
             border-color: var(--green);
-            color: var(--green)
+            color: var(--green);
         }
 
-        .body-tab.no-pain.selected {
+        .body-tab.no-pain.active {
             background: var(--green);
             border-color: var(--green);
             color: #fff;
-            box-shadow: 0 4px 14px rgba(16, 185, 129, .3)
+            box-shadow: 0 4px 14px rgba(16, 185, 129, .3);
         }
 
         /* CHAT */
@@ -849,40 +828,40 @@
             max-height: 400px;
             overflow-y: auto;
             padding-right: 4px;
-            scroll-behavior: smooth
+            scroll-behavior: smooth;
         }
 
         .chat-wrap::-webkit-scrollbar {
-            width: 4px
+            width: 4px;
         }
 
         .chat-wrap::-webkit-scrollbar-thumb {
             background: var(--border);
-            border-radius: 4px
+            border-radius: 4px;
         }
 
         .chat-msg {
             display: flex;
             gap: 10px;
-            animation: slideUp .3s ease
+            animation: slideUp .3s ease;
         }
 
         .chat-msg.ai .bubble {
             background: #fff;
             border: 1.5px solid var(--border);
             border-radius: 0 16px 16px 16px;
-            color: var(--text)
+            color: var(--text);
         }
 
         .chat-msg.user .bubble {
             background: var(--blue);
             border-radius: 16px 0 16px 16px;
             color: #fff;
-            margin-left: auto
+            margin-left: auto;
         }
 
         .chat-msg.user {
-            flex-direction: row-reverse
+            flex-direction: row-reverse;
         }
 
         .ai-av {
@@ -893,21 +872,21 @@
             display: grid;
             place-items: center;
             flex-shrink: 0;
-            box-shadow: 0 3px 10px rgba(27, 111, 235, .25)
+            box-shadow: 0 3px 10px rgba(27, 111, 235, .25);
         }
 
         .bubble {
             padding: 11px 15px;
             max-width: 82%;
             font-size: 13.5px;
-            line-height: 1.6
+            line-height: 1.6;
         }
 
         .typing-indicator {
             display: flex;
             align-items: center;
             gap: 5px;
-            padding: 10px 14px
+            padding: 10px 14px;
         }
 
         .typing-dot {
@@ -915,15 +894,15 @@
             height: 7px;
             border-radius: 50%;
             background: var(--muted);
-            animation: typDot .8s ease-in-out infinite
+            animation: typDot .8s ease-in-out infinite;
         }
 
         .typing-dot:nth-child(2) {
-            animation-delay: .15s
+            animation-delay: .15s;
         }
 
         .typing-dot:nth-child(3) {
-            animation-delay: .3s
+            animation-delay: .3s;
         }
 
         @keyframes typDot {
@@ -932,12 +911,12 @@
             60%,
             100% {
                 transform: translateY(0);
-                opacity: .4
+                opacity: .4;
             }
 
             30% {
                 transform: translateY(-6px);
-                opacity: 1
+                opacity: 1;
             }
         }
 
@@ -945,7 +924,7 @@
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
-            margin-bottom: 14px
+            margin-bottom: 14px;
         }
 
         .quick-opt {
@@ -958,13 +937,13 @@
             color: var(--sub);
             cursor: pointer;
             transition: all .2s;
-            font-family: 'Plus Jakarta Sans', sans-serif
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         .quick-opt:hover {
             border-color: var(--blue);
             color: var(--blue);
-            background: var(--blue-light)
+            background: var(--blue-light);
         }
 
         /* BUTTONS */
@@ -985,19 +964,19 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
             margin-top: 20px;
             box-shadow: 0 4px 18px rgba(27, 111, 235, .3);
-            transition: all .25s
+            transition: all .25s;
         }
 
         .continue-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 28px rgba(27, 111, 235, .4)
+            box-shadow: 0 8px 28px rgba(27, 111, 235, .4);
         }
 
         .continue-btn:disabled {
             background: #C5D5F5;
             cursor: not-allowed;
             transform: none;
-            box-shadow: none
+            box-shadow: none;
         }
 
         .continue-btn.ghost {
@@ -1008,13 +987,13 @@
             width: auto;
             flex: 0;
             padding: 14px 24px;
-            margin-top: 20px
+            margin-top: 20px;
         }
 
         .continue-btn.ghost:hover {
             background: var(--border);
             transform: none;
-            box-shadow: none
+            box-shadow: none;
         }
 
         /* ─── AI LOADING ─── */
@@ -1026,25 +1005,25 @@
             display: none;
             position: relative;
             overflow: hidden;
-            animation: slideUp .4s ease
+            animation: slideUp .4s ease;
         }
 
         .ai-loading.active {
-            display: block
+            display: block;
         }
 
         .ai-mesh {
             position: absolute;
             inset: 0;
             background: radial-gradient(ellipse 70% 60% at 75% 20%, rgba(27, 111, 235, .22) 0%, transparent 70%), radial-gradient(ellipse 50% 50% at 20% 80%, rgba(124, 58, 237, .16) 0%, transparent 70%);
-            pointer-events: none
+            pointer-events: none;
         }
 
         .ai-scanlines {
             position: absolute;
             inset: 0;
             background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255, 255, 255, .012) 3px, rgba(255, 255, 255, .012) 4px);
-            pointer-events: none
+            pointer-events: none;
         }
 
         .ai-glow-line {
@@ -1053,7 +1032,7 @@
             left: 10%;
             right: 10%;
             height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(27, 111, 235, .6), rgba(124, 58, 237, .5), transparent)
+            background: linear-gradient(90deg, transparent, rgba(27, 111, 235, .6), rgba(124, 58, 237, .5), transparent);
         }
 
         .spinner {
@@ -1065,12 +1044,12 @@
             animation: spin 1s linear infinite;
             margin: 0 auto 22px;
             position: relative;
-            z-index: 1
+            z-index: 1;
         }
 
         @keyframes spin {
             to {
-                transform: rotate(360deg)
+                transform: rotate(360deg);
             }
         }
 
@@ -1081,7 +1060,7 @@
             color: #fff;
             margin-bottom: 6px;
             position: relative;
-            z-index: 1
+            z-index: 1;
         }
 
         .ai-loading-sub {
@@ -1089,7 +1068,7 @@
             color: rgba(255, 255, 255, .38);
             position: relative;
             z-index: 1;
-            margin-bottom: 28px
+            margin-bottom: 28px;
         }
 
         .load-steps {
@@ -1100,7 +1079,7 @@
             margin: 0 auto;
             text-align: left;
             position: relative;
-            z-index: 1
+            z-index: 1;
         }
 
         .ls {
@@ -1109,15 +1088,15 @@
             gap: 10px;
             font-size: 12.5px;
             color: rgba(255, 255, 255, .28);
-            transition: color .4s
+            transition: color .4s;
         }
 
         .ls.active {
-            color: #fff
+            color: #fff;
         }
 
         .ls.done {
-            color: rgba(255, 255, 255, .6)
+            color: rgba(255, 255, 255, .6);
         }
 
         .ls-ic {
@@ -1131,27 +1110,27 @@
             font-size: 9px;
             font-weight: 700;
             color: rgba(255, 255, 255, .3);
-            transition: all .4s
+            transition: all .4s;
         }
 
         .ls.active .ls-ic {
             background: var(--blue);
             border-color: var(--blue);
             color: #fff;
-            box-shadow: 0 0 0 3px rgba(27, 111, 235, .25)
+            box-shadow: 0 0 0 3px rgba(27, 111, 235, .25);
         }
 
         .ls.done .ls-ic {
             background: var(--green);
             border-color: var(--green);
-            color: #fff
+            color: #fff;
         }
 
         /* ─── RESULTS ─── */
         .result-grid {
             display: grid;
             grid-template-columns: 1fr 360px;
-            gap: 22px
+            gap: 22px;
         }
 
         .result-main {
@@ -1159,13 +1138,13 @@
             border-radius: var(--r-xl);
             padding: 26px;
             box-shadow: var(--sh-md);
-            border: 1.5px solid var(--border)
+            border: 1.5px solid var(--border);
         }
 
         .result-aside {
             display: flex;
             flex-direction: column;
-            gap: 18px
+            gap: 18px;
         }
 
         /* Risk ring */
@@ -1174,25 +1153,25 @@
             flex-direction: column;
             align-items: center;
             gap: 12px;
-            margin-bottom: 22px
+            margin-bottom: 22px;
         }
 
         .risk-ring {
             position: relative;
             width: 140px;
-            height: 140px
+            height: 140px;
         }
 
         .risk-ring svg {
             width: 140px;
             height: 140px;
-            transform: rotate(-90deg)
+            transform: rotate(-90deg);
         }
 
         .rr-bg {
             fill: none;
             stroke: var(--border);
-            stroke-width: 11
+            stroke-width: 11;
         }
 
         .rr-fill {
@@ -1201,7 +1180,7 @@
             stroke-linecap: round;
             stroke-dasharray: 377;
             stroke-dashoffset: 377;
-            transition: stroke-dashoffset 1.4s cubic-bezier(.4, 0, .2, 1)
+            transition: stroke-dashoffset 1.4s cubic-bezier(.4, 0, .2, 1);
         }
 
         .ring-label {
@@ -1210,14 +1189,14 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center
+            justify-content: center;
         }
 
         .ring-pct {
             font-family: 'Sora', sans-serif;
             font-size: 32px;
             font-weight: 800;
-            line-height: 1
+            line-height: 1;
         }
 
         .ring-txt {
@@ -1226,7 +1205,7 @@
             margin-top: 2px;
             font-weight: 500;
             text-transform: uppercase;
-            letter-spacing: .06em
+            letter-spacing: .06em;
         }
 
         /* Escalate banner */
@@ -1237,22 +1216,22 @@
             gap: 13px;
             align-items: flex-start;
             margin-bottom: 22px;
-            border: 1.5px solid
+            border: 1.5px solid;
         }
 
         .esc-banner.danger {
             background: linear-gradient(135deg, #FEF2F2, #FFF0F0);
-            border-color: rgba(239, 68, 68, .22)
+            border-color: rgba(239, 68, 68, .22);
         }
 
         .esc-banner.moderate {
             background: linear-gradient(135deg, #FFFBEB, #FEF3C7);
-            border-color: rgba(245, 158, 11, .22)
+            border-color: rgba(245, 158, 11, .22);
         }
 
         .esc-banner.safe {
             background: linear-gradient(135deg, #F0FDF4, #DCFCE7);
-            border-color: rgba(16, 185, 129, .22)
+            border-color: rgba(16, 185, 129, .22);
         }
 
         .esc-icon {
@@ -1261,19 +1240,19 @@
             border-radius: 12px;
             display: grid;
             place-items: center;
-            flex-shrink: 0
+            flex-shrink: 0;
         }
 
         .esc-title {
             font-size: 14px;
             font-weight: 700;
-            margin-bottom: 3px
+            margin-bottom: 3px;
         }
 
         .esc-msg {
             font-size: 12.5px;
             color: var(--sub);
-            line-height: 1.6
+            line-height: 1.6;
         }
 
         /* Conditions */
@@ -1281,13 +1260,13 @@
             font-family: 'Sora', sans-serif;
             font-size: 15px;
             font-weight: 700;
-            margin-bottom: 12px
+            margin-bottom: 12px;
         }
 
         .diag-list {
             display: flex;
             flex-direction: column;
-            gap: 10px
+            gap: 10px;
         }
 
         .diag-item {
@@ -1296,46 +1275,46 @@
             padding: 14px 16px;
             border: 1.5px solid var(--border);
             transition: all .2s;
-            cursor: default
+            cursor: default;
         }
 
         .diag-item:hover {
             border-color: var(--blue);
-            box-shadow: var(--sh-sm)
+            box-shadow: var(--sh-sm);
         }
 
         .diag-top {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 7px
+            margin-bottom: 7px;
         }
 
         .diag-name {
             font-size: 14px;
-            font-weight: 700
+            font-weight: 700;
         }
 
         .diag-badge {
             font-size: 11.5px;
             font-weight: 700;
             padding: 3px 11px;
-            border-radius: 20px
+            border-radius: 20px;
         }
 
         .diag-badge.high {
             background: var(--red-light);
-            color: var(--red)
+            color: var(--red);
         }
 
         .diag-badge.med {
             background: var(--amber-light);
-            color: var(--amber)
+            color: var(--amber);
         }
 
         .diag-badge.low {
             background: var(--green-light);
-            color: var(--green)
+            color: var(--green);
         }
 
         .diag-bar-bg {
@@ -1343,20 +1322,20 @@
             background: var(--border);
             border-radius: 10px;
             overflow: hidden;
-            margin-bottom: 6px
+            margin-bottom: 6px;
         }
 
         .diag-bar {
             height: 100%;
             border-radius: 10px;
             width: 0;
-            transition: width 1.2s cubic-bezier(.4, 0, .2, 1)
+            transition: width 1.2s cubic-bezier(.4, 0, .2, 1);
         }
 
         .diag-desc {
             font-size: 12px;
             color: var(--sub);
-            line-height: 1.55
+            line-height: 1.55;
         }
 
         /* Action buttons */
@@ -1364,7 +1343,7 @@
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
-            margin-top: 22px
+            margin-top: 22px;
         }
 
         .btn-danger {
@@ -1383,12 +1362,12 @@
             justify-content: center;
             gap: 8px;
             box-shadow: 0 4px 16px rgba(239, 68, 68, .3);
-            transition: all .2s
+            transition: all .2s;
         }
 
         .btn-danger:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(239, 68, 68, .4)
+            box-shadow: 0 8px 24px rgba(239, 68, 68, .4);
         }
 
         .btn-book {
@@ -1407,12 +1386,12 @@
             justify-content: center;
             gap: 8px;
             box-shadow: 0 4px 16px rgba(27, 111, 235, .3);
-            transition: all .2s
+            transition: all .2s;
         }
 
         .btn-book:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(27, 111, 235, .4)
+            box-shadow: 0 8px 24px rgba(27, 111, 235, .4);
         }
 
         .btn-restart {
@@ -1430,11 +1409,11 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            transition: all .2s
+            transition: all .2s;
         }
 
         .btn-restart:hover {
-            background: var(--blue-light)
+            background: var(--blue-light);
         }
 
         /* Aside cards */
@@ -1442,7 +1421,7 @@
             background: var(--card);
             border-radius: var(--r-lg);
             padding: 18px;
-            box-shadow: var(--sh-sm)
+            box-shadow: var(--sh-sm);
         }
 
         .aside-title {
@@ -1451,7 +1430,7 @@
             margin-bottom: 12px;
             display: flex;
             align-items: center;
-            gap: 7px
+            gap: 7px;
         }
 
         .metric-row {
@@ -1459,27 +1438,27 @@
             align-items: center;
             justify-content: space-between;
             padding: 8px 0;
-            border-bottom: 1px solid var(--border)
+            border-bottom: 1px solid var(--border);
         }
 
         .metric-row:last-child {
-            border-bottom: none
+            border-bottom: none;
         }
 
         .metric-name {
             font-size: 12.5px;
-            color: var(--sub)
+            color: var(--sub);
         }
 
         .metric-val {
             font-size: 13px;
-            font-weight: 700
+            font-weight: 700;
         }
 
         .rec-list {
             display: flex;
             flex-direction: column;
-            gap: 9px
+            gap: 9px;
         }
 
         .rec-item {
@@ -1488,7 +1467,7 @@
             align-items: flex-start;
             font-size: 12.5px;
             color: var(--sub);
-            line-height: 1.55
+            line-height: 1.55;
         }
 
         .rec-dot {
@@ -1499,7 +1478,7 @@
             place-items: center;
             flex-shrink: 0;
             font-size: 13px;
-            margin-top: 1px
+            margin-top: 1px;
         }
 
         /* AI confidence card */
@@ -1509,19 +1488,19 @@
             border-radius: var(--r-lg);
             padding: 18px;
             position: relative;
-            overflow: hidden
+            overflow: hidden;
         }
 
         .conf-mesh {
             position: absolute;
             inset: 0;
             background: radial-gradient(ellipse 70% 60% at 80% 20%, rgba(27, 111, 235, .18) 0%, transparent 70%), radial-gradient(ellipse 50% 55% at 15% 85%, rgba(124, 58, 237, .13) 0%, transparent 70%);
-            pointer-events: none
+            pointer-events: none;
         }
 
         .conf-inner {
             position: relative;
-            z-index: 1
+            z-index: 1;
         }
 
         .conf-title {
@@ -1531,21 +1510,21 @@
             margin-bottom: 10px;
             display: flex;
             align-items: center;
-            gap: 7px
+            gap: 7px;
         }
 
         .conf-sub {
             font-size: 12px;
             color: rgba(255, 255, 255, .4);
             line-height: 1.6;
-            margin-bottom: 13px
+            margin-bottom: 13px;
         }
 
         .conf-bar-bg {
             height: 5px;
             background: rgba(255, 255, 255, .07);
             border-radius: 10px;
-            overflow: hidden
+            overflow: hidden;
         }
 
         .conf-bar {
@@ -1553,24 +1532,24 @@
             width: 0;
             background: linear-gradient(90deg, #1B6FEB, #7C3AED);
             border-radius: 10px;
-            transition: width 1.6s ease
+            transition: width 1.6s ease;
         }
 
         .conf-footer {
             display: flex;
             justify-content: space-between;
-            margin-top: 6px
+            margin-top: 6px;
         }
 
         .conf-label {
             font-size: 10px;
-            color: rgba(255, 255, 255, .28)
+            color: rgba(255, 255, 255, .28);
         }
 
         .conf-pct {
             font-size: 11px;
             font-weight: 700;
-            color: #fff
+            color: #fff;
         }
 
         /* DISCLAIMER */
@@ -1583,7 +1562,7 @@
             line-height: 1.6;
             font-style: italic;
             margin-top: 14px;
-            border: 1px solid var(--border)
+            border: 1px solid var(--border);
         }
 
         /* TOAST */
@@ -1602,11 +1581,12 @@
             box-shadow: var(--sh-lg);
             transition: transform .3s cubic-bezier(.4, 0, .2, 1);
             white-space: nowrap;
-            max-width: 90vw
+            max-width: 90vw;
+            pointer-events: none;
         }
 
         .toast.show {
-            transform: translateX(-50%) translateY(0)
+            transform: translateX(-50%) translateY(0);
         }
 
         /* BOTTOM NAV */
@@ -1620,13 +1600,13 @@
             backdrop-filter: blur(20px);
             border-top: 1px solid var(--border);
             padding: 8px 0 max(10px, env(safe-area-inset-bottom));
-            z-index: 150
+            z-index: 150;
         }
 
         .bnav-inner {
             display: flex;
             justify-content: space-around;
-            align-items: center
+            align-items: center;
         }
 
         .bn-item {
@@ -1640,11 +1620,11 @@
             font-weight: 600;
             color: var(--muted);
             text-decoration: none;
-            transition: color .2s
+            transition: color .2s;
         }
 
         .bn-item.active {
-            color: var(--blue)
+            color: var(--blue);
         }
 
         .bn-center {
@@ -1657,71 +1637,71 @@
             box-shadow: 0 4px 18px rgba(27, 111, 235, .45);
             cursor: pointer;
             margin-top: -14px;
-            transition: all .2s
+            transition: all .2s;
         }
 
         /* RESPONSIVE */
-        @media(max-width:960px) {
+        @media (max-width: 960px) {
             .result-grid {
-                grid-template-columns: 1fr
+                grid-template-columns: 1fr;
             }
         }
 
-        @media(max-width:900px) {
+        @media (max-width: 900px) {
             .sidebar {
-                transform: translateX(-100%)
+                transform: translateX(-100%);
             }
 
             .sidebar.open {
-                transform: translateX(0)
+                transform: translateX(0);
             }
 
             .main-content {
-                margin-left: 0
+                margin-left: 0;
             }
 
             .topbar {
-                display: none
+                display: none;
             }
 
             .mobile-topbar {
-                display: flex
+                display: flex;
             }
 
             .page-body {
-                padding: 16px 16px 92px
+                padding: 16px 16px 92px;
             }
 
             .symptom-grid {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 10px
+                gap: 10px;
             }
 
             .step-label {
-                display: none
+                display: none;
             }
 
             .bottom-nav {
-                display: block
+                display: block;
             }
 
             .flow-title {
-                font-size: 20px
+                font-size: 20px;
             }
 
             .flow-card {
-                padding: 20px
+                padding: 20px;
             }
         }
 
-        @media(max-width:480px) {
+        @media (max-width: 480px) {
             .symptom-grid {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 8px
+                gap: 8px;
             }
 
             .sym-img-wrap {
-                height: 58px
+                height: 58px;
             }
         }
     </style>
@@ -1838,8 +1818,7 @@
                         <div class="pulse-dot"></div>HealthPulse AI · Step 1
                     </div>
                     <div class="flow-title">What are you<br>experiencing today?</div>
-                    <div class="flow-sub">Select all symptoms that apply, or type yours in the box. Images can be added
-                        to each card.</div>
+                    <div class="flow-sub">Select all symptoms that apply, or type yours in the box.</div>
 
                     <div class="selected-tags" id="selectedTags"></div>
                     <div class="symptom-grid" id="symptomGrid"></div>
@@ -1869,77 +1848,210 @@
 
                     <div class="body-map-wrap">
                         <div class="body-svg-container">
-                            <svg viewBox="0 0 160 360" xmlns="http://www.w3.org/2000/svg">
-                                <!-- figure -->
-                                <ellipse cx="80" cy="42" rx="24" ry="28" fill="#CBD5E1" stroke="#94A3B8"
-                                    stroke-width="1.5" />
-                                <rect x="56" y="68" width="48" height="6" rx="3" fill="#CBD5E1" stroke="#94A3B8"
+                            <svg viewBox="0 0 160 440" xmlns="http://www.w3.org/2000/svg"
+                                style="width:100%;max-width:180px;display:block;margin:0 auto">
+
+                                <!-- Hair -->
+                                <ellipse cx="80" cy="18" rx="23" ry="16" fill="#4A3728" />
+                                <ellipse cx="59" cy="26" rx="9" ry="14" fill="#4A3728" />
+                                <ellipse cx="101" cy="26" rx="9" ry="14" fill="#4A3728" />
+
+                                <!-- Head -->
+                                <ellipse cx="80" cy="38" rx="22" ry="26" fill="#D4B896" stroke="#B89870"
+                                    stroke-width="1.2" />
+                                <!-- Ears -->
+                                <ellipse cx="57" cy="39" rx="4.5" ry="7" fill="#C8AA82" stroke="#B89870"
+                                    stroke-width="0.8" />
+                                <ellipse cx="103" cy="39" rx="4.5" ry="7" fill="#C8AA82" stroke="#B89870"
+                                    stroke-width="0.8" />
+                                <!-- Eyes -->
+                                <ellipse cx="71" cy="36" rx="3.5" ry="2.5" fill="#fff" stroke="#9A7B5A"
+                                    stroke-width="0.5" />
+                                <ellipse cx="71" cy="36" rx="1.5" ry="1.5" fill="#2C1A0E" />
+                                <ellipse cx="89" cy="36" rx="3.5" ry="2.5" fill="#fff" stroke="#9A7B5A"
+                                    stroke-width="0.5" />
+                                <ellipse cx="89" cy="36" rx="1.5" ry="1.5" fill="#2C1A0E" />
+                                <!-- Eyebrows -->
+                                <path d="M67 31 Q71 29 75 31" fill="none" stroke="#4A3728" stroke-width="1.2"
+                                    stroke-linecap="round" />
+                                <path d="M85 31 Q89 29 93 31" fill="none" stroke="#4A3728" stroke-width="1.2"
+                                    stroke-linecap="round" />
+                                <!-- Nose -->
+                                <path d="M80 38 Q78 44 76 46 Q80 48 84 46 Q82 44 80 38" fill="#C8AA82" stroke="#B89870"
+                                    stroke-width="0.5" />
+                                <!-- Mouth -->
+                                <path d="M74 52 Q80 56 86 52" fill="none" stroke="#9A7B5A" stroke-width="1"
+                                    stroke-linecap="round" />
+
+                                <!-- Neck -->
+                                <rect x="71" y="62" width="18" height="20" rx="3" fill="#D4B896" stroke="#B89870"
                                     stroke-width="1" />
-                                <rect x="44" y="74" width="72" height="100" rx="10" fill="#CBD5E1" stroke="#94A3B8"
-                                    stroke-width="1.5" />
-                                <rect x="18" y="74" width="24" height="80" rx="10" fill="#CBD5E1" stroke="#94A3B8"
-                                    stroke-width="1.5" />
-                                <rect x="118" y="74" width="24" height="80" rx="10" fill="#CBD5E1" stroke="#94A3B8"
-                                    stroke-width="1.5" />
-                                <rect x="44" y="178" width="30" height="80" rx="10" fill="#CBD5E1" stroke="#94A3B8"
-                                    stroke-width="1.5" />
-                                <rect x="86" y="178" width="30" height="80" rx="10" fill="#CBD5E1" stroke="#94A3B8"
-                                    stroke-width="1.5" />
-                                <rect x="44" y="262" width="30" height="80" rx="10" fill="#CBD5E1" stroke="#94A3B8"
-                                    stroke-width="1.5" />
-                                <rect x="86" y="262" width="30" height="80" rx="10" fill="#CBD5E1" stroke="#94A3B8"
-                                    stroke-width="1.5" />
-                                <!-- clickable zones -->
-                                <ellipse class="body-area-btn" id="z-head" cx="80" cy="42" rx="26" ry="30" data-a="Head"
+                                <path d="M74 63 L72 81" stroke="#C4A07A" stroke-width="0.6" fill="none" />
+                                <path d="M86 63 L88 81" stroke="#C4A07A" stroke-width="0.6" fill="none" />
+
+                                <!-- Shoulders -->
+                                <path d="M71 74 Q54 72 38 82 L36 94 Q40 86 56 85 L71 84Z" fill="#D4B896"
+                                    stroke="#B89870" stroke-width="1" />
+                                <path d="M89 74 Q106 72 122 82 L124 94 Q120 86 104 85 L89 84Z" fill="#D4B896"
+                                    stroke="#B89870" stroke-width="1" />
+                                <!-- Collarbone -->
+                                <path d="M71 83 Q60 79 42 84" stroke="#C0966C" stroke-width="1" fill="none"
+                                    stroke-linecap="round" />
+                                <path d="M89 83 Q100 79 118 84" stroke="#C0966C" stroke-width="1" fill="none"
+                                    stroke-linecap="round" />
+
+                                <!-- Upper Arms -->
+                                <rect x="18" y="84" width="18" height="72" rx="9" fill="#D4B896" stroke="#B89870"
+                                    stroke-width="1" />
+                                <rect x="124" y="84" width="18" height="72" rx="9" fill="#D4B896" stroke="#B89870"
+                                    stroke-width="1" />
+                                <path d="M22 100 Q24 115 22 130" stroke="#C4A07A" stroke-width="0.7" fill="none" />
+                                <path d="M138 100 Q136 115 138 130" stroke="#C4A07A" stroke-width="0.7" fill="none" />
+
+                                <!-- Forearms -->
+                                <rect x="16" y="158" width="20" height="60" rx="9" fill="#CCA882" stroke="#B89870"
+                                    stroke-width="1" />
+                                <rect x="124" y="158" width="20" height="60" rx="9" fill="#CCA882" stroke="#B89870"
+                                    stroke-width="1" />
+
+                                <!-- Torso -->
+                                <path
+                                    d="M36 84 L34 196 Q34 202 40 202 L120 202 Q126 202 126 196 L124 84 Q110 90 80 90 Q50 90 36 84Z"
+                                    fill="#D4B896" stroke="#B89870" stroke-width="1.2" />
+                                <!-- Chest definition -->
+                                <path d="M52 96 Q66 91 78 98 Q70 112 54 112 Q46 106 52 96Z" fill="#CCA882"
+                                    opacity="0.4" />
+                                <path d="M108 96 Q94 91 82 98 Q90 112 106 112 Q114 106 108 96Z" fill="#CCA882"
+                                    opacity="0.4" />
+                                <!-- Sternum -->
+                                <line x1="80" y1="92" x2="80" y2="148" stroke="#C4A07A" stroke-width="0.7"
+                                    opacity="0.5" />
+                                <!-- Navel -->
+                                <ellipse cx="80" cy="168" rx="3" ry="2" fill="#C4A07A" opacity="0.6" />
+                                <!-- Abdomen lines -->
+                                <path d="M68 130 Q66 150 68 168" stroke="#C4A07A" stroke-width="0.6" fill="none"
+                                    opacity="0.5" />
+                                <path d="M92 130 Q94 150 92 168" stroke="#C4A07A" stroke-width="0.6" fill="none"
+                                    opacity="0.5" />
+                                <line x1="66" y1="130" x2="94" y2="130" stroke="#C4A07A" stroke-width="0.6"
+                                    opacity="0.4" />
+                                <line x1="65" y1="148" x2="95" y2="148" stroke="#C4A07A" stroke-width="0.6"
+                                    opacity="0.4" />
+
+                                <!-- Hip -->
+                                <path d="M34 196 Q34 210 44 214 L116 214 Q126 210 126 196Z" fill="#C8A27E"
+                                    stroke="#B89870" stroke-width="1" />
+
+                                <!-- Upper Legs -->
+                                <rect x="38" y="210" width="34" height="90" rx="14" fill="#D4B896" stroke="#B89870"
+                                    stroke-width="1.2" />
+                                <rect x="88" y="210" width="34" height="90" rx="14" fill="#D4B896" stroke="#B89870"
+                                    stroke-width="1.2" />
+                                <path d="M50 225 Q48 255 50 295" stroke="#C4A07A" stroke-width="0.7" fill="none"
+                                    opacity="0.5" />
+                                <path d="M110 225 Q112 255 110 295" stroke="#C4A07A" stroke-width="0.7" fill="none"
+                                    opacity="0.5" />
+
+                                <!-- Knees -->
+                                <ellipse cx="55" cy="304" rx="16" ry="10" fill="#C8A27E" stroke="#B89870"
+                                    stroke-width="1" />
+                                <ellipse cx="105" cy="304" rx="16" ry="10" fill="#C8A27E" stroke="#B89870"
+                                    stroke-width="1" />
+
+                                <!-- Lower Legs -->
+                                <rect x="40" y="312" width="30" height="88" rx="12" fill="#CCA882" stroke="#B89870"
+                                    stroke-width="1.2" />
+                                <rect x="90" y="312" width="30" height="88" rx="12" fill="#CCA882" stroke="#B89870"
+                                    stroke-width="1.2" />
+                                <path d="M55 320 L55 390" stroke="#C4A07A" stroke-width="0.7" fill="none"
+                                    opacity="0.4" />
+                                <path d="M105 320 L105 390" stroke="#C4A07A" stroke-width="0.7" fill="none"
+                                    opacity="0.4" />
+
+                                <!-- Feet -->
+                                <ellipse cx="55" cy="402" rx="17" ry="8" fill="#C8A27E" stroke="#B89870"
+                                    stroke-width="1" />
+                                <ellipse cx="105" cy="402" rx="17" ry="8" fill="#C8A27E" stroke="#B89870"
+                                    stroke-width="1" />
+
+                                <!-- ── INVISIBLE CLICKABLE ZONES ── -->
+                                <ellipse class="body-area-btn" id="z-head" cx="80" cy="38" rx="26" ry="32" data-a="Head"
                                     onclick="pickArea('Head',this)" />
-                                <rect class="body-area-btn" id="z-chest" x="44" y="74" width="72" height="50" rx="10"
+                                <rect class="body-area-btn" id="z-neck" x="62" y="60" width="36" height="24" rx="4"
+                                    data-a="Neck" onclick="pickArea('Neck',this)" />
+                                <rect class="body-area-btn" id="z-chest" x="34" y="84" width="92" height="64" rx="8"
                                     data-a="Chest" onclick="pickArea('Chest',this)" />
-                                <rect class="body-area-btn" id="z-abd" x="44" y="124" width="72" height="50" rx="8"
+                                <rect class="body-area-btn" id="z-abd" x="34" y="148" width="92" height="66" rx="8"
                                     data-a="Abdomen" onclick="pickArea('Abdomen',this)" />
-                                <rect class="body-area-btn" id="z-arml" x="18" y="74" width="24" height="80" rx="10"
+                                <rect class="body-area-btn" id="z-arml" x="14" y="82" width="24" height="140" rx="10"
                                     data-a="Arm" onclick="pickArea('Arm',this)" />
-                                <rect class="body-area-btn" id="z-armr" x="118" y="74" width="24" height="80" rx="10"
+                                <rect class="body-area-btn" id="z-armr" x="122" y="82" width="24" height="140" rx="10"
                                     data-a="Arm" onclick="pickArea('Arm',this)" />
-                                <rect class="body-area-btn" id="z-uleg-l" x="44" y="178" width="30" height="80" rx="10"
+                                <rect class="body-area-btn" id="z-uleg-l" x="36" y="208" width="38" height="96" rx="10"
                                     data-a="Upper Leg" onclick="pickArea('Upper Leg',this)" />
-                                <rect class="body-area-btn" id="z-uleg-r" x="86" y="178" width="30" height="80" rx="10"
+                                <rect class="body-area-btn" id="z-uleg-r" x="86" y="208" width="38" height="96" rx="10"
                                     data-a="Upper Leg" onclick="pickArea('Upper Leg',this)" />
-                                <rect class="body-area-btn" id="z-lleg-l" x="44" y="262" width="30" height="80" rx="10"
+                                <rect class="body-area-btn" id="z-lleg-l" x="38" y="308" width="34" height="100" rx="10"
                                     data-a="Lower Leg" onclick="pickArea('Lower Leg',this)" />
-                                <rect class="body-area-btn" id="z-lleg-r" x="86" y="262" width="30" height="80" rx="10"
+                                <rect class="body-area-btn" id="z-lleg-r" x="88" y="308" width="34" height="100" rx="10"
                                     data-a="Lower Leg" onclick="pickArea('Lower Leg',this)" />
+
+                                <!-- ── HIGHLIGHT OVERLAYS ── -->
+                                <ellipse id="hl-head" cx="80" cy="38" rx="26" ry="32" fill="#1B6FEB" opacity="0"
+                                    style="pointer-events:none;transition:opacity .2s" />
+                                <rect id="hl-neck" x="62" y="60" width="36" height="24" rx="4" fill="#1B6FEB"
+                                    opacity="0" style="pointer-events:none;transition:opacity .2s" />
+                                <rect id="hl-chest" x="34" y="84" width="92" height="64" rx="8" fill="#1B6FEB"
+                                    opacity="0" style="pointer-events:none;transition:opacity .2s" />
+                                <rect id="hl-abd" x="34" y="148" width="92" height="66" rx="8" fill="#1B6FEB"
+                                    opacity="0" style="pointer-events:none;transition:opacity .2s" />
+                                <rect id="hl-arml" x="14" y="82" width="24" height="140" rx="10" fill="#1B6FEB"
+                                    opacity="0" style="pointer-events:none;transition:opacity .2s" />
+                                <rect id="hl-armr" x="122" y="82" width="24" height="140" rx="10" fill="#1B6FEB"
+                                    opacity="0" style="pointer-events:none;transition:opacity .2s" />
+                                <rect id="hl-uleg-l" x="36" y="208" width="38" height="96" rx="10" fill="#1B6FEB"
+                                    opacity="0" style="pointer-events:none;transition:opacity .2s" />
+                                <rect id="hl-uleg-r" x="86" y="208" width="38" height="96" rx="10" fill="#1B6FEB"
+                                    opacity="0" style="pointer-events:none;transition:opacity .2s" />
+                                <rect id="hl-lleg-l" x="38" y="308" width="34" height="100" rx="10" fill="#1B6FEB"
+                                    opacity="0" style="pointer-events:none;transition:opacity .2s" />
+                                <rect id="hl-lleg-r" x="88" y="308" width="34" height="100" rx="10" fill="#1B6FEB"
+                                    opacity="0" style="pointer-events:none;transition:opacity .2s" />
                             </svg>
                         </div>
+
                         <div class="body-tabs">
                             <div class="body-tab" onclick="pickTab('Head',this)">Head</div>
+                            <div class="body-tab" onclick="pickTab('Neck',this)">Neck</div>
                             <div class="body-tab" onclick="pickTab('Chest',this)">Chest</div>
                             <div class="body-tab" onclick="pickTab('Abdomen',this)">Abdomen</div>
+                            <div class="body-tab" onclick="pickTab('Arm',this)">Arm</div>
                             <div class="body-tab" onclick="pickTab('Upper Leg',this)">Upper Leg</div>
                             <div class="body-tab" onclick="pickTab('Lower Leg',this)">Lower Leg</div>
-                            <div class="body-tab" onclick="pickTab('Arm',this)">Arm</div>
-                            <div class="body-tab no-pain" onclick="pickTab('No Pain',this)">✓ No Pain</div>
+                            <div class="body-tab no-pain" onclick="pickTab('No Pain',this)">&#10003; No Pain</div>
                         </div>
                     </div>
 
                     <div style="display:flex;gap:10px">
-                        <button class="continue-btn ghost" onclick="goStep(1)"><i data-lucide="arrow-left"
-                                style="width:16px;height:16px"></i>Back</button>
+                        <button class="continue-btn ghost" onclick="goStep(1)">
+                            <i data-lucide="arrow-left" style="width:16px;height:16px"></i>Back
+                        </button>
                         <button class="continue-btn" id="s2btn" onclick="goStep(3)" disabled>
                             <i data-lucide="arrow-right" style="width:18px;height:18px"></i>Continue to Follow-up
                         </button>
                     </div>
                 </div>
 
-                <!-- ════ STEP 3 — 3 FOLLOW-UP QUESTIONS ════ -->
+                <!-- ════ STEP 3 — FOLLOW-UP ════ -->
                 <div class="flow-card" id="step3">
                     <div class="flow-eyebrow">
                         <div class="pulse-dot"></div>Step 3 · AI Follow-up
                     </div>
-                    <div class="flow-title">A few more questions…</div>
+                    <div class="flow-title">A few more questions&hellip;</div>
                     <div class="flow-sub">Answer all 3 questions so Gemini has complete context for the most accurate
                         diagnosis.</div>
 
-                    <!-- progress pill -->
+                    <!-- Progress pill -->
                     <div
                         style="display:flex;align-items:center;gap:8px;background:var(--blue-light);border-radius:var(--r);padding:10px 14px;margin-bottom:18px;font-size:12px;font-weight:600;color:var(--blue)">
                         <i data-lucide="info" style="width:14px;height:14px;flex-shrink:0"></i>
@@ -1973,7 +2085,7 @@
                     <div class="ai-scanlines"></div>
                     <div class="ai-glow-line"></div>
                     <div class="spinner"></div>
-                    <div class="ai-loading-title">Gemini AI is analysing your case…</div>
+                    <div class="ai-loading-title">Gemini AI is analysing your case&hellip;</div>
                     <div class="ai-loading-sub">Sending all 4 steps to your backend</div>
                     <div class="load-steps">
                         <div class="ls active" id="ls0">
@@ -2014,12 +2126,12 @@
                                                 stroke="#EF4444" />
                                         </svg>
                                         <div class="ring-label">
-                                            <div class="ring-pct" id="riskPct" style="color:var(--red)">—</div>
+                                            <div class="ring-pct" id="riskPct" style="color:var(--red)">&#8212;</div>
                                             <div class="ring-txt">Risk Score</div>
                                         </div>
                                     </div>
                                     <div style="text-align:center">
-                                        <div style="font-size:14px;font-weight:700" id="riskLevel">Loading…</div>
+                                        <div style="font-size:14px;font-weight:700" id="riskLevel">Loading&hellip;</div>
                                         <div style="font-size:12px;color:var(--muted);margin-top:2px" id="riskSub">
                                         </div>
                                     </div>
@@ -2056,10 +2168,9 @@
                             <div class="diag-list" id="diagList"></div>
                         </div>
 
-                        <!-- RIGHT col (aside) -->
+                        <!-- RIGHT col -->
                         <div class="result-aside">
 
-                            <!-- Reported symptoms -->
                             <div class="aside-card">
                                 <div class="aside-title">
                                     <i data-lucide="clipboard-list"
@@ -2069,33 +2180,31 @@
                                 <div id="repSymptoms" style="display:flex;flex-wrap:wrap;gap:6px"></div>
                             </div>
 
-                            <!-- Vitals on file -->
                             <div class="aside-card">
                                 <div class="aside-title">
                                     <i data-lucide="activity" style="width:16px;height:16px;color:var(--blue)"></i>
                                     Vitals Sent to AI
                                 </div>
-                                <div id="vitalsDisplay">
+                                <div>
                                     <div class="metric-row">
                                         <div class="metric-name">Heart Rate</div>
-                                        <div class="metric-val" id="v-hr">—</div>
+                                        <div class="metric-val" id="v-hr">&#8212;</div>
                                     </div>
                                     <div class="metric-row">
                                         <div class="metric-name">Temperature</div>
-                                        <div class="metric-val" id="v-temp">—</div>
+                                        <div class="metric-val" id="v-temp">&#8212;</div>
                                     </div>
                                     <div class="metric-row">
-                                        <div class="metric-name">SpO₂</div>
-                                        <div class="metric-val" id="v-spo2">—</div>
+                                        <div class="metric-name">SpO&#8322;</div>
+                                        <div class="metric-val" id="v-spo2">&#8212;</div>
                                     </div>
                                     <div class="metric-row">
                                         <div class="metric-name">Blood Pressure</div>
-                                        <div class="metric-val" id="v-bp">—</div>
+                                        <div class="metric-val" id="v-bp">&#8212;</div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Recommendations -->
                             <div class="aside-card">
                                 <div class="aside-title">
                                     <i data-lucide="shield-check" style="width:16px;height:16px;color:var(--green)"></i>
@@ -2104,7 +2213,6 @@
                                 <div class="rec-list" id="recList"></div>
                             </div>
 
-                            <!-- Confidence card -->
                             <div class="conf-card">
                                 <div class="conf-mesh"></div>
                                 <div class="conf-inner">
@@ -2119,7 +2227,7 @@
                                     </div>
                                     <div class="conf-footer">
                                         <span class="conf-label">Model Confidence</span>
-                                        <span class="conf-pct" id="confPct">—</span>
+                                        <span class="conf-pct" id="confPct">&#8212;</span>
                                     </div>
                                 </div>
                             </div>
@@ -2148,40 +2256,36 @@
     </nav>
 
     <script>
-        /* ══════════════════════════════════════════
-           CONFIG — change this to match your server
-        ══════════════════════════════════════════ */
-        const API_BASE = 'http://localhost:5000';   // Backend server
+        /* ════════════════════════════════════════
+           CONFIG
+        ════════════════════════════════════════ */
+        const API_BASE = 'http://localhost:3000';
 
-        /* ══════════════════════════════════════════
-           SYMPTOM CARDS
-           To add a real image: set img:'path/to/file.jpg'
-           Gemini will still read the name — image is visual only
-        ══════════════════════════════════════════ */
+        /* ════════════════════════════════════════
+           SYMPTOM DATA
+        ════════════════════════════════════════ */
         const SYMPTOMS = [
             { name: 'Fever', emoji: '🌡️', bg: '#FFF0F0', border: '#FFCACA', img: null },
-            { name: 'Fatigue', emoji: '😩', bg: '#FEF3C7', border: '#FDE68A', img: null },
+            { name: 'Fatigue', emoji: '😫', bg: '#FEF3C7', border: '#FDE68A', img: null },
             { name: 'Headache', emoji: '🤕', bg: '#EDE9FE', border: '#C4B5FD', img: null },
             { name: 'Nausea', emoji: '🤢', bg: '#D1FAE5', border: '#6EE7B7', img: null },
             { name: 'Vomiting', emoji: '🤮', bg: '#FFF0F0', border: '#FFCACA', img: null },
-            { name: 'Cough', emoji: '😮‍💨', bg: '#EBF2FF', border: '#93C5FD', img: null },
-            { name: 'Shortness of Breath', emoji: '💨', bg: '#E0F2FE', border: '#7DD3FC', img: null },
+            { name: 'Cough', emoji: '😷', bg: '#EBF2FF', border: '#93C5FD', img: null },
+            { name: 'Shortness of Breath', emoji: '🌬️', bg: '#E0F2FE', border: '#7DD3FC', img: null },
             { name: 'Weakness', emoji: '💪', bg: '#FEF3C7', border: '#FDE68A', img: null },
             { name: 'Chest Pain', emoji: '❤️', bg: '#FFF0F0', border: '#FFCACA', img: null },
             { name: 'Sore Throat', emoji: '🔴', bg: '#EDE9FE', border: '#C4B5FD', img: null },
             { name: 'Dizziness', emoji: '💫', bg: '#D1FAE5', border: '#6EE7B7', img: null },
             { name: 'Skin Rash', emoji: '🩹', bg: '#FEF3C7', border: '#FDE68A', img: null },
             { name: 'Body Aches', emoji: '🦴', bg: '#EBF2FF', border: '#93C5FD', img: null },
-            { name: 'Stomach Pain', emoji: '😣', bg: '#D1FAE5', border: '#6EE7B7', img: null },
+            { name: 'Stomach Pain', emoji: '😖', bg: '#D1FAE5', border: '#6EE7B7', img: null },
             { name: 'Chills', emoji: '🥶', bg: '#EDE9FE', border: '#C4B5FD', img: null },
-            { name: 'Other…', emoji: '➕', bg: '#F4F7FC', border: '#E8EDF5', img: null, other: true },
+            { name: 'Other…', emoji: '🔍', bg: '#F4F7FC', border: '#E8EDF5', img: null, other: true },
         ];
 
-        /* ══════════════════════════════════════════
-           3 LOCAL FOLLOW-UP QUESTIONS
-           These drive the chat UI. All answers are sent
-           verbatim to your backend → Gemini.
-        ══════════════════════════════════════════ */
+        /* ════════════════════════════════════════
+           3 FOLLOW-UP QUESTIONS
+        ════════════════════════════════════════ */
         const FOLLOWUPS = [
             {
                 q: 'How long have you been experiencing these symptoms?',
@@ -2197,10 +2301,9 @@
             }
         ];
 
-        /* ══════════════════════════════════════════
-           VITALS — replace with real patient data
-           from your MongoDB / session store
-        ══════════════════════════════════════════ */
+        /* ════════════════════════════════════════
+           VITALS — replace with real data from MongoDB
+        ════════════════════════════════════════ */
         const VITALS = {
             heartRate: '82 bpm',
             temperature: '38.4 °C',
@@ -2208,16 +2311,16 @@
             bloodPressure: '118/76 mmHg'
         };
 
-        /* ────── STATE ────── */
+        /* ─── STATE ─── */
         let selSymptoms = [];
         let selArea = '';
-        let followups = [];   // [{q, a}, ...]
-        let fuPhase = 0;    // 0,1,2 → 3 questions
+        let followups = [];
+        let fuPhase = 0;
         let aiResult = null;
 
-        /* ══════════════════════════════════════════
+        /* ════════════════════════════════════════
            BUILD SYMPTOM GRID
-        ══════════════════════════════════════════ */
+        ════════════════════════════════════════ */
         (function buildGrid() {
             const grid = document.getElementById('symptomGrid');
             SYMPTOMS.forEach(s => {
@@ -2226,9 +2329,8 @@
                 card.dataset.name = s.name;
                 card.style.borderColor = s.border;
 
-                // Image zone: real image OR emoji placeholder
                 const imgZone = s.img
-                    ? `<img class="sym-real-img" src="${s.img}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">`
+                    ? `<img src="${s.img}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">`
                     : `<div class="sym-emoji">${s.emoji}</div>`;
 
                 card.innerHTML = `
@@ -2284,54 +2386,60 @@
             document.getElementById('s1btn').disabled = selSymptoms.length === 0;
         }
 
-        /* ══════════════════════════════════════════
+        /* ════════════════════════════════════════
            BODY MAP
-        ══════════════════════════════════════════ */
-        const ZONE_MAP = {
-            'Head': ['z-head'],
-            'Chest': ['z-chest'],
-            'Abdomen': ['z-abd'],
-            'Arm': ['z-arml', 'z-armr'],
-            'Upper Leg': ['z-uleg-l', 'z-uleg-r'],
-            'Lower Leg': ['z-lleg-l', 'z-lleg-r'],
+        ════════════════════════════════════════ */
+        const ZONE_HL = {
+            'Head': ['hl-head'],
+            'Neck': ['hl-neck'],
+            'Chest': ['hl-chest'],
+            'Abdomen': ['hl-abd'],
+            'Arm': ['hl-arml', 'hl-armr'],
+            'Upper Leg': ['hl-uleg-l', 'hl-uleg-r'],
+            'Lower Leg': ['hl-lleg-l', 'hl-lleg-r'],
         };
 
         function clearHighlights() {
-            document.querySelectorAll('.body-area-btn').forEach(el => el.classList.remove('highlighted'));
+            document.querySelectorAll('[id^="hl-"]').forEach(el => el.setAttribute('opacity', '0'));
         }
 
         function pickArea(area) {
             clearHighlights();
             selArea = area;
-            (ZONE_MAP[area] || []).forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('highlighted'); });
-            syncTabs(area);
+            if (ZONE_HL[area]) {
+                ZONE_HL[area].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.setAttribute('opacity', '0.22');
+                });
+            }
+            document.querySelectorAll('.body-tab').forEach(t => {
+                const label = t.textContent.replace('✓ ', '').trim();
+                t.classList.toggle('active', label === area);
+            });
             document.getElementById('s2btn').disabled = false;
         }
 
         function pickTab(area, el) {
-            document.querySelectorAll('.body-tab').forEach(t => t.classList.remove('selected'));
-            el.classList.add('selected');
+            document.querySelectorAll('.body-tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
             selArea = area;
             clearHighlights();
-            if (area !== 'No Pain') {
-                (ZONE_MAP[area] || []).forEach(id => { const z = document.getElementById(id); if (z) z.classList.add('highlighted'); });
+            if (ZONE_HL[area]) {
+                ZONE_HL[area].forEach(id => {
+                    const hlEl = document.getElementById(id);
+                    if (hlEl) hlEl.setAttribute('opacity', '0.22');
+                });
             }
             document.getElementById('s2btn').disabled = false;
         }
 
-        function syncTabs(area) {
-            document.querySelectorAll('.body-tab').forEach(t =>
-                t.classList.toggle('selected', t.textContent.replace('✓ ', '').trim() === area));
-        }
-
-        /* ══════════════════════════════════════════
-           FOLLOW-UP CHAT (3 questions)
-        ══════════════════════════════════════════ */
+        /* ════════════════════════════════════════
+           FOLLOW-UP CHAT
+        ════════════════════════════════════════ */
         function initChat() {
             document.getElementById('chatWrap').innerHTML = '';
             document.getElementById('quickOpts').innerHTML = '';
             document.getElementById('chatInputRow').style.display = 'flex';
-            // Remove leftover analyse button if restarting
             document.querySelectorAll('#step3 .continue-btn:not(.ghost)').forEach(b => b.remove());
             followups = [];
             fuPhase = 0;
@@ -2364,7 +2472,6 @@
 
         function addAiMsg(text) {
             const wrap = document.getElementById('chatWrap');
-            // typing bubble
             const typing = document.createElement('div');
             typing.className = 'chat-msg ai';
             typing.innerHTML = `
@@ -2424,19 +2531,15 @@
             lucide.createIcons();
         }
 
-        /* ══════════════════════════════════════════
+        /* ════════════════════════════════════════
            BACKEND CALL → /api/diagnosis/analyze
-           Sends: symptoms, area, followups, vitals
-           Receives: Gemini JSON result
-        ══════════════════════════════════════════ */
+        ════════════════════════════════════════ */
         async function callBackend() {
-            // Show loader, hide step3
             document.getElementById('step3').classList.remove('active');
             document.getElementById('aiLoading').classList.add('active');
             updateStepBar(4);
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
-            // Animate loading steps
             let li = 0;
             const lsEls = ['ls0', 'ls1', 'ls2', 'ls3'];
             const lsTick = setInterval(() => {
@@ -2452,11 +2555,10 @@
                 if (li > lsEls.length) clearInterval(lsTick);
             }, 950);
 
-            // Payload — exactly what your backend expects
             const payload = {
                 symptoms: selSymptoms,
                 area: selArea,
-                followups: followups,    // [{q, a}, {q, a}, {q, a}]
+                followups: followups,
                 vitals: VITALS
             };
 
@@ -2475,18 +2577,16 @@
                 }
 
                 const result = await resp.json();
-
                 if (result.error) throw new Error(result.error);
 
                 aiResult = result;
 
-                // Finish all loading steps visually
                 lsEls.forEach(id => {
                     const el = document.getElementById(id);
                     if (el) { el.classList.remove('active'); el.classList.add('done'); el.querySelector('.ls-ic').textContent = '✓'; }
                 });
 
-                await new Promise(r => setTimeout(r, 400)); // brief pause so user sees "done"
+                await new Promise(r => setTimeout(r, 400));
 
                 document.getElementById('aiLoading').classList.remove('active');
                 document.getElementById('step4').classList.add('active');
@@ -2498,12 +2598,12 @@
                 document.getElementById('aiLoading').innerHTML = `
       <div class="ai-mesh"></div>
       <div style="position:relative;z-index:1;padding:10px 0">
-        <div style="font-size:40px;margin-bottom:14px">⚠️</div>
+        <div style="font-size:40px;margin-bottom:14px">&#9888;&#65039;</div>
         <div style="font-family:'Sora',sans-serif;color:#EF4444;font-size:17px;font-weight:700;margin-bottom:8px">Backend Error</div>
         <div style="color:rgba(255,255,255,.45);font-size:13px;line-height:1.7;max-width:380px;margin:0 auto 24px">${err.message}</div>
         <button class="continue-btn" style="max-width:240px;margin:0 auto"
           onclick="document.getElementById('aiLoading').classList.remove('active');document.getElementById('step3').classList.add('active')">
-          ← Go Back
+          &larr; Go Back
         </button>
       </div>`;
                 document.getElementById('aiLoading').classList.add('active');
@@ -2511,21 +2611,19 @@
             }
         }
 
-        /* ══════════════════════════════════════════
-           RENDER RESULTS — all data comes from Gemini
-           via your backend. Zero hardcoded values.
-        ══════════════════════════════════════════ */
+        /* ════════════════════════════════════════
+           RENDER RESULTS — all from Gemini, zero hardcoded
+        ════════════════════════════════════════ */
         function renderResults(r) {
             const risk = r.riskScore ?? 0;
 
-            /* ── Risk ring ── */
             const arc = document.getElementById('riskArc');
-            const circumference = 2 * Math.PI * 60; // r=60
-            const offset = circumference * (1 - risk / 100);
-
             const pctEl = document.getElementById('riskPct');
             const levelEl = document.getElementById('riskLevel');
             const subEl = document.getElementById('riskSub');
+
+            const circumference = 2 * Math.PI * 60;
+            const offset = circumference * (1 - risk / 100);
 
             pctEl.textContent = risk + '%';
             levelEl.textContent = (r.riskLevel || '—') + ' Risk';
@@ -2547,7 +2645,6 @@
             pctEl.style.color = ringColor;
             setTimeout(() => { arc.style.strokeDashoffset = offset; }, 200);
 
-            /* ── Escalate banner ── */
             const banner = document.getElementById('escBanner');
             banner.className = `esc-banner ${bannerClass}`;
             document.getElementById('escIcon').style.background = iconBg;
@@ -2557,31 +2654,26 @@
             titleEl.style.color = iconColor;
             titleEl.textContent = r.escalate
                 ? 'Escalate to Hospital'
-                : risk >= 60
-                    ? 'See a Doctor Soon'
-                    : 'Safe to Monitor at Home';
-
+                : risk >= 60 ? 'See a Doctor Soon' : 'Safe to Monitor at Home';
             document.getElementById('escMsg').textContent = r.escalateMessage || '';
 
-            /* ── Action buttons ── */
             if (r.escalate) document.getElementById('btnHospital').style.display = 'flex';
             else if (risk >= 60) document.getElementById('btnBook').style.display = 'flex';
 
-            /* ── Conditions ── */
+            /* Conditions */
             const diagList = document.getElementById('diagList');
             diagList.innerHTML = '';
             (r.conditions || []).slice(0, 3).forEach(c => {
-                const sev = (c.severity || 'Low');
+                const sev = c.severity || 'Low';
                 const probClass = sev === 'High' ? 'high' : sev === 'Medium' ? 'med' : 'low';
                 const barColor = sev === 'High' ? '#EF4444' : sev === 'Medium' ? '#F59E0B' : '#10B981';
                 const prob = c.probability ?? 0;
-
                 const item = document.createElement('div');
                 item.className = 'diag-item';
                 item.innerHTML = `
       <div class="diag-top">
         <div class="diag-name">${c.name}</div>
-        <div class="diag-badge ${probClass}">${sev} · ${prob}%</div>
+        <div class="diag-badge ${probClass}">${sev} &middot; ${prob}%</div>
       </div>
       <div class="diag-bar-bg">
         <div class="diag-bar" style="background:${barColor}" data-w="${prob}"></div>
@@ -2589,20 +2681,19 @@
       <div class="diag-desc">${c.description || ''}</div>`;
                 diagList.appendChild(item);
             });
-            // Animate bars after DOM paint
             requestAnimationFrame(() => {
                 setTimeout(() => {
                     diagList.querySelectorAll('.diag-bar').forEach(b => { b.style.width = b.dataset.w + '%'; });
                 }, 120);
             });
 
-            /* ── Reported symptoms ── */
+            /* Reported symptoms */
             const repEl = document.getElementById('repSymptoms');
             repEl.innerHTML = '';
             selSymptoms.forEach(s => { repEl.innerHTML += `<div class="sel-tag">${s}</div>`; });
-            if (selArea) repEl.innerHTML += `<div class="sel-tag" style="background:var(--purple-light);color:var(--purple);border-color:rgba(124,58,237,.2)">📍 ${selArea}</div>`;
+            if (selArea) repEl.innerHTML += `<div class="sel-tag" style="background:var(--purple-light);color:var(--purple);border-color:rgba(124,58,237,.2)">&#128205; ${selArea}</div>`;
 
-            /* ── Vitals display (what was actually sent to AI) ── */
+            /* Vitals */
             document.getElementById('v-hr').textContent = VITALS.heartRate || '—';
             document.getElementById('v-temp').textContent = VITALS.temperature || '—';
             document.getElementById('v-spo2').textContent = VITALS.spo2 || '—';
@@ -2611,7 +2702,7 @@
             document.getElementById('v-temp').style.color = '#EF4444';
             document.getElementById('v-spo2').style.color = '#10B981';
 
-            /* ── Recommendations ── */
+            /* Recommendations */
             const recBgs = ['#EBF2FF', '#EDE9FE', '#FEF3C7', '#FFF0F0', '#D1FAE5', '#FEF3C7'];
             const recEmoji = ['💧', '😴', '🌡️', '💊', '🏃', '🥗'];
             const recList = document.getElementById('recList');
@@ -2627,7 +2718,7 @@
                 recList.innerHTML += `<div class="disclaimer">${r.disclaimer}</div>`;
             }
 
-            /* ── Confidence ── */
+            /* Confidence */
             const conf = r.confidence ?? 0;
             document.getElementById('confPct').textContent = conf + '%';
             setTimeout(() => { document.getElementById('confBar').style.width = conf + '%'; }, 500);
@@ -2635,9 +2726,9 @@
             lucide.createIcons();
         }
 
-        /* ══════════════════════════════════════════
+        /* ════════════════════════════════════════
            STEP NAVIGATION
-        ══════════════════════════════════════════ */
+        ════════════════════════════════════════ */
         function goStep(n) {
             for (let i = 1; i <= 4; i++)
                 document.getElementById('step' + i).classList.toggle('active', i === n);
@@ -2665,7 +2756,7 @@
             selSymptoms = []; selArea = ''; followups = []; fuPhase = 0; aiResult = null;
             document.getElementById('selectedTags').innerHTML = '';
             document.querySelectorAll('.sym-card').forEach(c => c.classList.remove('selected'));
-            document.querySelectorAll('.body-tab').forEach(t => t.classList.remove('selected'));
+            document.querySelectorAll('.body-tab').forEach(t => t.classList.remove('active'));
             clearHighlights();
             document.getElementById('s1btn').disabled = true;
             document.getElementById('s2btn').disabled = true;
@@ -2680,11 +2771,10 @@
             document.getElementById('riskArc').style.strokeDashoffset = '377';
             document.getElementById('confBar').style.width = '0';
             document.getElementById('confPct').textContent = '—';
-            // Reset loader HTML in case it was replaced by error
             document.getElementById('aiLoading').innerHTML = `
     <div class="ai-mesh"></div><div class="ai-scanlines"></div><div class="ai-glow-line"></div>
     <div class="spinner"></div>
-    <div class="ai-loading-title">Gemini AI is analysing your case…</div>
+    <div class="ai-loading-title">Gemini AI is analysing your case&hellip;</div>
     <div class="ai-loading-sub">Sending all 4 steps to your backend</div>
     <div class="load-steps">
       <div class="ls active" id="ls0"><div class="ls-ic">1</div><span>Reading symptoms &amp; body area</span></div>
@@ -2703,9 +2793,9 @@
             setTimeout(() => t.classList.remove('show'), 4000);
         }
 
-        /* ══════════════════════════════════════════
+        /* ════════════════════════════════════════
            SIDEBAR + MOBILE
-        ══════════════════════════════════════════ */
+        ════════════════════════════════════════ */
         lucide.createIcons();
 
         const sidebarEl = document.getElementById('sidebar');

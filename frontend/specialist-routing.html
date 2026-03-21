@@ -1,2681 +1,5287 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
+
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>HealthPulse AI — Find Specialist</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
+
     <link
+
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Sora:wght@400;600;700;800&display=swap"
+
         rel="stylesheet">
+
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
     <style>
+
         /* ─── TOKENS ─── */
+
         :root {
+
             --blue: #1B6FEB;
+
             --blue-deep: #0D4FC4;
+
             --blue-light: #EBF2FF;
+
             --teal: #0ABFBC;
+
             --green: #10B981;
+
             --green-light: #D1FAE5;
+
             --coral: #FF6B6B;
+
             --coral-light: #FFF0F0;
+
             --amber: #F59E0B;
+
             --amber-light: #FEF3C7;
+
             --purple: #7C3AED;
+
             --purple-light: #EDE9FE;
+
             --red: #EF4444;
+
             --red-light: #FEE2E2;
+
             --bg: #F4F7FC;
+
             --card: #fff;
+
             --text: #0F1C3F;
+
             --sub: #6B7A99;
+
             --muted: #A0ABBE;
+
             --border: #E8EDF5;
+
             --sidebar-w: 260px;
+
             --sh-sm: 0 2px 8px rgba(27, 111, 235, .07);
+
             --sh-md: 0 8px 28px rgba(27, 111, 235, .11);
+
             --sh-lg: 0 20px 50px rgba(27, 111, 235, .15);
+
             --r: 14px;
+
             --r-lg: 20px;
+
             --r-xl: 28px;
+
         }
+
+
 
         *,
+
         *::before,
+
         *::after {
+
             box-sizing: border-box;
+
             margin: 0;
+
             padding: 0
+
         }
+
+
 
         html {
+
             scroll-behavior: smooth
+
         }
+
+
 
         body {
+
             font-family: 'Plus Jakarta Sans', sans-serif;
+
             background: var(--bg);
+
             color: var(--text);
+
             min-height: 100vh;
+
             overflow-x: hidden
+
         }
+
+
 
         /* ─── SHELL ─── */
+
         .shell {
+
             display: flex;
+
             min-height: 100vh
+
         }
+
+
 
         /* ─── SIDEBAR ─── */
+
         .sidebar {
+
             width: var(--sidebar-w);
+
             background: var(--card);
+
             border-right: 1px solid var(--border);
+
             display: flex;
+
             flex-direction: column;
+
             position: fixed;
+
             left: 0;
+
             top: 0;
+
             bottom: 0;
+
             z-index: 200;
+
             padding: 26px 0;
+
             transition: transform .32s cubic-bezier(.4, 0, .2, 1);
+
             overflow-y: auto
+
         }
+
+
 
         .sidebar-logo {
+
             display: flex;
+
             align-items: center;
+
             gap: 10px;
+
             padding: 0 22px 24px;
+
             border-bottom: 1px solid var(--border)
+
         }
+
+
 
         .logo-icon {
+
             width: 36px;
+
             height: 36px;
+
             background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+
             border-radius: 10px;
+
             display: grid;
+
             place-items: center;
+
             box-shadow: 0 4px 12px rgba(27, 111, 235, .3);
+
             flex-shrink: 0
+
         }
+
+
 
         .logo-text {
+
             font-family: 'Sora', sans-serif;
+
             font-weight: 700;
+
             font-size: 16px;
+
             color: var(--text)
+
         }
+
+
 
         .logo-text span {
+
             color: var(--blue)
+
         }
+
+
 
         .sidebar-nav {
+
             padding: 16px 12px;
+
             flex: 1;
+
             display: flex;
+
             flex-direction: column;
+
             gap: 2px
+
         }
+
+
 
         .nav-label {
+
             font-size: 10px;
+
             font-weight: 700;
+
             letter-spacing: .12em;
+
             color: var(--muted);
+
             text-transform: uppercase;
+
             padding: 10px 10px 4px;
+
             margin-top: 4px
+
         }
+
+
 
         .nav-item {
+
             display: flex;
+
             align-items: center;
+
             gap: 11px;
+
             padding: 10px 13px;
+
             border-radius: var(--r);
+
             cursor: pointer;
+
             transition: all .18s;
+
             font-size: 13px;
+
             font-weight: 500;
+
             color: var(--sub);
+
             text-decoration: none;
+
             position: relative;
+
             white-space: nowrap
+
         }
+
+
 
         .nav-item:hover {
+
             background: var(--blue-light);
+
             color: var(--blue)
+
         }
+
+
 
         .nav-item.active {
+
             background: var(--blue-light);
+
             color: var(--blue);
+
             font-weight: 600
+
         }
+
+
 
         .nav-item.active::before {
+
             content: '';
+
             position: absolute;
+
             left: 0;
+
             top: 22%;
+
             bottom: 22%;
+
             width: 3px;
+
             border-radius: 4px;
+
             background: var(--blue)
+
         }
+
+
 
         .nav-badge {
+
             margin-left: auto;
+
             background: var(--coral);
+
             color: #fff;
+
             font-size: 10px;
+
             font-weight: 700;
+
             padding: 2px 7px;
+
             border-radius: 20px
+
         }
+
+
 
         .sidebar-user {
+
             padding: 14px 18px;
+
             margin: 0 12px;
+
             border-top: 1px solid var(--border);
+
             display: flex;
+
             align-items: center;
+
             gap: 10px
+
         }
+
+
 
         .sidebar-avatar {
+
             width: 36px;
+
             height: 36px;
+
             border-radius: 50%;
+
             background: linear-gradient(135deg, var(--blue), var(--teal));
+
             display: grid;
+
             place-items: center;
+
             font-weight: 700;
+
             font-size: 13px;
+
             color: #fff;
+
             flex-shrink: 0
+
         }
+
+
 
         .sidebar-user-name {
+
             font-size: 13px;
+
             font-weight: 600
+
         }
+
+
 
         .sidebar-user-role {
+
             font-size: 11px;
+
             color: var(--muted)
+
         }
+
+
 
         .overlay {
+
             display: none;
+
             position: fixed;
+
             inset: 0;
+
             background: rgba(15, 28, 63, .38);
+
             backdrop-filter: blur(4px);
+
             z-index: 190
+
         }
+
+
 
         .overlay.show {
+
             display: block;
+
             animation: fadeIn .2s
+
         }
+
+
 
         @keyframes fadeIn {
+
             from {
+
                 opacity: 0
+
             }
 
+
+
             to {
+
                 opacity: 1
+
             }
+
         }
+
+
 
         /* ─── MAIN ─── */
+
         .main-content {
+
             margin-left: var(--sidebar-w);
+
             flex: 1;
+
             display: flex;
+
             flex-direction: column
+
         }
 
-        /* TOPBARS */
+
+
         .topbar {
+
             background: rgba(255, 255, 255, .92);
+
             backdrop-filter: blur(20px);
+
             border-bottom: 1px solid var(--border);
+
             padding: 0 32px;
+
             height: 64px;
+
             display: flex;
+
             align-items: center;
+
             gap: 14px;
+
             position: sticky;
+
             top: 0;
+
             z-index: 50
+
         }
+
+
 
         .topbar-title {
+
             font-family: 'Sora', sans-serif;
+
             font-size: 18px;
+
             font-weight: 700;
+
             background: linear-gradient(110deg, var(--text), var(--blue));
+
             -webkit-background-clip: text;
+
             -webkit-text-fill-color: transparent;
+
             background-clip: text;
+
             flex: 1
+
         }
+
+
 
         .icon-btn {
+
             width: 38px;
+
             height: 38px;
+
             border-radius: 50%;
+
             background: var(--bg);
+
             border: 1.5px solid var(--border);
+
             display: grid;
+
             place-items: center;
+
             cursor: pointer;
+
             transition: all .2s;
+
             position: relative;
+
             flex-shrink: 0
+
         }
+
+
 
         .icon-btn:hover {
+
             background: var(--blue-light);
+
             border-color: var(--blue);
+
             transform: scale(1.05)
+
         }
+
+
 
         .icon-btn .dot {
+
             position: absolute;
+
             top: 7px;
+
             right: 7px;
+
             width: 7px;
+
             height: 7px;
+
             border-radius: 50%;
+
             background: var(--coral);
+
             border: 2px solid #fff
+
         }
+
+
 
         .tav {
+
             width: 38px;
+
             height: 38px;
+
             border-radius: 50%;
+
             background: linear-gradient(135deg, var(--blue), var(--teal));
+
             display: grid;
+
             place-items: center;
+
             font-weight: 700;
+
             color: #fff;
+
             font-size: 13px;
+
             box-shadow: 0 0 0 3px rgba(27, 111, 235, .2);
+
             cursor: pointer;
+
             flex-shrink: 0
+
         }
+
+
 
         .mobile-topbar {
+
             display: none;
+
             background: rgba(255, 255, 255, .92);
+
             backdrop-filter: blur(20px);
+
             border-bottom: 1px solid var(--border);
+
             padding: 0 16px;
+
             height: 60px;
+
             align-items: center;
+
             gap: 12px;
+
             position: sticky;
+
             top: 0;
+
             z-index: 50
+
         }
+
+
 
         .mob-ham {
+
             width: 38px;
+
             height: 38px;
+
             border-radius: 11px;
+
             background: var(--bg);
+
             border: 1.5px solid var(--border);
+
             display: grid;
+
             place-items: center;
+
             cursor: pointer;
+
             transition: all .2s;
+
             flex-shrink: 0
+
         }
+
+
 
         .mob-ham:hover {
+
             background: var(--blue-light);
+
             border-color: var(--blue)
+
         }
+
+
 
         .mob-logo {
+
             flex: 1;
+
             display: flex;
+
             align-items: center;
+
             gap: 8px
+
         }
+
+
 
         .mob-logo-ic {
+
             width: 30px;
+
             height: 30px;
+
             border-radius: 9px;
+
             background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+
             display: grid;
+
             place-items: center
+
         }
+
+
 
         .mob-logo-txt {
+
             font-family: 'Sora', sans-serif;
+
             font-weight: 700;
+
             font-size: 15px;
+
             color: var(--text)
+
         }
+
+
 
         .mob-logo-txt span {
+
             color: var(--blue)
+
         }
+
+
 
         .mob-notif {
+
             width: 34px;
+
             height: 34px;
+
             border-radius: 50%;
+
             background: var(--bg);
+
             border: 1.5px solid var(--border);
+
             display: grid;
+
             place-items: center;
+
             position: relative;
+
             cursor: pointer
+
         }
+
+
 
         .mob-notif .dot {
+
             position: absolute;
+
             top: 5px;
+
             right: 5px;
+
             width: 7px;
+
             height: 7px;
+
             border-radius: 50%;
+
             background: var(--coral);
+
             border: 2px solid #fff
+
         }
+
+
 
         .mob-av {
+
             width: 34px;
+
             height: 34px;
+
             border-radius: 50%;
+
             background: linear-gradient(135deg, var(--blue), var(--teal));
+
             display: grid;
+
             place-items: center;
+
             font-weight: 700;
+
             color: #fff;
+
             font-size: 12px;
+
             cursor: pointer
+
         }
+
+
 
         /* ─── PAGE ─── */
+
         .page {
+
             padding: 28px 32px 60px;
+
             max-width: 1100px;
+
             width: 100%
+
         }
 
-        /* HERO HEADER — leave image blank */
+
+
         .hero-header {
+
             background: linear-gradient(135deg, var(--blue-deep) 0%, var(--blue) 60%, #3B9EEB 100%);
+
             border-radius: var(--r-xl);
+
             padding: 28px 28px 24px;
+
             position: relative;
+
             overflow: hidden;
+
             margin-bottom: 28px;
+
             display: flex;
+
             align-items: center;
+
             gap: 20px
+
         }
+
+
 
         .hero-bg-blob {
+
             position: absolute;
+
             border-radius: 50%;
+
             background: rgba(255, 255, 255, .06)
+
         }
+
+
 
         .hero-bg-blob.b1 {
+
             width: 220px;
+
             height: 220px;
+
             top: -70px;
+
             right: 80px
+
         }
+
+
 
         .hero-bg-blob.b2 {
+
             width: 130px;
+
             height: 130px;
+
             bottom: -50px;
+
             right: 20px
+
         }
+
+
 
         .hero-content {
+
             position: relative;
+
             z-index: 2;
+
             flex: 1
+
         }
+
+
 
         .hero-greeting {
+
             font-size: 13px;
+
             color: rgba(255, 255, 255, .7);
+
             margin-bottom: 4px
+
         }
+
+
 
         .hero-name {
+
             font-family: 'Sora', sans-serif;
+
             font-size: 22px;
+
             font-weight: 800;
+
             color: #fff;
+
             margin-bottom: 2px
+
         }
+
+
 
         .hero-sub {
+
             font-size: 13px;
+
             color: rgba(255, 255, 255, .65)
+
         }
 
-        /* Blank image slot */
+
+
         .hero-avatar-slot {
+
             width: 64px;
+
             height: 64px;
+
             border-radius: 50%;
+
             background: rgba(255, 255, 255, .15);
+
             backdrop-filter: blur(8px);
+
             border: 2.5px solid rgba(255, 255, 255, .3);
+
             display: grid;
+
             place-items: center;
+
             flex-shrink: 0;
+
             font-size: 10px;
+
             font-weight: 600;
+
             color: rgba(255, 255, 255, .5);
+
             text-align: center;
+
             line-height: 1.3;
+
             position: relative;
+
             z-index: 2
+
         }
+
+
 
         .hero-stats {
+
             display: flex;
+
             gap: 10px;
+
             margin-top: 14px
+
         }
+
+
 
         .hero-stat {
+
             background: rgba(255, 255, 255, .12);
+
             backdrop-filter: blur(8px);
+
             border: 1px solid rgba(255, 255, 255, .15);
+
             border-radius: 12px;
+
             padding: 8px 14px;
+
             text-align: center
+
         }
+
+
 
         .hero-stat-v {
+
             font-family: 'Sora', sans-serif;
+
             font-size: 18px;
+
             font-weight: 700;
+
             color: #fff
+
         }
+
+
 
         .hero-stat-l {
+
             font-size: 10px;
+
             color: rgba(255, 255, 255, .6);
+
             margin-top: 1px
+
         }
 
-        /* SECTION HEADER */
+
+
         .sec-header {
+
             display: flex;
+
             align-items: center;
+
             justify-content: space-between;
+
             margin-bottom: 18px
+
         }
+
+
 
         .sec-title {
+
             font-family: 'Sora', sans-serif;
+
             font-size: 17px;
+
             font-weight: 700
+
         }
+
+
 
         .see-all {
+
             font-size: 12px;
+
             font-weight: 600;
+
             color: var(--blue);
+
             padding: 5px 14px;
+
             border-radius: 20px;
+
             background: var(--blue-light);
+
             border: none;
+
             cursor: pointer;
+
             font-family: 'Plus Jakarta Sans', sans-serif;
+
             transition: all .2s
+
         }
+
+
 
         .see-all:hover {
+
             background: var(--blue);
+
             color: #fff
+
         }
 
-        /* ─── SPECIALIST GRID — clean flat circle style ─── */
+
+
+        /* ─── SPECIALIST GRID ─── */
+
         .spec-grid {
+
             display: grid;
+
             grid-template-columns: repeat(4, 1fr);
+
             gap: 10px;
+
             margin-bottom: 32px
+
         }
+
+
 
         .spec-card {
+
             background: var(--card);
+
             border-radius: 16px;
+
             padding: 16px 8px 14px;
+
             cursor: pointer;
+
             border: 1.5px solid var(--border);
+
             box-shadow: var(--sh-sm);
+
             transition: all .22s cubic-bezier(.4, 0, .2, 1);
+
             display: flex;
+
             flex-direction: column;
+
             align-items: center;
+
             gap: 10px;
+
             position: relative;
+
         }
+
+
 
         .spec-card:hover {
+
             transform: translateY(-3px);
+
             box-shadow: var(--sh-md);
-            border-color: var(--blue);
+
+            border-color: var(--blue)
+
         }
+
+
 
         .spec-card.active {
+
             border-color: var(--blue);
+
             box-shadow: 0 4px 16px rgba(27, 111, 235, .15);
+
             transform: translateY(-2px);
+
         }
 
-        /* Circle icon container */
+
+
         .spec-card-top {
+
             display: contents
+
         }
+
+
 
         .spec-card-orb {
+
             display: none
+
         }
+
+
 
         .spec-card-icon {
+
             width: 58px;
+
             height: 58px;
+
             border-radius: 50%;
+
             display: flex;
+
             align-items: center;
+
             justify-content: center;
+
             flex-shrink: 0;
+
             transition: transform .2s ease;
+
             border: 1.5px solid transparent;
+
         }
+
+
 
         .spec-card:hover .spec-card-icon {
-            transform: scale(1.06);
+
+            transform: scale(1.06)
+
         }
+
+
 
         .spec-card.active .spec-card-icon {
-            border-color: currentColor;
+
+            border-color: currentColor
+
         }
+
+
 
         .spec-card-icon svg {
+
             width: 24px;
+
             height: 24px;
+
             stroke-width: 1.8
+
         }
 
-        /* Text */
+
+
         .spec-card-body {
+
             display: flex;
+
             flex-direction: column;
+
             align-items: center;
+
             gap: 3px;
+
             padding: 0 4px;
+
             width: 100%
+
         }
+
+
 
         .spec-name {
+
             font-size: 11.5px;
+
             font-weight: 600;
+
             color: var(--text);
+
             text-align: center;
+
             line-height: 1.3
+
         }
+
+
 
         .spec-count {
+
             font-size: 10px;
+
             color: var(--muted);
+
             font-weight: 500;
+
             text-align: center
+
         }
+
+
 
         .spec-count-dot {
+
             display: none
+
         }
 
-        /* Active badge hidden — not needed */
+
+
         .spec-active-badge {
+
             display: none !important
+
         }
+
+
 
         /* ─── DOCTORS SECTION ─── */
+
         .doctors-section {
+
             display: none;
+
             animation: slideUp .4s cubic-bezier(.4, 0, .2, 1)
+
         }
+
+
 
         .doctors-section.visible {
+
             display: block
+
         }
+
+
 
         @keyframes slideUp {
+
             from {
+
                 opacity: 0;
+
                 transform: translateY(14px)
+
             }
 
+
+
             to {
+
                 opacity: 1;
+
                 transform: translateY(0)
+
             }
+
         }
+
+
 
         .spec-pill {
+
             display: inline-flex;
+
             align-items: center;
+
             gap: 8px;
+
             background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+
             color: #fff;
+
             border-radius: 30px;
+
             padding: 7px 16px;
+
             font-size: 13px;
+
             font-weight: 700;
+
             margin-bottom: 16px;
+
             box-shadow: 0 4px 12px rgba(27, 111, 235, .3)
+
         }
 
-        .spec-pill-emoji {
-            font-size: 16px
-        }
+
 
         .doctor-grid {
+
             display: flex;
+
             flex-direction: column;
+
             gap: 12px
+
         }
+
+
 
         .doc-card {
+
             background: var(--card);
+
             border-radius: var(--r-lg);
+
             padding: 16px 18px;
+
             display: flex;
+
             align-items: center;
+
             gap: 16px;
+
             border: 1.5px solid var(--border);
+
             box-shadow: var(--sh-sm);
+
             cursor: pointer;
+
             transition: all .25s ease
+
         }
+
+
 
         .doc-card:hover {
+
             border-color: var(--blue);
+
             box-shadow: var(--sh-md);
+
             transform: translateX(4px)
+
         }
 
-        /* Doctor avatar — emoji style */
+
+
         .doc-avatar {
+
             width: 60px;
+
             height: 60px;
+
             border-radius: 18px;
+
             flex-shrink: 0;
+
             display: flex;
+
             align-items: center;
+
             justify-content: center;
+
             font-size: 28px;
+
             border: 2px solid var(--border);
+
             background: linear-gradient(135deg, var(--blue-light), var(--purple-light))
+
         }
+
+
 
         .doc-info {
+
             flex: 1;
+
             min-width: 0
+
         }
+
+
 
         .doc-name {
+
             font-size: 15px;
+
             font-weight: 700;
+
             margin-bottom: 2px;
+
             white-space: nowrap;
+
             overflow: hidden;
+
             text-overflow: ellipsis
+
         }
+
+
 
         .doc-spec {
+
             font-size: 12px;
+
             color: var(--blue);
+
             font-weight: 600;
+
             margin-bottom: 4px
+
         }
+
+
 
         .doc-hospital {
+
             font-size: 12px;
+
             color: var(--sub);
+
             display: flex;
+
             align-items: center;
+
             gap: 5px;
+
             margin-bottom: 6px
+
         }
+
+
 
         .doc-phone {
+
             font-size: 11.5px;
+
             color: var(--muted);
+
             display: flex;
+
             align-items: center;
+
             gap: 5px
+
         }
+
+
 
         .doc-actions {
+
             display: flex;
+
             flex-direction: column;
+
             gap: 8px;
+
             align-items: flex-end;
+
             flex-shrink: 0
+
         }
+
+
 
         .btn-talk {
+
             padding: 9px 18px;
+
             background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+
             color: #fff;
+
             border: none;
+
             border-radius: 30px;
+
             font-size: 12.5px;
+
             font-weight: 700;
+
             cursor: pointer;
+
             font-family: 'Plus Jakarta Sans', sans-serif;
+
             white-space: nowrap;
+
             display: flex;
+
             align-items: center;
+
             gap: 6px;
+
             box-shadow: 0 3px 10px rgba(27, 111, 235, .3);
+
             transition: all .2s
+
         }
+
+
 
         .btn-talk:hover {
+
             transform: translateY(-2px);
+
             box-shadow: 0 6px 18px rgba(27, 111, 235, .4)
+
         }
+
+
 
         .avail-dot {
+
             width: 7px;
+
             height: 7px;
+
             border-radius: 50%;
+
             background: var(--green);
+
             flex-shrink: 0
+
         }
+
+
 
         .avail-txt {
+
             font-size: 11px;
+
             color: var(--green);
+
             font-weight: 600
+
         }
+
+
 
         /* ─── CHAT MODAL ─── */
+
         .modal-overlay {
+
             position: fixed;
+
             inset: 0;
+
             background: rgba(15, 28, 63, .45);
+
             backdrop-filter: blur(6px);
+
             z-index: 500;
+
             display: none;
+
             align-items: flex-end;
+
             justify-content: center;
+
             padding: 0
+
         }
+
+
 
         .modal-overlay.open {
+
             display: flex;
+
             animation: fadeIn .22s ease
+
         }
+
+
 
         .chat-modal {
+
             width: 100%;
+
             max-width: 480px;
+
             background: var(--card);
+
             border-radius: 28px 28px 0 0;
+
             display: flex;
+
             flex-direction: column;
+
             max-height: 90vh;
+
             overflow: hidden;
+
             box-shadow: 0 -20px 60px rgba(15, 28, 63, .25);
+
             animation: slideModal .32s cubic-bezier(.4, 0, .2, 1)
+
         }
+
+
 
         @keyframes slideModal {
+
             from {
+
                 transform: translateY(100%)
+
             }
+
+
 
             to {
+
                 transform: translateY(0)
+
             }
+
         }
 
-        /* Modal header */
+
+
         .chat-header {
+
             padding: 16px 20px 14px;
+
             border-bottom: 1px solid var(--border);
+
             flex-shrink: 0
+
         }
+
+
 
         .chat-drag {
+
             width: 40px;
+
             height: 4px;
+
             background: var(--border);
+
             border-radius: 4px;
+
             margin: 0 auto 16px
+
         }
+
+
 
         .chat-doc-row {
+
             display: flex;
+
             align-items: center;
+
             gap: 12px
+
         }
+
+
 
         .chat-doc-avatar {
+
             width: 48px;
+
             height: 48px;
+
             border-radius: 14px;
+
             display: grid;
+
             place-items: center;
+
             font-size: 24px;
+
             background: linear-gradient(135deg, var(--blue-light), var(--purple-light));
+
             border: 2px solid var(--border);
+
             flex-shrink: 0
+
         }
+
+
 
         .chat-doc-info {
+
             flex: 1
+
         }
+
+
 
         .chat-doc-name {
+
             font-size: 15px;
+
             font-weight: 700
+
         }
+
+
 
         .chat-doc-spec {
+
             font-size: 12px;
+
             color: var(--blue);
+
             font-weight: 600
+
         }
+
+
 
         .chat-online {
+
             display: flex;
+
             align-items: center;
+
             gap: 5px;
+
             font-size: 11px;
+
             color: var(--green);
+
             font-weight: 600;
+
             margin-top: 2px
+
         }
+
+
 
         .chat-close {
+
             width: 34px;
+
             height: 34px;
+
             border-radius: 50%;
+
             background: var(--bg);
+
             border: 1.5px solid var(--border);
+
             display: grid;
+
             place-items: center;
+
             cursor: pointer;
+
             transition: all .2s;
+
             flex-shrink: 0
+
         }
+
+
 
         .chat-close:hover {
+
             background: var(--red-light);
+
             border-color: var(--red)
+
         }
 
-        /* AI status banner */
+
+
         .ai-banner {
+
             margin: 12px 16px 0;
+
             background: linear-gradient(135deg, #050D1E, #0D1A3A);
+
             border-radius: var(--r);
+
             padding: 10px 14px;
+
             display: flex;
+
             align-items: center;
+
             gap: 10px;
+
             border: 1px solid rgba(255, 255, 255, .06)
+
         }
+
+
 
         .ai-pulse {
+
             width: 7px;
+
             height: 7px;
+
             border-radius: 50%;
+
             background: #4ADE80;
+
             flex-shrink: 0;
+
             animation: blink 1.5s infinite
+
         }
+
+
 
         @keyframes blink {
 
+
+
             0%,
+
             100% {
+
                 opacity: 1;
+
                 transform: scale(1)
+
             }
+
+
 
             50% {
+
                 opacity: .4;
+
                 transform: scale(1.3)
+
             }
+
         }
+
+
 
         .ai-banner-txt {
+
             font-size: 11.5px;
+
             color: rgba(255, 255, 255, .6);
+
             flex: 1
+
         }
+
+
 
         .ai-banner-txt strong {
+
             color: rgba(255, 255, 255, .9)
+
         }
 
-        /* Messages */
+
+
         .chat-messages {
+
             flex: 1;
+
             overflow-y: auto;
+
             padding: 14px 16px;
+
             display: flex;
+
             flex-direction: column;
+
             gap: 10px;
+
             scroll-behavior: smooth
+
         }
+
+
 
         .chat-messages::-webkit-scrollbar {
+
             width: 4px
+
         }
+
+
 
         .chat-messages::-webkit-scrollbar-thumb {
+
             background: var(--border);
+
             border-radius: 4px
+
         }
+
+
 
         .msg {
+
             display: flex;
+
             gap: 8px;
+
             animation: msgIn .3s ease
+
         }
+
+
 
         @keyframes msgIn {
+
             from {
+
                 opacity: 0;
+
                 transform: translateY(8px)
+
             }
+
+
 
             to {
+
                 opacity: 1;
+
                 transform: translateY(0)
+
             }
+
         }
+
+
 
         .msg.ai {
+
             flex-direction: row
+
         }
+
+
 
         .msg.user {
+
             flex-direction: row-reverse
+
         }
+
+
 
         .msg-avatar {
+
             width: 30px;
+
             height: 30px;
+
             border-radius: 9px;
+
             background: linear-gradient(135deg, var(--blue), var(--purple));
+
             display: grid;
+
             place-items: center;
+
             flex-shrink: 0;
+
             font-size: 14px
+
         }
+
+
 
         .bubble {
+
             padding: 10px 14px;
+
             max-width: 80%;
+
             font-size: 13.5px;
+
             line-height: 1.6;
+
             border-radius: 4px
+
         }
+
+
 
         .msg.ai .bubble {
+
             background: #fff;
+
             border: 1.5px solid var(--border);
+
             border-radius: 0 16px 16px 16px;
+
             color: var(--text)
+
         }
+
+
 
         .msg.user .bubble {
+
             background: var(--blue);
+
             border-radius: 16px 0 16px 16px;
+
             color: #fff
+
         }
+
+
 
         .typing-bubble {
+
             background: #fff;
+
             border: 1.5px solid var(--border);
+
             border-radius: 0 16px 16px 16px;
+
             padding: 12px 16px;
+
             display: flex;
+
             align-items: center;
+
             gap: 5px
+
         }
+
+
 
         .typing-dot {
+
             width: 7px;
+
             height: 7px;
+
             border-radius: 50%;
+
             background: var(--muted);
+
             animation: tdot .8s ease-in-out infinite
+
         }
+
+
 
         .typing-dot:nth-child(2) {
+
             animation-delay: .15s
+
         }
 
+
+
         .typing-dot:nth-child(3) {
+
             animation-delay: .3s
+
         }
+
+
 
         @keyframes tdot {
 
+
+
             0%,
+
             60%,
+
             100% {
+
                 transform: translateY(0);
+
                 opacity: .4
+
             }
+
+
 
             30% {
+
                 transform: translateY(-6px);
+
                 opacity: 1
+
             }
+
         }
 
-        /* Quick replies */
+
+
         .quick-replies {
+
             padding: 6px 16px;
+
             display: flex;
+
             gap: 8px;
+
             flex-wrap: wrap;
+
             flex-shrink: 0
+
         }
+
+
 
         .qr {
+
             padding: 7px 16px;
+
             border-radius: 20px;
+
             border: 1.5px solid var(--border);
+
             background: #fff;
+
             font-size: 12.5px;
+
             font-weight: 500;
+
             color: var(--sub);
+
             cursor: pointer;
+
             transition: all .2s;
+
             font-family: 'Plus Jakarta Sans', sans-serif
+
         }
+
+
 
         .qr:hover {
+
             border-color: var(--blue);
+
             color: var(--blue);
+
             background: var(--blue-light)
+
         }
 
-        /* Chat input */
+
+
         .chat-input-row {
+
             padding: 12px 16px;
+
             border-top: 1px solid var(--border);
+
             display: flex;
+
             gap: 10px;
+
             align-items: center;
+
             flex-shrink: 0;
+
             background: var(--card)
+
         }
+
+
 
         .chat-input {
+
             flex: 1;
+
             border: 1.5px solid var(--border);
+
             border-radius: 30px;
+
             padding: 10px 16px;
+
             font-size: 14px;
+
             font-family: 'Plus Jakarta Sans', sans-serif;
+
             color: var(--text);
+
             outline: none;
+
             transition: all .2s;
+
             background: var(--bg)
+
         }
+
+
 
         .chat-input:focus {
+
             border-color: var(--blue);
+
             background: #fff;
+
             box-shadow: 0 0 0 4px rgba(27, 111, 235, .08)
+
         }
+
+
 
         .chat-input::placeholder {
+
             color: var(--muted)
+
         }
+
+
 
         .send-btn {
+
             width: 38px;
+
             height: 38px;
+
             border-radius: 50%;
+
             background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+
             display: grid;
+
             place-items: center;
+
             border: none;
+
             cursor: pointer;
+
             flex-shrink: 0;
+
             box-shadow: 0 3px 10px rgba(27, 111, 235, .3);
+
             transition: all .2s
+
         }
+
+
 
         .send-btn:hover {
+
             transform: scale(1.08)
+
         }
 
-        /* End convo row */
+
+
         .end-row {
+
             padding: 12px 16px;
+
             border-top: 1px solid var(--border);
+
             display: flex;
+
             gap: 10px;
+
             flex-shrink: 0;
+
             background: var(--card)
+
         }
+
+
 
         .btn-end {
+
             flex: 1;
+
             padding: 10px;
+
             border: 2px solid var(--border);
+
             border-radius: 30px;
+
             background: #fff;
+
             font-size: 13px;
+
             font-weight: 700;
+
             cursor: pointer;
+
             font-family: 'Plus Jakarta Sans', sans-serif;
+
             transition: all .2s;
+
             color: var(--sub)
+
         }
+
+
 
         .btn-end:hover {
+
             border-color: var(--coral);
+
             color: var(--coral);
+
             background: var(--coral-light)
+
         }
+
+
 
         .btn-satisfied {
+
             flex: 1;
+
             padding: 10px;
+
             background: linear-gradient(135deg, var(--green), #059669);
+
             color: #fff;
+
             border: none;
+
             border-radius: 30px;
+
             font-size: 13px;
+
             font-weight: 700;
+
             cursor: pointer;
+
             font-family: 'Plus Jakarta Sans', sans-serif;
+
             box-shadow: 0 3px 10px rgba(16, 185, 129, .3);
+
             transition: all .2s
+
         }
+
+
 
         .btn-satisfied:hover {
+
             transform: translateY(-2px)
+
         }
+
+
 
         /* ─── BOOKING MODAL ─── */
+
         .booking-modal {
+
             width: 100%;
+
             max-width: 440px;
+
             background: var(--card);
+
             border-radius: 28px 28px 0 0;
+
             display: flex;
+
             flex-direction: column;
+
             max-height: 90vh;
+
             overflow-y: auto;
+
             box-shadow: 0 -20px 60px rgba(15, 28, 63, .25);
+
             animation: slideModal .32s cubic-bezier(.4, 0, .2, 1);
+
             padding: 0 0 32px
+
         }
+
+
 
         .booking-modal::-webkit-scrollbar {
+
             width: 4px
+
         }
+
+
 
         .booking-modal::-webkit-scrollbar-thumb {
+
             background: var(--border);
+
             border-radius: 4px
+
         }
+
+
 
         .bk-header {
+
             padding: 16px 20px 20px;
+
             border-bottom: 1px solid var(--border)
+
         }
+
+
 
         .bk-title {
+
             font-family: 'Sora', sans-serif;
+
             font-size: 18px;
+
             font-weight: 800;
+
             margin-bottom: 2px
+
         }
+
+
 
         .bk-sub {
+
             font-size: 13px;
+
             color: var(--sub)
+
         }
+
+
 
         .bk-section {
+
             padding: 0 20px;
+
             margin-top: 20px
+
         }
+
+
 
         .bk-label {
+
             font-size: 12px;
+
             font-weight: 700;
+
             color: var(--text);
+
             text-transform: uppercase;
+
             letter-spacing: .06em;
+
             margin-bottom: 10px;
+
             display: flex;
+
             align-items: center;
+
             gap: 6px
+
         }
 
-        /* Date picker */
+
+
         .date-grid {
+
             display: grid;
+
             grid-template-columns: repeat(4, 1fr);
+
             gap: 8px
+
         }
+
+
 
         .date-tile {
+
             padding: 10px 6px;
+
             border-radius: var(--r);
+
             border: 1.5px solid var(--border);
+
             background: #fff;
+
             text-align: center;
+
             cursor: pointer;
+
             transition: all .2s;
+
             font-family: 'Plus Jakarta Sans', sans-serif
+
         }
+
+
 
         .date-tile:hover {
+
             border-color: var(--blue)
+
         }
+
+
 
         .date-tile.selected {
+
             background: var(--blue);
+
             border-color: var(--blue);
+
             color: #fff
+
         }
+
+
 
         .date-day {
+
             font-size: 10px;
+
             font-weight: 600;
+
             color: var(--muted)
+
         }
+
+
 
         .date-tile.selected .date-day {
+
             color: rgba(255, 255, 255, .7)
+
         }
+
+
 
         .date-num {
+
             font-size: 16px;
+
             font-weight: 800;
+
             margin-top: 1px
+
         }
 
-        /* Time slots */
+
+
         .time-grid {
+
             display: grid;
+
             grid-template-columns: repeat(3, 1fr);
+
             gap: 8px
+
         }
+
+
 
         .time-slot {
+
             padding: 10px;
+
             border-radius: var(--r);
+
             border: 1.5px solid var(--border);
+
             background: #fff;
+
             text-align: center;
+
             cursor: pointer;
+
             transition: all .2s;
+
             font-size: 13px;
+
             font-weight: 600;
+
             color: var(--sub);
+
             font-family: 'Plus Jakarta Sans', sans-serif
+
         }
+
+
 
         .time-slot:hover {
+
             border-color: var(--blue);
+
             color: var(--blue)
+
         }
+
+
 
         .time-slot.selected {
+
             background: var(--blue);
+
             border-color: var(--blue);
+
             color: #fff
+
         }
+
+
 
         .time-slot.busy {
+
             opacity: .4;
+
             cursor: not-allowed;
+
             background: var(--bg)
+
         }
 
-        /* Type pills */
+
+
         .type-pills {
+
             display: flex;
+
             gap: 8px;
+
             flex-wrap: wrap
+
         }
+
+
 
         .type-pill {
+
             padding: 8px 16px;
+
             border-radius: 30px;
+
             border: 1.5px solid var(--border);
+
             background: #fff;
+
             font-size: 13px;
+
             font-weight: 600;
+
             cursor: pointer;
+
             transition: all .2s;
+
             font-family: 'Plus Jakarta Sans', sans-serif;
+
             color: var(--sub)
+
         }
+
+
 
         .type-pill:hover {
+
             border-color: var(--blue);
+
             color: var(--blue)
+
         }
+
+
 
         .type-pill.selected {
+
             background: var(--blue);
+
             border-color: var(--blue);
+
             color: #fff
+
         }
 
-        /* Note box */
+
+
         .note-box {
+
             width: 100%;
+
             min-height: 70px;
+
             border: 1.5px solid var(--border);
+
             border-radius: var(--r);
+
             padding: 10px 14px;
+
             font-size: 13px;
+
             font-family: 'Plus Jakarta Sans', sans-serif;
+
             color: var(--text);
+
             outline: none;
+
             resize: none;
+
             transition: all .2s;
+
             background: var(--bg)
+
         }
+
+
 
         .note-box:focus {
+
             border-color: var(--blue);
+
             background: #fff;
+
             box-shadow: 0 0 0 4px rgba(27, 111, 235, .08)
+
         }
+
+
 
         .note-box::placeholder {
+
             color: var(--muted)
+
         }
 
-        /* Summary card */
+
+
         .summary-card {
+
             background: linear-gradient(135deg, var(--blue-light), rgba(124, 58, 237, .07));
+
             border: 1.5px solid rgba(27, 111, 235, .15);
+
             border-radius: var(--r-lg);
+
             padding: 14px 16px
+
         }
+
+
 
         .summary-row {
+
             display: flex;
+
             justify-content: space-between;
+
             align-items: flex-start;
+
             padding: 6px 0;
+
             border-bottom: 1px solid rgba(27, 111, 235, .1);
+
             font-size: 13px
+
         }
+
+
 
         .summary-row:last-child {
+
             border-bottom: none
+
         }
+
+
 
         .sum-label {
+
             color: var(--sub)
+
         }
+
+
 
         .sum-val {
+
             font-weight: 700;
+
             text-align: right;
+
             max-width: 180px
+
         }
 
-        /* Confirm button */
+
+
         .btn-confirm {
+
             width: calc(100% - 40px);
+
             margin: 20px 20px 0;
+
             padding: 15px;
+
             background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+
             color: #fff;
+
             border: none;
+
             border-radius: 30px;
+
             font-size: 15px;
+
             font-weight: 700;
+
             cursor: pointer;
+
             font-family: 'Plus Jakarta Sans', sans-serif;
+
             box-shadow: 0 4px 18px rgba(27, 111, 235, .35);
+
             transition: all .25s;
+
             display: flex;
+
             align-items: center;
+
             justify-content: center;
+
             gap: 8px
+
         }
+
+
 
         .btn-confirm:hover {
+
             transform: translateY(-2px);
+
             box-shadow: 0 8px 28px rgba(27, 111, 235, .45)
+
         }
+
+
 
         .btn-confirm:disabled {
+
             background: #C5D5F5;
+
             cursor: not-allowed;
+
             transform: none;
+
             box-shadow: none
+
         }
+
+
 
         /* ─── SUCCESS SCREEN ─── */
+
         .success-screen {
+
             display: none;
+
             flex-direction: column;
+
             align-items: center;
+
             padding: 40px 24px;
+
             text-align: center;
+
             gap: 14px
+
         }
+
+
 
         .success-screen.show {
+
             display: flex;
+
             animation: slideUp .4s ease
+
         }
+
+
 
         .success-ring {
+
             width: 80px;
+
             height: 80px;
+
             border-radius: 50%;
+
             background: linear-gradient(135deg, var(--green), #059669);
+
             display: grid;
+
             place-items: center;
+
             box-shadow: 0 8px 24px rgba(16, 185, 129, .35);
+
             animation: popIn .5s cubic-bezier(.4, 0, .2, 1)
+
         }
+
+
 
         @keyframes popIn {
+
             0% {
+
                 transform: scale(.6);
+
                 opacity: 0
+
             }
+
+
 
             70% {
+
                 transform: scale(1.1)
+
             }
+
+
 
             100% {
+
                 transform: scale(1);
+
                 opacity: 1
+
             }
+
         }
+
+
 
         .success-title {
+
             font-family: 'Sora', sans-serif;
+
             font-size: 22px;
+
             font-weight: 800;
+
             color: var(--text)
+
         }
+
+
 
         .success-sub {
+
             font-size: 13.5px;
+
             color: var(--sub);
+
             line-height: 1.6;
+
             max-width: 280px
+
         }
+
+
 
         .booking-ref {
+
             background: var(--blue-light);
+
             border: 1.5px solid rgba(27, 111, 235, .2);
+
             border-radius: var(--r);
+
             padding: 12px 20px;
+
             font-size: 14px;
+
             font-weight: 700;
+
             color: var(--blue);
+
             font-family: 'Sora', sans-serif;
+
             letter-spacing: .06em
+
         }
+
+
 
         .success-details {
+
             background: var(--bg);
+
             border-radius: var(--r-lg);
+
             padding: 16px;
+
             width: 100%;
+
             text-align: left
+
         }
+
+
 
         .sdet-row {
+
             display: flex;
+
             align-items: center;
+
             gap: 10px;
+
             padding: 8px 0;
+
             border-bottom: 1px solid var(--border);
+
             font-size: 13px
+
         }
+
+
 
         .sdet-row:last-child {
+
             border-bottom: none
+
         }
+
+
 
         .sdet-ic {
+
             width: 28px;
+
             height: 28px;
+
             border-radius: 8px;
+
             display: grid;
+
             place-items: center;
+
             flex-shrink: 0
+
         }
+
+
 
         .sdet-label {
+
             color: var(--sub);
+
             font-size: 12px
+
         }
+
+
 
         .sdet-val {
+
             font-weight: 600
+
         }
+
+
 
         /* BOTTOM NAV */
+
         .bottom-nav {
+
             display: none;
+
             position: fixed;
+
             bottom: 0;
+
             left: 0;
+
             right: 0;
+
             background: rgba(255, 255, 255, .96);
+
             backdrop-filter: blur(20px);
+
             border-top: 1px solid var(--border);
+
             padding: 8px 0 max(10px, env(safe-area-inset-bottom));
+
             z-index: 150
+
         }
+
+
 
         .bnav-inner {
+
             display: flex;
+
             justify-content: space-around;
+
             align-items: center
+
         }
+
+
 
         .bn-item {
+
             display: flex;
+
             flex-direction: column;
+
             align-items: center;
+
             gap: 3px;
+
             padding: 4px 12px;
+
             cursor: pointer;
+
             font-size: 10px;
+
             font-weight: 600;
+
             color: var(--muted);
+
             text-decoration: none;
+
             transition: color .2s
+
         }
+
+
 
         .bn-item.active {
+
             color: var(--blue)
+
         }
+
+
 
         .bn-center {
+
             width: 48px;
+
             height: 48px;
+
             border-radius: 50%;
+
             background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+
             display: grid;
+
             place-items: center;
+
             box-shadow: 0 4px 18px rgba(27, 111, 235, .45);
+
             cursor: pointer;
+
             margin-top: -14px;
+
             transition: all .2s
+
         }
+
+
 
         /* TOAST */
+
         .toast {
+
             position: fixed;
+
             bottom: 24px;
+
             left: 50%;
+
             transform: translateX(-50%) translateY(80px);
+
             background: #0F1C3F;
+
             color: #fff;
+
             padding: 11px 22px;
+
             border-radius: 30px;
+
             font-size: 13px;
+
             font-weight: 600;
+
             z-index: 999;
+
             box-shadow: var(--sh-lg);
+
             transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+
             white-space: nowrap;
+
             pointer-events: none
+
         }
+
+
 
         .toast.show {
+
             transform: translateX(-50%) translateY(0)
+
         }
+
+
 
         /* RESPONSIVE */
+
         @media(max-width:900px) {
+
             .sidebar {
+
                 transform: translateX(-100%)
+
             }
+
+
 
             .sidebar.open {
+
                 transform: translateX(0)
+
             }
+
+
 
             .main-content {
+
                 margin-left: 0
+
             }
+
+
 
             .topbar {
+
                 display: none
+
             }
+
+
 
             .mobile-topbar {
+
                 display: flex
+
             }
+
+
 
             .page {
+
                 padding: 16px 16px 90px
+
             }
+
+
 
             .spec-grid {
+
                 grid-template-columns: repeat(4, 1fr);
+
                 gap: 8px
+
             }
+
+
 
             .spec-card-icon {
+
                 width: 50px;
+
                 height: 50px
+
             }
+
+
 
             .spec-card-icon svg {
+
                 width: 22px;
+
                 height: 22px
+
             }
 
+
+
             .spec-name {
+
                 font-size: 11px
+
             }
+
+
 
             .spec-count {
+
                 font-size: 9.5px
+
             }
+
+
 
             .hero-header {
+
                 padding: 20px
+
             }
+
+
 
             .hero-name {
+
                 font-size: 18px
+
             }
+
+
 
             .hero-stats {
+
                 display: none
+
             }
+
+
 
             .bottom-nav {
+
                 display: block
+
             }
 
+
+
             .doc-card {
+
                 flex-wrap: wrap
+
             }
+
         }
+
+
 
         @media(max-width:520px) {
+
             .spec-grid {
+
                 grid-template-columns: repeat(4, 1fr);
+
                 gap: 7px
+
             }
+
+
 
             .spec-card {
+
                 padding: 12px 6px 11px;
+
                 border-radius: 14px
+
             }
+
+
 
             .spec-card-icon {
+
                 width: 44px;
+
                 height: 44px
+
             }
+
+
 
             .spec-card-icon svg {
+
                 width: 20px;
+
                 height: 20px
+
             }
+
+
 
             .spec-name {
+
                 font-size: 10.5px
+
             }
+
+
 
             .chat-modal,
+
             .booking-modal {
+
                 max-height: 95vh
+
             }
+
+
 
             .date-grid {
+
                 grid-template-columns: repeat(4, 1fr)
+
             }
 
+
+
             .doc-card {
+
                 padding: 12px 14px
+
             }
+
         }
+
+
+
+        @keyframes spin {
+
+            to {
+
+                transform: rotate(360deg)
+
+            }
+
+        }
+
     </style>
+
 </head>
+
+
 
 <body>
 
+
+
     <div class="toast" id="toast"></div>
 
+
+
     <!-- ═══ CHAT MODAL ═══ -->
+
     <div class="modal-overlay" id="chatOverlay">
+
         <div class="chat-modal" id="chatModal">
+
             <div class="chat-header">
+
                 <div class="chat-drag"></div>
+
                 <div class="chat-doc-row">
+
                     <div class="chat-doc-avatar" id="chatDocAvatar">👨‍⚕️</div>
+
                     <div class="chat-doc-info">
+
                         <div class="chat-doc-name" id="chatDocName">Dr. —</div>
+
                         <div class="chat-doc-spec" id="chatDocSpec">—</div>
+
                         <div class="chat-online">
+
                             <div class="avail-dot"></div>AI Assistant · Online
+
                         </div>
+
                     </div>
+
                     <div class="chat-close" onclick="closeChat()">
+
                         <i data-lucide="x" style="width:15px;height:15px;color:var(--sub)"></i>
+
                     </div>
+
                 </div>
+
                 <div class="ai-banner">
+
                     <div class="ai-pulse"></div>
+
                     <div class="ai-banner-txt"><strong>AI powered</strong> · Connect your Gemini backend to activate
+
                         real responses</div>
+
                 </div>
+
             </div>
+
+
 
             <div class="chat-messages" id="chatMessages"></div>
+
             <div class="quick-replies" id="quickReplies"></div>
 
+
+
             <div class="chat-input-row" id="chatInputRow">
+
                 <input class="chat-input" id="chatInput" placeholder="Type your message…" autocomplete="off"
+
                     onkeydown="if(event.key==='Enter')sendMsg()">
+
                 <button class="send-btn" onclick="sendMsg()">
+
                     <i data-lucide="arrow-right" style="width:16px;height:16px;color:#fff"></i>
+
                 </button>
+
             </div>
+
+
 
             <div class="end-row">
-                <button class="btn-end" onclick="endConvo('not')">😞 Not Satisfied</button>
+
+                <button class="btn-end" onclick="endConvo('not')">😕 Not Satisfied</button>
+
                 <button class="btn-satisfied" onclick="endConvo('satisfied')">✅ Satisfied</button>
+
             </div>
+
         </div>
+
     </div>
+
+
 
     <!-- ═══ BOOKING MODAL ═══ -->
+
     <div class="modal-overlay" id="bookingOverlay">
+
         <div class="booking-modal" id="bookingModal">
 
+
+
             <!-- Form -->
+
             <div id="bookingForm">
+
                 <div class="bk-header">
+
                     <div class="chat-drag"></div>
+
                     <div style="display:flex;align-items:center;justify-content:space-between">
+
                         <div>
+
                             <div class="bk-title">Book Appointment</div>
+
                             <div class="bk-sub" id="bkDocLabel">—</div>
+
                         </div>
+
                         <div class="chat-close" onclick="closeBooking()">
+
                             <i data-lucide="x" style="width:15px;height:15px;color:var(--sub)"></i>
+
                         </div>
+
                     </div>
+
                 </div>
+
+
 
                 <!-- Date -->
+
                 <div class="bk-section">
+
                     <div class="bk-label"><i data-lucide="calendar"
+
                             style="width:14px;height:14px;color:var(--blue)"></i>Choose Date</div>
+
                     <div class="date-grid" id="dateGrid"></div>
+
                 </div>
+
+
 
                 <!-- Time -->
+
                 <div class="bk-section">
+
                     <div class="bk-label"><i data-lucide="clock"
+
                             style="width:14px;height:14px;color:var(--blue)"></i>Choose Time</div>
+
                     <div class="time-grid" id="timeGrid"></div>
+
                 </div>
+
+
 
                 <!-- Type -->
+
                 <div class="bk-section">
+
                     <div class="bk-label"><i data-lucide="video"
+
                             style="width:14px;height:14px;color:var(--blue)"></i>Visit Type</div>
+
                     <div class="type-pills">
+
                         <div class="type-pill selected" onclick="selType('In-Clinic',this)">🏥 In-Clinic</div>
+
                         <div class="type-pill" onclick="selType('Video Call',this)">📹 Video Call</div>
-                        <div class="type-pill" onclick="selType('Home Visit',this)">🏠 Home Visit</div>
+
+                        <div class="type-pill" onclick="selType('Home Visit',this)">🏡 Home Visit</div>
+
                     </div>
+
                 </div>
+
+
 
                 <!-- Note -->
+
                 <div class="bk-section">
+
                     <div class="bk-label"><i data-lucide="file-text"
+
                             style="width:14px;height:14px;color:var(--blue)"></i>Note (optional)</div>
+
                     <textarea class="note-box" id="bkNote" placeholder="Briefly describe your concern…"></textarea>
+
                 </div>
+
+
 
                 <!-- Summary -->
+
                 <div class="bk-section" id="summaryWrap" style="display:none">
+
                     <div class="bk-label"><i data-lucide="clipboard-check"
+
                             style="width:14px;height:14px;color:var(--green)"></i>Summary</div>
+
                     <div class="summary-card">
+
                         <div class="summary-row"><span class="sum-label">Doctor</span><span class="sum-val"
+
                                 id="sumDoc">—</span></div>
+
                         <div class="summary-row"><span class="sum-label">Date</span><span class="sum-val"
+
                                 id="sumDate">—</span></div>
+
                         <div class="summary-row"><span class="sum-label">Time</span><span class="sum-val"
+
                                 id="sumTime">—</span></div>
+
                         <div class="summary-row"><span class="sum-label">Type</span><span class="sum-val"
+
                                 id="sumType">In-Clinic</span></div>
+
                     </div>
+
                 </div>
+
+
 
                 <button class="btn-confirm" id="btnConfirm" onclick="confirmBooking()" disabled>
+
                     <i data-lucide="calendar-check" style="width:18px;height:18px"></i>Confirm Appointment
+
                 </button>
+
             </div>
+
+
 
             <!-- Success screen -->
+
             <div class="success-screen" id="successScreen">
+
                 <div class="success-ring">
+
                     <i data-lucide="check" style="width:36px;height:36px;color:#fff"></i>
+
                 </div>
+
                 <div class="success-title">Appointment Booked!</div>
+
                 <div class="success-sub">Your appointment has been confirmed. You'll receive a reminder 30 minutes
+
                     before.</div>
+
                 <div class="booking-ref" id="bookingRef">HP-000000</div>
+
                 <div class="success-details" id="successDetails"></div>
+
                 <button class="btn-confirm" style="width:100%;margin:0" onclick="closeBooking()">
+
                     <i data-lucide="check-circle" style="width:18px;height:18px"></i>Done
+
                 </button>
+
             </div>
+
+
 
         </div>
+
     </div>
 
+
+
     <!-- ═══ SHELL ═══ -->
+
     <div class="shell">
 
+
+
         <!-- SIDEBAR -->
+
         <aside class="sidebar" id="sidebar">
+
             <div class="sidebar-logo">
+
                 <div class="logo-icon"><i data-lucide="activity" style="width:18px;height:18px;color:#fff"></i></div>
+
                 <div class="logo-text">Health<span>Pulse</span> AI</div>
+
             </div>
+
             <nav class="sidebar-nav">
+
                 <span class="nav-label">Features</span>
+
                 <a class="nav-item" href="dashboard.html"><i data-lucide="layout-dashboard"
+
                         style="width:17px;height:17px"></i>Dashboard</a>
+
                 <a class="nav-item" href="diagnosis.html"><i data-lucide="activity"
+
                         style="width:17px;height:17px"></i>AI Diagnosis</a>
+
                 <a class="nav-item" href="escalation.html"><i data-lucide="alert-triangle"
+
                         style="width:17px;height:17px"></i>Escalation</a>
+
                 <a class="nav-item" href="hospital-finder.html"><i data-lucide="map-pin"
+
                         style="width:17px;height:17px"></i>Hospital Finder</a>
+
                 <a class="nav-item active" href="specialist-routing.html"><i data-lucide="stethoscope"
+
                         style="width:17px;height:17px"></i>Specialist Route</a>
+
                 <a class="nav-item" href="chat.html"><i data-lucide="message-circle"
+
                         style="width:17px;height:17px"></i>Chat Assistant</a>
+
                 <a class="nav-item" href="wearables.html"><i data-lucide="watch"
+
                         style="width:17px;height:17px"></i>Wearables</a>
+
                 <a class="nav-item" href="alerts.html"><i data-lucide="bell" style="width:17px;height:17px"></i>Health
+
                     Alerts</a>
+
                 <a class="nav-item" href="insights.html"><i data-lucide="brain" style="width:17px;height:17px"></i>AI
+
                     Insights</a>
+
                 <span class="nav-label">Account</span>
+
                 <a class="nav-item" href="messages.html"><i data-lucide="mail"
+
                         style="width:17px;height:17px"></i>Messages<span class="nav-badge">5</span></a>
+
                 <a class="nav-item" href="#"><i data-lucide="settings"
+
                         style="width:17px;height:17px"></i>Preferences</a>
+
                 <a class="nav-item" href="#"><i data-lucide="user-circle" style="width:17px;height:17px"></i>Profile</a>
+
             </nav>
+
             <div class="sidebar-user">
+
                 <div class="sidebar-avatar">OB</div>
+
                 <div>
+
                     <div class="sidebar-user-name">Oliver Brooks</div>
+
                     <div class="sidebar-user-role">Patient #HP-2847</div>
+
                 </div>
+
             </div>
+
         </aside>
+
         <div class="overlay" id="overlay"></div>
 
+
+
         <!-- MAIN -->
+
         <div class="main-content">
 
+
+
             <header class="topbar">
+
                 <div class="topbar-title">Find a Specialist</div>
+
                 <div style="display:flex;align-items:center;gap:10px">
+
                     <div class="icon-btn"><i data-lucide="bell" style="width:16px;height:16px;color:var(--sub)"></i>
+
                         <div class="dot"></div>
+
                     </div>
+
                     <div class="tav">OB</div>
+
                 </div>
+
             </header>
 
+
+
             <header class="mobile-topbar">
+
                 <div class="mob-ham" id="hamBtn"><i data-lucide="menu"
+
                         style="width:19px;height:19px;color:var(--text)"></i></div>
+
                 <div class="mob-logo">
+
                     <div class="mob-logo-ic"><i data-lucide="activity" style="width:14px;height:14px;color:#fff"></i>
+
                     </div>
+
                     <div class="mob-logo-txt">Find<span> Specialist</span></div>
+
                 </div>
+
                 <div style="display:flex;gap:8px;align-items:center">
+
                     <div class="mob-notif"><i data-lucide="bell" style="width:15px;height:15px;color:var(--sub)"></i>
+
                         <div class="dot"></div>
+
                     </div>
+
                     <div class="mob-av">OB</div>
+
                 </div>
+
             </header>
+
+
 
             <div class="page">
 
-                <!-- HERO — image slot left intentionally blank -->
-                <div class="hero-header">
-                    <div class="hero-bg-blob b1"></div>
-                    <div class="hero-bg-blob b2"></div>
-                    <div class="hero-avatar-slot" id="heroAvatar">
-                        Add<br>Photo
-                    </div>
-                    <div class="hero-content">
-                        <div class="hero-greeting">Good Morning!</div>
-                        <div class="hero-name">Hi, Oliver Brooks 👋</div>
-                        <div class="hero-sub">Find the right specialist for you</div>
-                        <div class="hero-stats">
-                            <div class="hero-stat">
-                                <div class="hero-stat-v">1,200+</div>
-                                <div class="hero-stat-l">Specialists</div>
-                            </div>
-                            <div class="hero-stat">
-                                <div class="hero-stat-v">98%</div>
-                                <div class="hero-stat-l">Satisfaction</div>
-                            </div>
-                            <div class="hero-stat">
-                                <div class="hero-stat-v">24/7</div>
-                                <div class="hero-stat-l">Available</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
+
+                <img src="assets/doctor.png" alt="Doctor Specialist Banner"
+
+                    style="display: block; width: 100%; height: auto; border-radius: 16px; margin-bottom: 30px;">
+
+
 
                 <!-- SPECIALISTS -->
+
                 <div class="sec-header">
+
                     <div class="sec-title">Find Specialist</div>
+
                     <button class="see-all">See All</button>
+
                 </div>
+
                 <div class="spec-grid" id="specGrid"></div>
 
+
+
                 <!-- DOCTORS LIST -->
+
                 <div class="doctors-section" id="doctorsSection">
+
                     <div class="spec-pill" id="specPill">
+
                         <i data-lucide="stethoscope" style="width:15px;height:15px" id="pillIcon"></i>
+
                         <span id="pillLabel">Specialists</span>
+
                         <span id="pillCount"
+
                             style="background:rgba(255,255,255,.25);border-radius:20px;padding:1px 8px;font-size:11px"></span>
+
                     </div>
 
-                    <!-- Search bar for doctors -->
+
+
                     <div style="display:flex;align-items:center;gap:8px;background:var(--card);border:1.5px solid var(--border);border-radius:30px;padding:9px 16px;margin-bottom:16px;transition:all .2s"
+
                         id="docSearch">
+
                         <i data-lucide="search" style="width:15px;height:15px;color:var(--muted);flex-shrink:0"></i>
+
                         <input id="docSearchInput" placeholder="Search doctors…"
+
                             style="border:none;outline:none;background:transparent;font-size:13.5px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);width:100%"
+
                             oninput="filterDoctors()">
+
                     </div>
+
+
 
                     <div class="doctor-grid" id="doctorGrid"></div>
 
-                    <!-- Empty state -->
+
+
                     <div id="noDocResults" style="display:none;text-align:center;padding:40px 20px;color:var(--muted)">
+
                         <div style="font-size:36px;margin-bottom:10px">🔍</div>
+
                         <div style="font-size:14px;font-weight:600;color:var(--sub)">No doctors found</div>
+
                         <div style="font-size:12.5px;margin-top:4px">Try searching with a different name</div>
+
                     </div>
+
                 </div>
 
+
+
             </div>
+
         </div>
+
     </div>
 
+
+
     <!-- BOTTOM NAV -->
+
     <nav class="bottom-nav">
+
         <div class="bnav-inner">
+
             <a class="bn-item" href="dashboard.html"><i data-lucide="layout-dashboard"
+
                     style="width:20px;height:20px"></i>Home</a>
+
             <div class="bn-item active"><i data-lucide="stethoscope" style="width:20px;height:20px"></i>Specialist</div>
+
             <div style="display:flex;flex-direction:column;align-items:center">
+
                 <div class="bn-center" onclick="window.location.href='diagnosis.html'">
+
                     <i data-lucide="activity" style="width:22px;height:22px;color:#fff"></i>
+
                 </div>
+
             </div>
+
             <a class="bn-item" href="chat.html"><i data-lucide="message-circle"
+
                     style="width:20px;height:20px"></i>Chat</a>
+
             <div class="bn-item"><i data-lucide="user-circle" style="width:20px;height:20px"></i>Profile</div>
+
         </div>
+
     </nav>
 
+
+
     <script>
-        /* ════════════════════════════════════════════════
-           CONFIG — your Express server base URL
-           Same origin: leave as ''
-           Different port: 'http://localhost:5000'
-        ════════════════════════════════════════════════ */
-        const API_BASE = '';   // e.g. 'http://localhost:5000'
+
+
+
+        const API_BASE = 'http://localhost:3000';
+
+
 
         /* ─── SPECIALISTS ─── */
+
         const SPECIALTIES = [
-            {
-                id: 'general', label: 'General Physician', dbKey: 'General Physician',
-                icon: 'stethoscope', iconColor: '#1B6FEB', bg: '#EBF2FF', count: 2
-            },
-            {
-                id: 'cardiologist', label: 'Cardiologist', dbKey: 'Cardiologist',
-                icon: 'heart-pulse', iconColor: '#EF4444', bg: '#FEE2E2', count: 2
-            },
-            {
-                id: 'pediatrics', label: 'Pediatrics', dbKey: 'Pediatrician',
-                icon: 'baby', iconColor: '#10B981', bg: '#D1FAE5', count: 2
-            },
-            {
-                id: 'orthopedic', label: 'Orthopedic', dbKey: 'Orthopedic',
-                icon: 'bone', iconColor: '#F59E0B', bg: '#FEF3C7', count: 2
-            },
-            {
-                id: 'gynecologist', label: 'Gynecologist', dbKey: 'Gynecologist',
-                icon: 'activity', iconColor: '#EC4899', bg: '#FCE7F3', count: 2
-            },
-            {
-                id: 'dentist', label: 'Dentist', dbKey: 'Dentist',
-                icon: 'smile', iconColor: '#0ABFBC', bg: '#E6F9F9', count: 10
-            },
-            {
-                id: 'pulmonology', label: 'Pulmonology', dbKey: 'Pulmonologist',
-                icon: 'wind', iconColor: '#6366F1', bg: '#EEF2FF', count: 1
-            },
-            {
-                id: 'neurology', label: 'Neurology', dbKey: 'Neurologist',
-                icon: 'brain', iconColor: '#7C3AED', bg: '#EDE9FE', count: 1
-            },
+
+            { id: 'general', label: 'General Physician', dbKey: 'General Physician', icon: 'stethoscope', iconColor: '#1B6FEB', bg: '#EBF2FF', count: 2 },
+
+            { id: 'cardiologist', label: 'Cardiologist', dbKey: 'Cardiologist', icon: 'heart-pulse', iconColor: '#EF4444', bg: '#FEE2E2', count: 2 },
+
+            { id: 'pediatrics', label: 'Pediatrics', dbKey: 'Pediatrician', icon: 'baby', iconColor: '#10B981', bg: '#D1FAE5', count: 2 },
+
+            { id: 'orthopedic', label: 'Orthopedic', dbKey: 'Orthopedic', icon: 'bone', iconColor: '#F59E0B', bg: '#FEF3C7', count: 2 },
+
+            { id: 'gynecologist', label: 'Gynecologist', dbKey: 'Gynecologist', icon: 'activity', iconColor: '#EC4899', bg: '#FCE7F3', count: 2 },
+
+            { id: 'dentist', label: 'Dentist', dbKey: 'Dentist', icon: 'smile', iconColor: '#0ABFBC', bg: '#E6F9F9', count: 10 },
+
+            { id: 'pulmonology', label: 'Pulmonology', dbKey: 'Pulmonologist', icon: 'wind', iconColor: '#6366F1', bg: '#EEF2FF', count: 1 },
+
+            { id: 'neurology', label: 'Neurology', dbKey: 'Neurologist', icon: 'brain', iconColor: '#7C3AED', bg: '#EDE9FE', count: 1 },
+
         ];
 
-        /* Doctor avatar colors by specialty */
+
+
         const AVATAR_COLORS = {
+
             'Dentist': ['#FEF3C7', '#D97706'],
+
             'Pediatric Dentist': ['#FEF3C7', '#D97706'],
+
             'General Physician': ['#EBF2FF', '#1B6FEB'],
+
             'Cardiologist': ['#FEE2E2', '#EF4444'],
+
             'Orthopedic': ['#DBEAFE', '#3B82F6'],
+
             'Pediatrician': ['#D1FAE5', '#10B981'],
+
             'Gynecologist': ['#FCE7F3', '#EC4899'],
+
             'Pulmonologist': ['#E0F2FE', '#0ABFBC'],
+
             'Neurologist': ['#EDE9FE', '#7C3AED'],
+
         };
 
+
+
         /* ─── STATE ─── */
+
         let activeSpec = null;
+
         let currentDoctors = [];
+
         let currentDoctor = null;
+
         let bkDate = null, bkTime = null, bkType = 'In-Clinic';
 
+
+
+        /* ─── CHAT STATE ─── */
+
+        let chatHistory = [];
+
+
+
+        /* ─────────────────────────────────────────────
+
+           CHAT HELPER FUNCTIONS  (were missing before)
+
+        ───────────────────────────────────────────── */
+
+
+
+        /** Append an AI bubble (with a typing delay for realism) */
+
+        function addAiMsg(text) {
+
+            const msgs = document.getElementById('chatMessages');
+
+
+
+            // Show typing indicator
+
+            const typingId = 'typing-' + Date.now();
+
+            const typingEl = document.createElement('div');
+
+            typingEl.className = 'msg ai';
+
+            typingEl.id = typingId;
+
+            typingEl.innerHTML = `
+
+                <div class="msg-avatar">🤖</div>
+
+                <div class="typing-bubble">
+
+                    <div class="typing-dot"></div>
+
+                    <div class="typing-dot"></div>
+
+                    <div class="typing-dot"></div>
+
+                </div>`;
+
+            msgs.appendChild(typingEl);
+
+            msgs.scrollTop = msgs.scrollHeight;
+
+
+
+            // Replace with real message after short delay
+
+            setTimeout(() => {
+
+                const el = document.getElementById(typingId);
+
+                if (el) el.remove();
+
+
+
+                const msgEl = document.createElement('div');
+
+                msgEl.className = 'msg ai';
+
+                msgEl.innerHTML = `
+
+                    <div class="msg-avatar">🤖</div>
+
+                    <div class="bubble">${text}</div>`;
+
+                msgs.appendChild(msgEl);
+
+                msgs.scrollTop = msgs.scrollHeight;
+
+            }, 700);
+
+        }
+
+
+
+        /** Append a user bubble immediately */
+
+        function addUserMsg(text) {
+
+            const msgs = document.getElementById('chatMessages');
+
+            const msgEl = document.createElement('div');
+
+            msgEl.className = 'msg user';
+
+            msgEl.innerHTML = `<div class="bubble">${text}</div>`;
+
+            msgs.appendChild(msgEl);
+
+            msgs.scrollTop = msgs.scrollHeight;
+
+        }
+
+
+
+        /**
+
+         * Render quick-reply chips.
+
+         * @param {string[]} options  - labels for each chip
+
+         * @param {Function} [callback] - called with the chosen label; chips are removed after click
+
+         */
+
+        function setQuickReplies(options, callback) {
+
+            const qr = document.getElementById('quickReplies');
+
+            qr.innerHTML = '';
+
+            options.forEach(label => {
+
+                const btn = document.createElement('button');
+
+                btn.className = 'qr';
+
+                btn.textContent = label;
+
+                btn.onclick = () => {
+
+                    // Remove all chips so the user can't double-click
+
+                    qr.innerHTML = '';
+
+                    if (callback) callback(label);
+
+                };
+
+                qr.appendChild(btn);
+
+            });
+
+        }
+
+
+
+        /** Close the chat overlay */
+
+        function closeChat() {
+
+            document.getElementById('chatOverlay').classList.remove('open');
+
+            document.body.style.overflow = '';
+
+            chatHistory = [];
+
+        }
+
+
+
+        /** Send a free-text message typed in the input box */
+
+        function sendMsg() {
+
+            const input = document.getElementById('chatInput');
+
+            const text = input.value.trim();
+
+            if (!text) return;
+
+            input.value = '';
+
+            addUserMsg(text);
+
+            chatHistory.push({ role: 'user', text });
+
+
+
+            // Simple fallback AI reply for free-text input
+
+            setTimeout(() => {
+
+                const reply = "Thanks for your message! For a more accurate assessment, please use the quick-reply options or book an appointment with the doctor.";
+
+                addAiMsg(reply);
+
+                chatHistory.push({ role: 'ai', text: reply });
+
+            }, 800);
+
+        }
+
+
+
+        /** Handle the "Satisfied / Not Satisfied" buttons */
+
+        function endConvo(type) {
+
+            document.getElementById('quickReplies').innerHTML = '';
+
+            if (type === 'satisfied') {
+
+                addAiMsg("Great! I'm glad I could help. 😊 Would you like to book an appointment with " + (currentDoctor?.name || 'the doctor') + "?");
+
+                setTimeout(() => {
+
+                    setQuickReplies(['Book Appointment', 'No, thanks'], (choice) => {
+
+                        if (choice === 'Book Appointment') {
+
+                            closeChat();
+
+                            openBooking(currentDoctor);
+
+                        } else {
+
+                            closeChat();
+
+                        }
+
+                    });
+
+                }, 800);
+
+            } else {
+
+                addAiMsg("I'm sorry I couldn't fully help. Would you like to book an appointment so a real doctor can assist you?");
+
+                setTimeout(() => {
+
+                    setQuickReplies(['Book Appointment', 'Close'], (choice) => {
+
+                        if (choice === 'Book Appointment') {
+
+                            closeChat();
+
+                            openBooking(currentDoctor);
+
+                        } else {
+
+                            closeChat();
+
+                        }
+
+                    });
+
+                }, 800);
+
+            }
+
+        }
+
+
+
         /* ─── BUILD SPECIALTY GRID ─── */
+
         (function buildGrid() {
+
             const grid = document.getElementById('specGrid');
+
             SPECIALTIES.forEach(s => {
+
                 const card = document.createElement('div');
+
                 card.className = 'spec-card';
+
                 card.dataset.id = s.id;
 
                 card.innerHTML = `
-      <div class="spec-active-badge"></div>
-      <div class="spec-card-top"></div>
-      <div class="spec-card-icon" style="background:${s.bg}">
-        <i data-lucide="${s.icon}" style="color:${s.iconColor}"></i>
-      </div>
-      <div class="spec-card-body">
-        <div class="spec-name">${s.label}</div>
-        <div class="spec-count" id="cnt-${s.id}">${s.count} doctors</div>
-      </div>`;
+
+                    <div class="spec-active-badge"></div>
+
+                    <div class="spec-card-top"></div>
+
+                    <div class="spec-card-icon" style="background:${s.bg}">
+
+                        <i data-lucide="${s.icon}" style="color:${s.iconColor}"></i>
+
+                    </div>
+
+                    <div class="spec-card-body">
+
+                        <div class="spec-name">${s.label}</div>
+
+                        <div class="spec-count" id="cnt-${s.id}">${s.count} doctors</div>
+
+                    </div>`;
 
                 card.onclick = () => selectSpec(s);
+
                 grid.appendChild(card);
+
             });
+
             lucide.createIcons();
+
         })();
 
+
+
         /* ─── SELECT SPECIALTY ─── */
+
         function selectSpec(spec) {
+
             document.querySelectorAll('.spec-card').forEach(c => {
+
                 c.classList.remove('active');
+
                 c.style.borderColor = '';
+
                 const ic = c.querySelector('.spec-card-icon');
+
                 if (ic) ic.style.borderColor = 'transparent';
+
             });
+
             const activeCard = document.querySelector(`.spec-card[data-id="${spec.id}"]`);
+
             if (activeCard) {
+
                 activeCard.classList.add('active');
+
                 activeCard.style.borderColor = spec.iconColor;
+
                 activeCard.querySelector('.spec-card-icon').style.borderColor = spec.iconColor;
+
             }
+
             activeSpec = spec;
 
-            // Update pill
+
+
             document.getElementById('pillIcon').setAttribute('data-lucide', spec.icon);
+
             document.getElementById('pillLabel').textContent = spec.label + ' Specialists';
+
             document.getElementById('docSearchInput').value = '';
+
             document.getElementById('noDocResults').style.display = 'none';
+
             lucide.createIcons();
 
-            // Show section
+
+
             const sec = document.getElementById('doctorsSection');
+
             sec.classList.remove('visible');
+
             void sec.offsetWidth;
+
             sec.classList.add('visible');
 
-            // Scroll to section on mobile
+
+
             if (window.innerWidth <= 900) {
+
                 setTimeout(() => sec.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+
             }
 
+
+
             loadDoctors(spec);
+
         }
 
-        /* ─── LOAD DOCTORS FROM MONGODB ─── */
+
+
+        /* ─── LOAD DOCTORS ─── */
+
         async function loadDoctors(spec) {
+
             document.getElementById('doctorGrid').innerHTML = skeletonCards(3);
+
             document.getElementById('pillCount').textContent = '';
+
             currentDoctors = [];
 
+
+
             try {
+
                 const resp = await fetch(
+
                     `${API_BASE}/api/doctors?specialization=${encodeURIComponent(spec.dbKey)}`
+
                 );
 
                 if (!resp.ok) {
+
                     const errText = await resp.text();
+
                     throw new Error(`Server ${resp.status}: ${errText}`);
+
                 }
 
                 const doctors = await resp.json();
 
                 if (!Array.isArray(doctors)) {
+
                     throw new Error('Backend returned unexpected format — expected array of doctors.');
+
                 }
 
                 currentDoctors = doctors;
+
                 document.getElementById('pillCount').textContent = doctors.length;
+
                 renderDoctors(doctors);
 
             } catch (err) {
+
                 console.error('loadDoctors error:', err);
+
                 document.getElementById('doctorGrid').innerHTML = `
-      <div style="text-align:center;padding:36px 20px;color:var(--muted)">
-        <div style="font-size:36px;margin-bottom:10px">⚠️</div>
-        <div style="font-size:14px;font-weight:700;color:var(--sub);margin-bottom:6px">Could not load doctors</div>
-        <div style="font-size:12.5px;line-height:1.6;margin-bottom:14px">${err.message}</div>
-        <button onclick="loadDoctors(activeSpec)"
-          style="padding:9px 20px;background:var(--blue);color:#fff;border:none;border-radius:30px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">
-          Try Again
-        </button>
-      </div>`;
+
+                    <div style="text-align:center;padding:36px 20px;color:var(--muted)">
+
+                        <div style="font-size:36px;margin-bottom:10px">⚠️</div>
+
+                        <div style="font-size:14px;font-weight:700;color:var(--sub);margin-bottom:6px">Could not load doctors</div>
+
+                        <div style="font-size:12.5px;line-height:1.6;margin-bottom:14px">${err.message}</div>
+
+                        <button onclick="loadDoctors(activeSpec)"
+
+                            style="padding:9px 20px;background:var(--blue);color:#fff;border:none;border-radius:30px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">
+
+                            Try Again
+
+                        </button>
+
+                    </div>`;
+
                 document.getElementById('pillCount').textContent = '0';
+
                 showToast('⚠️ ' + err.message);
+
             }
+
         }
+
+
 
         /* ─── RENDER DOCTORS ─── */
+
         function renderDoctors(doctors) {
+
             const grid = document.getElementById('doctorGrid');
+
             grid.innerHTML = '';
+
+
 
             if (doctors.length === 0) {
+
                 document.getElementById('noDocResults').style.display = 'block';
+
                 return;
+
             }
+
             document.getElementById('noDocResults').style.display = 'none';
 
+
+
             doctors.forEach((doc, idx) => {
+
                 const colors = AVATAR_COLORS[doc.specialization] || ['#EBF2FF', '#1B6FEB'];
+
                 const initials = doc.name.replace('Dr. ', '').split(' ').map(w => w[0]).slice(0, 2).join('');
+
                 const specInfo = SPECIALTIES.find(s =>
+
                     doc.specialization.toLowerCase().includes(s.dbKey.toLowerCase().split(' ')[0])
+
                     || s.dbKey.toLowerCase() === doc.specialization.toLowerCase()
+
                 );
+
                 const accentColor = specInfo ? specInfo.iconColor : '#1B6FEB';
 
+
+
                 const card = document.createElement('div');
+
                 card.className = 'doc-card';
+
                 card.style.animationDelay = (idx * 60) + 'ms';
+
                 card.innerHTML = `
-      <div class="doc-avatar" style="background:${colors[0]};border-color:${colors[0]}">
-        <span style="font-family:'Sora',sans-serif;font-size:18px;font-weight:800;color:${colors[1]}">${initials}</span>
-      </div>
-      <div class="doc-info">
-        <div class="doc-name">${doc.name}</div>
-        <div class="doc-spec" style="color:${accentColor}">${doc.specialization}</div>
-        <div class="doc-hospital">
-          <i data-lucide="building-2" style="width:12px;height:12px;color:var(--muted);flex-shrink:0"></i>
-          ${doc.hospital}
-        </div>
-        ${doc.phone && doc.phone !== 'Clinic Contact' ? `
-          <div class="doc-phone">
-            <i data-lucide="phone" style="width:12px;height:12px;color:var(--muted);flex-shrink:0"></i>
-            ${doc.phone}
-          </div>` : `
-          <div class="doc-phone">
-            <i data-lucide="phone-off" style="width:12px;height:12px;color:var(--muted);flex-shrink:0"></i>
-            <span style="color:var(--muted)">Contact clinic directly</span>
-          </div>`}
-      </div>
-      <div class="doc-actions">
-        <button class="btn-talk" style="background:linear-gradient(135deg,${accentColor},${accentColor}dd)" onclick="openChat(${JSON.stringify(doc).replace(/"/g, '&quot;')})">
-          <i data-lucide="message-circle" style="width:13px;height:13px"></i>Talk to Doctor
-        </button>
-        <div style="display:flex;align-items:center;gap:5px">
-          <div class="avail-dot"></div>
-          <div class="avail-txt">Available Now</div>
-        </div>
-      </div>`;
+
+                    <div class="doc-avatar" style="background:${colors[0]};border-color:${colors[0]}">
+
+                        <span style="font-family:'Sora',sans-serif;font-size:18px;font-weight:800;color:${colors[1]}">${initials}</span>
+
+                    </div>
+
+                    <div class="doc-info">
+
+                        <div class="doc-name">${doc.name}</div>
+
+                        <div class="doc-spec" style="color:${accentColor}">${doc.specialization}</div>
+
+                        <div class="doc-hospital">
+
+                            <i data-lucide="building-2" style="width:12px;height:12px;color:var(--muted);flex-shrink:0"></i>
+
+                            ${doc.hospital}
+
+                        </div>
+
+                        ${doc.phone && doc.phone !== 'Clinic Contact' ? `
+
+                        <div class="doc-phone">
+
+                            <i data-lucide="phone" style="width:12px;height:12px;color:var(--muted);flex-shrink:0"></i>
+
+                            ${doc.phone}
+
+                        </div>` : `
+
+                        <div class="doc-phone">
+
+                            <i data-lucide="phone-off" style="width:12px;height:12px;color:var(--muted);flex-shrink:0"></i>
+
+                            <span style="color:var(--muted)">Contact clinic directly</span>
+
+                        </div>`}
+
+                    </div>
+
+                    <div class="doc-actions">
+
+                        <button class="btn-talk" style="background:linear-gradient(135deg,${accentColor},${accentColor}dd)"
+
+                            onclick="openChat(${JSON.stringify(doc).replace(/"/g, '&quot;')})">
+
+                            <i data-lucide="message-circle" style="width:13px;height:13px"></i>Talk to Doctor
+
+                        </button>
+
+                        <div style="display:flex;align-items:center;gap:5px">
+
+                            <div class="avail-dot"></div>
+
+                            <div class="avail-txt">Available Now</div>
+
+                        </div>
+
+                    </div>`;
+
                 grid.appendChild(card);
+
             });
+
             lucide.createIcons();
+
         }
+
+
 
         /* ─── FILTER ─── */
+
         function filterDoctors() {
+
             const q = document.getElementById('docSearchInput').value.toLowerCase();
+
             if (!q) { renderDoctors(currentDoctors); return; }
+
             const filtered = currentDoctors.filter(d =>
+
                 d.name.toLowerCase().includes(q) ||
+
                 d.hospital.toLowerCase().includes(q) ||
+
                 d.specialization.toLowerCase().includes(q)
+
             );
+
             renderDoctors(filtered);
+
         }
+
+
 
         /* ─── SKELETON ─── */
+
         function skeletonCards(n) {
+
             let html = '';
+
             for (let i = 0; i < n; i++) html += `
-    <div class="doc-card" style="pointer-events:none;animation:none">
-      <div style="width:60px;height:60px;border-radius:18px;background:linear-gradient(90deg,#f0f4fa 25%,#e2e8f4 50%,#f0f4fa 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;flex-shrink:0"></div>
-      <div style="flex:1;display:flex;flex-direction:column;gap:8px">
-        <div style="height:16px;width:65%;background:linear-gradient(90deg,#f0f4fa 25%,#e2e8f4 50%,#f0f4fa 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px"></div>
-        <div style="height:12px;width:45%;background:linear-gradient(90deg,#f0f4fa 25%,#e2e8f4 50%,#f0f4fa 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px"></div>
-        <div style="height:12px;width:80%;background:linear-gradient(90deg,#f0f4fa 25%,#e2e8f4 50%,#f0f4fa 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px"></div>
-      </div>
-    </div>`;
+
+                <div class="doc-card" style="pointer-events:none;animation:none">
+
+                    <div style="width:60px;height:60px;border-radius:18px;background:linear-gradient(90deg,#f0f4fa 25%,#e2e8f4 50%,#f0f4fa 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;flex-shrink:0"></div>
+
+                    <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+
+                        <div style="height:16px;width:65%;background:linear-gradient(90deg,#f0f4fa 25%,#e2e8f4 50%,#f0f4fa 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px"></div>
+
+                        <div style="height:12px;width:45%;background:linear-gradient(90deg,#f0f4fa 25%,#e2e8f4 50%,#f0f4fa 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px"></div>
+
+                        <div style="height:12px;width:80%;background:linear-gradient(90deg,#f0f4fa 25%,#e2e8f4 50%,#f0f4fa 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px"></div>
+
+                    </div>
+
+                </div>`;
+
             return `<style>@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}</style>` + html;
+
         }
 
-        /* ══════════════════════════════════════════════════
-           CHAT — AI integration point
-           Connect your Gemini backend here.
-           POST /api/chat  body: { doctorName, specialization, message, history }
-        ══════════════════════════════════════════════════ */
-        let chatHistory = [];  // [{role:'user'|'ai', text}]
+
+
+        /* ─── OPEN CHAT ─── */
 
         function openChat(doc) {
+
             currentDoctor = doc;
+
             chatHistory = [];
 
+
+
             const colors = AVATAR_COLORS[doc.specialization] || ['#EBF2FF', '#1B6FEB'];
+
             const initials = doc.name.replace('Dr. ', '').split(' ').map(w => w[0]).slice(0, 2).join('');
+
             const avatarEl = document.getElementById('chatDocAvatar');
+
             avatarEl.style.background = colors[0];
+
             avatarEl.style.borderColor = colors[0];
+
             avatarEl.innerHTML = `<span style="font-family:'Sora',sans-serif;font-size:20px;font-weight:800;color:${colors[1]}">${initials}</span>`;
 
+
+
             document.getElementById('chatDocName').textContent = doc.name;
+
             document.getElementById('chatDocSpec').textContent = doc.specialization;
 
+
+
             const msgs = document.getElementById('chatMessages');
+
             msgs.innerHTML = '';
+
             document.getElementById('quickReplies').innerHTML = '';
+
+
 
             // Opening AI greeting
+
             const greeting = `Hi! I'm the AI assistant for ${doc.name} (${doc.specialization}). How can I help you today?`;
+
             addAiMsg(greeting);
+
             chatHistory.push({ role: 'ai', text: greeting });
 
-            // Initial quick replies
-            setQuickReplies([
-                'I have a toothache', 'I need a check-up', 'I want to know about treatment options', 'I have a specific question'
-            ]);
 
-            document.getElementById('chatOverlay').classList.add('open');
-            document.body.style.overflow = 'hidden';
-        }
 
-        function closeChat() {
-            document.getElementById('chatOverlay').classList.remove('open');
-            document.body.style.overflow = '';
-        }
+            let step = 1;
 
-        function addAiMsg(text) {
-            const wrap = document.getElementById('chatMessages');
 
-            // Show typing
-            const typing = document.createElement('div');
-            typing.className = 'msg ai';
-            typing.id = 'typingBubble';
-            typing.innerHTML = `
-    <div class="msg-avatar">🤖</div>
-    <div class="typing-bubble">
-      <div class="typing-dot"></div>
-      <div class="typing-dot"></div>
-      <div class="typing-dot"></div>
-    </div>`;
-            wrap.appendChild(typing);
-            wrap.scrollTop = wrap.scrollHeight;
+
+            function nextStep(choice) {
+
+                addUserMsg(choice);
+
+                chatHistory.push({ role: 'user', text: choice });
+
+                step++;
+
+
+
+                if (step === 2) {
+
+                    setTimeout(() => {
+
+                        addAiMsg("Can you describe the type of symptom?");
+
+                        setTimeout(() => setQuickReplies(['Sharp pain', 'Dull pain', 'Sensitivity', 'Swelling', 'Bleeding'], nextStep), 750);
+
+                    }, 800);
+
+                } else if (step === 3) {
+
+                    setTimeout(() => {
+
+                        addAiMsg("When did this start?");
+
+                        setTimeout(() => setQuickReplies(['Started today', 'Few days', 'More than a week', 'Recurring', 'Not sure'], nextStep), 750);
+
+                    }, 800);
+
+                } else if (step === 4) {
+
+                    setTimeout(() => {
+
+                        addAiMsg("How would you rate the severity?");
+
+                        setTimeout(() => setQuickReplies(['Mild', 'Moderate', 'Severe', 'Comes and goes', 'Getting worse'], nextStep), 750);
+
+                    }, 800);
+
+                } else if (step === 5) {
+
+                    setTimeout(() => {
+
+                        addAiMsg("Are there any specific triggers?");
+
+                        setTimeout(() => setQuickReplies(['Pain while eating', 'Hot/cold trigger', 'Night pain', 'No trigger', 'Swelling present'], nextStep), 750);
+
+                    }, 800);
+
+                } else if (step === 6) {
+
+                    setTimeout(() => {
+
+                        addAiMsg("What would you like to know?");
+
+                        setTimeout(() => setQuickReplies(['What should I do?', 'Need doctor?', 'Home remedies', 'Is this serious?'], nextStep), 750);
+
+                    }, 800);
+
+                } else if (step === 7) {
+
+                    setTimeout(() => {
+
+                        addAiMsg("Based on what you've shared, I have some suggestions. What would you like to do next?");
+
+                        setTimeout(() => setQuickReplies(['Generate report', 'Book Appointment', 'Restart'], (c) => {
+
+                            if (c === 'Book Appointment') { closeChat(); openBooking(currentDoctor); }
+
+                            else if (c === 'Restart') { openChat(currentDoctor); }
+
+                            else { nextStep(c); }
+
+                        }), 750);
+
+                    }, 800);
+
+                } else {
+
+                    setTimeout(() => {
+
+                        const msg = "Thanks for sharing all details. Based on your symptoms, it seems like a manageable condition, but I recommend consulting a doctor if it persists.";
+
+                        addAiMsg(msg);
+
+                        chatHistory.push({ role: 'ai', text: msg });
+
+                        setTimeout(() => setQuickReplies(['Book Appointment', 'Start new consultation'], (c) => {
+
+                            if (c === 'Book Appointment') { closeChat(); openBooking(currentDoctor); }
+
+                            else { openChat(currentDoctor); }
+
+                        }), 750);
+
+                    }, 800);
+
+                }
+
+            }
+
+
+
+            // STEP 1 — shown after the greeting animation finishes
 
             setTimeout(() => {
-                const t = document.getElementById('typingBubble');
-                if (t) t.remove();
-                const msg = document.createElement('div');
-                msg.className = 'msg ai';
-                msg.innerHTML = `
-      <div class="msg-avatar">🤖</div>
-      <div class="bubble">${text}</div>`;
-                wrap.appendChild(msg);
-                wrap.scrollTop = wrap.scrollHeight;
+
+                setQuickReplies(['I have pain', 'Routine check-up', 'Treatment inquiry', 'Other concern'], nextStep);
+
             }, 900);
+
+
+
+            document.getElementById('chatOverlay').classList.add('open');
+
+            document.body.style.overflow = 'hidden';
+
         }
 
-        function addUserMsg(text) {
-            const wrap = document.getElementById('chatMessages');
-            const msg = document.createElement('div');
-            msg.className = 'msg user';
-            msg.innerHTML = `<div class="bubble">${text}</div>`;
-            wrap.appendChild(msg);
-            wrap.scrollTop = wrap.scrollHeight;
-        }
 
-        function setQuickReplies(opts) {
-            const wrap = document.getElementById('quickReplies');
-            wrap.innerHTML = '';
-            opts.forEach(o => {
-                const btn = document.createElement('button');
-                btn.className = 'qr';
-                btn.textContent = o;
-                btn.onclick = () => { wrap.innerHTML = ''; sendMsg(o); };
-                wrap.appendChild(btn);
-            });
-        }
 
-        async function sendMsg(text) {
-            const inp = document.getElementById('chatInput');
-            const msg = text || inp.value.trim();
-            if (!msg) return;
-            inp.value = '';
-            document.getElementById('quickReplies').innerHTML = '';
+        /* ─── BOOKING MODAL ─── */
 
-            addUserMsg(msg);
-            chatHistory.push({ role: 'user', text: msg });
-
-            /* ── BACKEND CALL POINT ──
-               Uncomment when your backend route is ready:
-          
-            try {
-              const resp = await fetch(`${API_BASE}/api/chat`, {
-                method:'POST', headers:{'Content-Type':'application/json'},
-                body: JSON.stringify({
-                  doctorName: currentDoctor.name,
-                  specialization: currentDoctor.specialization,
-                  message: msg,
-                  history: chatHistory
-                })
-              });
-              const data = await resp.json();
-              const reply = data.reply || 'I could not process that. Please try again.';
-              addAiMsg(reply);
-              chatHistory.push({ role:'ai', text: reply });
-              if (data.quickReplies) setQuickReplies(data.quickReplies);
-            } catch(e) {
-              addAiMsg('Connection error. Please try again.');
-            }
-            return; // remove this line when backend is active
-            */
-
-            // Placeholder response until backend is connected
-            await sleep(300);
-            const reply = `Thank you for sharing that. As the AI assistant for ${currentDoctor.name}, I'll note your concern: "${msg}". For accurate medical advice, please book a real appointment or consult ${currentDoctor.name} directly.`;
-            addAiMsg(reply);
-            chatHistory.push({ role: 'ai', text: reply });
-        }
-
-        function endConvo(outcome) {
-            if (outcome === 'satisfied') {
-                closeChat();
-                showToast('✅ Glad we could help!');
-            } else {
-                // Not satisfied → open booking
-                closeChat();
-                setTimeout(() => openBooking(currentDoctor), 300);
-            }
-        }
-
-        /* ══════════════════════════════════════════════════
-           BOOKING MODAL
-        ══════════════════════════════════════════════════ */
         function openBooking(doc) {
+
             currentDoctor = doc || currentDoctor;
+
             bkDate = null; bkTime = null; bkType = 'In-Clinic';
 
+
+
             document.getElementById('bkDocLabel').textContent = (currentDoctor?.name || '—') + ' · ' + (currentDoctor?.specialization || '');
+
             document.getElementById('bookingForm').style.display = 'block';
+
             document.getElementById('successScreen').classList.remove('show');
+
             document.getElementById('btnConfirm').disabled = true;
+
             document.getElementById('summaryWrap').style.display = 'none';
+
             document.getElementById('bkNote').value = '';
 
+
+
             buildDatePicker();
+
             buildTimePicker();
 
+
+
             document.getElementById('bookingOverlay').classList.add('open');
+
             document.body.style.overflow = 'hidden';
+
         }
+
+
 
         function closeBooking() {
+
             document.getElementById('bookingOverlay').classList.remove('open');
+
             document.body.style.overflow = '';
+
         }
+
+
 
         function buildDatePicker() {
+
             const grid = document.getElementById('dateGrid');
+
             grid.innerHTML = '';
+
             const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
             const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
             const today = new Date();
 
+
+
             for (let i = 0; i < 8; i++) {
+
                 const d = new Date(today);
+
                 d.setDate(today.getDate() + i);
+
                 const tile = document.createElement('div');
-                tile.className = 'date-tile' + (i === 0 ? '' : '');
+
+                tile.className = 'date-tile';
+
                 tile.innerHTML = `<div class="date-day">${days[d.getDay()]}</div><div class="date-num">${d.getDate()}</div><div style="font-size:9px;color:var(--muted);margin-top:1px">${months[d.getMonth()]}</div>`;
+
                 tile.onclick = () => {
+
                     document.querySelectorAll('.date-tile').forEach(t => t.classList.remove('selected'));
+
                     tile.classList.add('selected');
+
                     bkDate = `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+
                     updateSummary();
+
                 };
+
                 grid.appendChild(tile);
+
             }
+
         }
+
+
 
         function buildTimePicker() {
+
             const slots = ['09:00 AM', '09:30 AM', '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '02:00 PM', '02:30 PM', '03:00 PM', '03:30 PM', '04:00 PM', '05:00 PM'];
+
             const busy = ['09:30 AM', '11:00 AM', '03:00 PM'];
+
             const grid = document.getElementById('timeGrid');
+
             grid.innerHTML = '';
+
             slots.forEach(s => {
+
                 const tile = document.createElement('div');
+
                 tile.className = 'time-slot' + (busy.includes(s) ? ' busy' : '');
+
                 tile.textContent = s;
+
                 if (!busy.includes(s)) {
+
                     tile.onclick = () => {
+
                         document.querySelectorAll('.time-slot:not(.busy)').forEach(t => t.classList.remove('selected'));
+
                         tile.classList.add('selected');
+
                         bkTime = s;
+
                         updateSummary();
+
                     };
+
                 }
+
                 grid.appendChild(tile);
+
             });
+
         }
+
+
 
         function selType(type, el) {
+
             document.querySelectorAll('.type-pill').forEach(p => p.classList.remove('selected'));
+
             el.classList.add('selected');
+
             bkType = type;
+
             updateSummary();
+
         }
+
+
 
         function updateSummary() {
+
             if (bkDate && bkTime) {
+
                 document.getElementById('summaryWrap').style.display = 'block';
+
                 document.getElementById('sumDoc').textContent = currentDoctor?.name || '—';
+
                 document.getElementById('sumDate').textContent = bkDate;
+
                 document.getElementById('sumTime').textContent = bkTime;
+
                 document.getElementById('sumType').textContent = bkType;
+
                 document.getElementById('btnConfirm').disabled = false;
+
             }
+
         }
+
+
 
         async function confirmBooking() {
+
             const btn = document.getElementById('btnConfirm');
+
             btn.disabled = true;
+
             btn.innerHTML = '<i data-lucide="loader" style="width:18px;height:18px;animation:spin 1s linear infinite"></i> Confirming…';
+
             lucide.createIcons();
 
-            /* ── BACKEND BOOKING POINT ──
-               POST /api/appointments with { doctor, date, time, type, note }
-               Uncomment when ready:
-          
-            try {
-              const resp = await fetch(`${API_BASE}/api/appointments`, {
-                method: 'POST', headers: {'Content-Type':'application/json'},
-                body: JSON.stringify({
-                  doctor:        currentDoctor,
-                  date:          bkDate,
-                  time:          bkTime,
-                  type:          bkType,
-                  note:          document.getElementById('bkNote').value,
-                  patientId:     'HP-2847'
-                })
-              });
-              const data = await resp.json();
-              showConfirmed(data.reference || genRef());
-            } catch(e) {
-              showToast('Booking failed: ' + e.message);
-              btn.disabled = false;
-              btn.innerHTML = '<i data-lucide="calendar-check" style="width:18px;height:18px"></i>Confirm Appointment';
-              lucide.createIcons();
-            }
-            return;
-            */
+            await sleep(1200);
 
-            await sleep(1200); // simulate
             showConfirmed(genRef());
+
         }
 
+
+
         function showConfirmed(ref) {
+
             document.getElementById('bookingForm').style.display = 'none';
+
             const suc = document.getElementById('successScreen');
+
             suc.classList.add('show');
+
             document.getElementById('bookingRef').textContent = ref;
 
             document.getElementById('successDetails').innerHTML = `
-    <div class="sdet-row">
-      <div class="sdet-ic" style="background:var(--blue-light)"><i data-lucide="user" style="width:14px;height:14px;color:var(--blue)"></i></div>
-      <div><div class="sdet-label">Doctor</div><div class="sdet-val">${currentDoctor?.name}</div></div>
-    </div>
-    <div class="sdet-row">
-      <div class="sdet-ic" style="background:var(--green-light)"><i data-lucide="calendar" style="width:14px;height:14px;color:var(--green)"></i></div>
-      <div><div class="sdet-label">Date &amp; Time</div><div class="sdet-val">${bkDate} · ${bkTime}</div></div>
-    </div>
-    <div class="sdet-row">
-      <div class="sdet-ic" style="background:var(--purple-light)"><i data-lucide="building-2" style="width:14px;height:14px;color:var(--purple)"></i></div>
-      <div><div class="sdet-label">Hospital</div><div class="sdet-val">${currentDoctor?.hospital}</div></div>
-    </div>
-    <div class="sdet-row">
-      <div class="sdet-ic" style="background:var(--amber-light)"><i data-lucide="video" style="width:14px;height:14px;color:var(--amber)"></i></div>
-      <div><div class="sdet-label">Visit Type</div><div class="sdet-val">${bkType}</div></div>
-    </div>`;
+
+                <div class="sdet-row">
+
+                    <div class="sdet-ic" style="background:var(--blue-light)"><i data-lucide="user" style="width:14px;height:14px;color:var(--blue)"></i></div>
+
+                    <div><div class="sdet-label">Doctor</div><div class="sdet-val">${currentDoctor?.name}</div></div>
+
+                </div>
+
+                <div class="sdet-row">
+
+                    <div class="sdet-ic" style="background:var(--green-light)"><i data-lucide="calendar" style="width:14px;height:14px;color:var(--green)"></i></div>
+
+                    <div><div class="sdet-label">Date &amp; Time</div><div class="sdet-val">${bkDate} · ${bkTime}</div></div>
+
+                </div>
+
+                <div class="sdet-row">
+
+                    <div class="sdet-ic" style="background:var(--purple-light)"><i data-lucide="building-2" style="width:14px;height:14px;color:var(--purple)"></i></div>
+
+                    <div><div class="sdet-label">Hospital</div><div class="sdet-val">${currentDoctor?.hospital}</div></div>
+
+                </div>
+
+                <div class="sdet-row">
+
+                    <div class="sdet-ic" style="background:var(--amber-light)"><i data-lucide="video" style="width:14px;height:14px;color:var(--amber)"></i></div>
+
+                    <div><div class="sdet-label">Visit Type</div><div class="sdet-val">${bkType}</div></div>
+
+                </div>`;
+
             lucide.createIcons();
+
         }
+
+
 
         function genRef() {
+
             return 'HP-' + Math.random().toString(36).slice(2, 8).toUpperCase();
+
         }
+
+
 
         /* ─── UTILS ─── */
+
         function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
+
+
         function showToast(msg) {
+
             const t = document.getElementById('toast');
-            t.textContent = msg; t.classList.add('show');
+
+            t.textContent = msg;
+
+            t.classList.add('show');
+
             setTimeout(() => t.classList.remove('show'), 3200);
+
         }
 
+
+
         /* ─── SIDEBAR ─── */
+
         lucide.createIcons();
+
         const sidebarEl = document.getElementById('sidebar');
+
         const overlayEl = document.getElementById('overlay');
+
+
+
         document.getElementById('hamBtn').addEventListener('click', () => {
-            sidebarEl.classList.add('open'); overlayEl.classList.add('show'); document.body.style.overflow = 'hidden';
+
+            sidebarEl.classList.add('open');
+
+            overlayEl.classList.add('show');
+
+            document.body.style.overflow = 'hidden';
+
         });
+
+
+
         overlayEl.addEventListener('click', () => {
-            sidebarEl.classList.remove('open'); overlayEl.classList.remove('show'); document.body.style.overflow = '';
+
+            sidebarEl.classList.remove('open');
+
+            overlayEl.classList.remove('show');
+
+            document.body.style.overflow = '';
+
         });
+
+
+
         document.querySelectorAll('.nav-item').forEach(el => el.addEventListener('click', () => {
+
             if (window.innerWidth <= 900) {
-                sidebarEl.classList.remove('open'); overlayEl.classList.remove('show'); document.body.style.overflow = '';
+
+                sidebarEl.classList.remove('open');
+
+                overlayEl.classList.remove('show');
+
+                document.body.style.overflow = '';
+
             }
-        }));
-        document.querySelectorAll('.bn-item').forEach(el => el.addEventListener('click', function () {
-            document.querySelectorAll('.bn-item').forEach(i => i.classList.remove('active'));
-            this.classList.add('active');
+
         }));
 
-        // Close modals on overlay click
+
+
+        document.querySelectorAll('.bn-item').forEach(el => el.addEventListener('click', function () {
+
+            document.querySelectorAll('.bn-item').forEach(i => i.classList.remove('active'));
+
+            this.classList.add('active');
+
+        }));
+
+
+
+        // Close modals on backdrop click
+
         document.getElementById('chatOverlay').addEventListener('click', e => {
+
             if (e.target === document.getElementById('chatOverlay')) closeChat();
+
         });
+
         document.getElementById('bookingOverlay').addEventListener('click', e => {
+
             if (e.target === document.getElementById('bookingOverlay')) closeBooking();
+
         });
+
     </script>
+
 </body>
+
+
 
 </html>
