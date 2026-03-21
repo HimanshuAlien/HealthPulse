@@ -1882,7 +1882,7 @@
             // Auto-start voice recognition
             initSpeechRecognition();
 
-            socket = io('http://localhost:3000');
+            socket = io();
             setupSocket();
             socket.emit('join-room', { roomId: myRoomId, role: myRole, name: myName });
         }
