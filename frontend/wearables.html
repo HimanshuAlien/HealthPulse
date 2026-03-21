@@ -1,0 +1,2962 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthPulse AI — Wearables</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Sora:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+    <style>
+        /* ─── TOKENS ─── */
+        :root {
+            --blue: #1B6FEB;
+            --blue-deep: #0D4FC4;
+            --blue-light: #EBF2FF;
+            --teal: #0ABFBC;
+            --teal-light: #E6F9F9;
+            --green: #10B981;
+            --green-light: #D1FAE5;
+            --coral: #FF6B6B;
+            --coral-light: #FFF0F0;
+            --amber: #F59E0B;
+            --amber-light: #FEF3C7;
+            --purple: #7C3AED;
+            --purple-light: #EDE9FE;
+            --red: #EF4444;
+            --red-light: #FEE2E2;
+            --pink: #EC4899;
+            --pink-light: #FCE7F3;
+            --indigo: #4F46E5;
+            --indigo-light: #EEF2FF;
+            --bg: #F4F7FC;
+            --card: #fff;
+            --text: #0F1C3F;
+            --sub: #6B7A99;
+            --muted: #A0ABBE;
+            --border: #E8EDF5;
+            --sidebar-w: 260px;
+            --sh-sm: 0 2px 8px rgba(27, 111, 235, .06);
+            --sh-md: 0 8px 28px rgba(27, 111, 235, .10);
+            --sh-lg: 0 20px 50px rgba(27, 111, 235, .14);
+            --r: 14px;
+            --r-lg: 22px;
+            --r-xl: 30px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden
+        }
+
+        /* ─── SHELL ─── */
+        .shell {
+            display: flex;
+            min-height: 100vh
+        }
+
+        /* ─── SIDEBAR ─── */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--card);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 200;
+            padding: 26px 0;
+            transition: transform .32s cubic-bezier(.4, 0, .2, 1);
+            overflow-y: auto
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 22px 24px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            box-shadow: 0 4px 12px rgba(27, 111, 235, .3);
+            flex-shrink: 0
+        }
+
+        .logo-text {
+            font-family: 'Sora', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--text)
+        }
+
+        .logo-text span {
+            color: var(--blue)
+        }
+
+        .sidebar-nav {
+            padding: 16px 12px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .12em;
+            color: var(--muted);
+            text-transform: uppercase;
+            padding: 10px 10px 4px;
+            margin-top: 4px
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 10px 13px;
+            border-radius: var(--r);
+            cursor: pointer;
+            transition: all .18s;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--sub);
+            text-decoration: none;
+            position: relative;
+            white-space: nowrap
+        }
+
+        .nav-item:hover {
+            background: var(--blue-light);
+            color: var(--blue)
+        }
+
+        .nav-item.active {
+            background: var(--blue-light);
+            color: var(--blue);
+            font-weight: 600
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 22%;
+            bottom: 22%;
+            width: 3px;
+            border-radius: 4px;
+            background: var(--blue)
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            background: var(--coral);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 20px
+        }
+
+        .sidebar-user {
+            padding: 14px 18px;
+            margin: 0 12px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .sidebar-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue), var(--teal));
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+            font-size: 13px;
+            color: #fff;
+            flex-shrink: 0
+        }
+
+        .sidebar-user-name {
+            font-size: 13px;
+            font-weight: 600
+        }
+
+        .sidebar-user-role {
+            font-size: 11px;
+            color: var(--muted)
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 28, 63, .38);
+            backdrop-filter: blur(4px);
+            z-index: 190
+        }
+
+        .overlay.show {
+            display: block
+        }
+
+        /* ─── MAIN ─── */
+        .main-content {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            display: flex;
+            flex-direction: column
+        }
+
+        /* TOPBAR */
+        .topbar {
+            background: rgba(255, 255, 255, .92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 32px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            flex-shrink: 0
+        }
+
+        .topbar-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            background: linear-gradient(110deg, var(--text), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            flex: 1
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .icon-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            transition: all .2s;
+            position: relative;
+            flex-shrink: 0
+        }
+
+        .icon-btn:hover {
+            background: var(--blue-light);
+            border-color: var(--blue);
+            transform: scale(1.05)
+        }
+
+        .icon-btn .dot {
+            position: absolute;
+            top: 7px;
+            right: 7px;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--coral);
+            border: 2px solid #fff
+        }
+
+        .tav {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue), var(--teal));
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+            color: #fff;
+            font-size: 13px;
+            box-shadow: 0 0 0 3px rgba(27, 111, 235, .2);
+            cursor: pointer;
+            flex-shrink: 0
+        }
+
+        .sync-btn,
+        .fitbit-login-btn {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 18px;
+            background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            box-shadow: 0 4px 14px rgba(27, 111, 235, .3);
+            transition: all .2s;
+            flex-shrink: 0;
+            text-decoration: none;
+        }
+
+
+        .sync-banner.connected .sync-dot {
+            background: var(--green);
+        }
+
+        .sync-banner.connected .sync-dot::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: inherit;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1.6);
+                opacity: 0;
+            }
+        }
+
+        .sync-banner.connected .sync-txt {
+            color: var(--green);
+            font-weight: 700;
+        }
+
+        .fitbit-login-btn:hover {
+            background: linear-gradient(135deg, var(--blue-deep), var(--blue));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(27, 111, 235, .4);
+        }
+
+        .sync-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(27, 111, 235, .4)
+        }
+
+        .sync-btn.syncing i {
+            animation: spin 1s linear infinite
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        /* MOBILE TOPBAR */
+        .mobile-topbar {
+            display: none;
+            background: rgba(255, 255, 255, .92);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 16px;
+            height: 60px;
+            align-items: center;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 50
+        }
+
+        .mob-ham {
+            width: 38px;
+            height: 38px;
+            border-radius: 11px;
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all .2s
+        }
+
+        .mob-ham:hover {
+            background: var(--blue-light);
+            border-color: var(--blue)
+        }
+
+        .mob-logo {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .mob-logo-ic {
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+            background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+            display: grid;
+            place-items: center;
+            box-shadow: 0 3px 10px rgba(27, 111, 235, .3)
+        }
+
+        .mob-logo-txt {
+            font-family: 'Sora', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--text)
+        }
+
+        .mob-logo-txt span {
+            color: var(--blue)
+        }
+
+        .mob-notif {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            display: grid;
+            place-items: center;
+            position: relative;
+            cursor: pointer
+        }
+
+        .mob-notif .dot {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--coral);
+            border: 2px solid #fff
+        }
+
+        .mob-av {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue), var(--teal));
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+            color: #fff;
+            font-size: 12px;
+            cursor: pointer
+        }
+
+        /* ─── PAGE ─── */
+        .page {
+            padding: 28px 32px 48px;
+            max-width: 1300px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 24px
+        }
+
+        /* ─── HERO BANNER (image slot) ─── */
+        .hero-banner-slot {
+            width: 100%;
+            border-radius: var(--r);
+            /* reduced radius */
+            overflow: hidden;
+            position: relative;
+            background: transparent;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            box-shadow: none;
+            /* keep image clean */
+        }
+
+        /* Replace this with a real <img> tag inside when ready */
+
+
+        .hero-mesh {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 60% 80% at 80% 30%, rgba(27, 111, 235, .28) 0%, transparent 65%), radial-gradient(ellipse 50% 60% at 15% 70%, rgba(10, 191, 188, .18) 0%, transparent 65%);
+            pointer-events: none
+        }
+
+        .hero-scan {
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255, 255, 255, .012) 3px, rgba(255, 255, 255, .012) 4px);
+            pointer-events: none
+        }
+
+        .hero-glow {
+            position: absolute;
+            top: 0;
+            left: 15%;
+            right: 15%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(27, 111, 235, .6), rgba(10, 191, 188, .4), transparent)
+        }
+
+        .hero-placeholder-icon {
+            font-size: 40px;
+            position: relative;
+            z-index: 1
+        }
+
+        .hero-placeholder-txt {
+            font-size: 13px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, .35);
+            position: relative;
+            z-index: 1
+        }
+
+        .hero-placeholder-sub {
+            font-size: 11px;
+            color: rgba(255, 255, 255, .2);
+            position: relative;
+            z-index: 1;
+            font-family: monospace;
+            background: rgba(255, 255, 255, .05);
+            padding: 4px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, .08)
+        }
+
+        /* Device status strip on top of banner */
+        .device-strip {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, .45);
+            backdrop-filter: blur(12px);
+            padding: 12px 22px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border-top: 1px solid rgba(255, 255, 255, .08);
+            flex-wrap: wrap;
+        }
+
+        .ds-item {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, .75)
+        }
+
+        .ds-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #4ADE80;
+            flex-shrink: 0;
+            animation: blink 2s infinite
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .4
+            }
+        }
+
+        .ds-dot.amber {
+            background: var(--amber)
+        }
+
+        .ds-sep {
+            width: 1px;
+            height: 18px;
+            background: rgba(255, 255, 255, .1)
+        }
+
+        /* ─── SECTION HEADER ─── */
+        .section-hdr {
+            display: flex;
+            align-items: center;
+            justify-content: space-between
+        }
+
+        .section-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 17px;
+            font-weight: 700
+        }
+
+        .section-sub {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 2px
+        }
+
+        .view-all {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--blue);
+            cursor: pointer;
+            padding: 5px 14px;
+            border-radius: 20px;
+            background: var(--blue-light);
+            border: none;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all .2s
+        }
+
+        .view-all:hover {
+            background: var(--blue);
+            color: #fff
+        }
+
+        /* ─── TODAY'S SUMMARY STRIP ─── */
+        .summary-strip {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px
+        }
+
+        .sum-tile {
+            background: var(--card);
+            border-radius: var(--r-lg);
+            padding: 18px 14px 14px;
+            border: 1.5px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: all .22s cubic-bezier(.4, 0, .2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--sh-sm);
+        }
+
+        .sum-tile:hover {
+            transform: translateY(-3px);
+            border-color: var(--blue);
+            box-shadow: var(--sh-md)
+        }
+
+        .sum-tile-accent {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            border-radius: 2px 2px 0 0
+        }
+
+        .sum-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 11px;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0
+        }
+
+        .sum-val {
+            font-family: 'Sora', sans-serif;
+            font-size: 26px;
+            font-weight: 800;
+            line-height: 1;
+            color: var(--text)
+        }
+
+        .sum-val.loading {
+            background: linear-gradient(90deg, #f0f4fa 25%, #e2e8f4 50%, #f0f4fa 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s infinite;
+            width: 80px;
+            height: 30px;
+            border-radius: 6px;
+            display: inline-block
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0
+            }
+
+            100% {
+                background-position: -200% 0
+            }
+        }
+
+        .sum-unit {
+            font-size: 11px;
+            color: var(--muted);
+            font-weight: 500;
+            margin-top: -2px
+        }
+
+        .sum-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text)
+        }
+
+        .sum-trend {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 2px
+        }
+
+        .trend-up {
+            color: var(--green)
+        }
+
+        .trend-down {
+            color: var(--coral)
+        }
+
+        .trend-ok {
+            color: var(--blue)
+        }
+
+        /* Progress bar on tiles */
+        .sum-progress-bg {
+            height: 4px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 4px
+        }
+
+        .sum-progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1.2s cubic-bezier(.4, 0, .2, 1);
+            width: 0
+        }
+
+        /* ─── METRIC GRID (4 cols) ─── */
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px
+        }
+
+        /* ─── METRIC CARD ─── */
+        .mcard {
+            background: var(--card);
+            border-radius: var(--r-xl);
+            border: 1.5px solid var(--border);
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            box-shadow: var(--sh-sm);
+            transition: all .22s;
+        }
+
+        .mcard:hover {
+            box-shadow: var(--sh-md);
+            border-color: rgba(27, 111, 235, .2)
+        }
+
+        .mcard-hdr {
+            display: flex;
+            align-items: center;
+            justify-content: space-between
+        }
+
+        .mcard-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0
+        }
+
+        .mcard-badge {
+            font-size: 10.5px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 20px
+        }
+
+        .mcard-val {
+            font-family: 'Sora', sans-serif;
+            font-size: 32px;
+            font-weight: 800;
+            line-height: 1;
+            color: var(--text)
+        }
+
+        .mcard-val .unit {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--muted);
+            margin-left: 3px
+        }
+
+        .mcard-val.skel {
+            background: linear-gradient(90deg, #f0f4fa 25%, #e2e8f4 50%, #f0f4fa 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s infinite;
+            width: 120px;
+            height: 38px;
+            border-radius: 8px;
+            display: inline-block
+        }
+
+        .mcard-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 2px
+        }
+
+        .mcard-sub {
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.5
+        }
+
+        .mcard-bar-bg {
+            height: 6px;
+            background: var(--border);
+            border-radius: 6px;
+            overflow: hidden
+        }
+
+        .mcard-bar {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 1.3s cubic-bezier(.4, 0, .2, 1);
+            width: 0
+        }
+
+        /* Ring variant */
+        .ring-wrap {
+            display: flex;
+            align-items: center;
+            gap: 14px
+        }
+
+        .ring-svg-wrap {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            flex-shrink: 0
+        }
+
+        .ring-svg-wrap svg {
+            width: 70px;
+            height: 70px;
+            transform: rotate(-90deg)
+        }
+
+        .ring-bg {
+            fill: none;
+            stroke: var(--border);
+            stroke-width: 7
+        }
+
+        .ring-fill {
+            fill: none;
+            stroke-width: 7;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1.3s cubic-bezier(.4, 0, .2, 1)
+        }
+
+        .ring-label-inner {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center
+        }
+
+        .ring-num {
+            font-family: 'Sora', sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--text);
+            line-height: 1
+        }
+
+        .ring-pct {
+            font-size: 9px;
+            color: var(--muted);
+            margin-top: 1px
+        }
+
+        /* ─── HEART RATE LIVE SECTION ─── */
+        .hr-card {
+            background: linear-gradient(135deg, #050D1E, #0D1A3A);
+            border: 1px solid rgba(255, 255, 255, .05);
+            border-radius: var(--r-xl);
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 16px 48px rgba(5, 13, 30, .4);
+        }
+
+        .hr-mesh {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 65% 65% at 80% 20%, rgba(239, 68, 68, .18) 0%, transparent 65%), radial-gradient(ellipse 50% 50% at 10% 80%, rgba(27, 111, 235, .14) 0%, transparent 65%);
+            pointer-events: none
+        }
+
+        .hr-scan {
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255, 255, 255, .011) 3px, rgba(255, 255, 255, .011) 4px);
+            pointer-events: none
+        }
+
+        .hr-glow {
+            position: absolute;
+            top: 0;
+            left: 10%;
+            right: 10%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(239, 68, 68, .5), transparent)
+        }
+
+        .hr-inner {
+            position: relative;
+            z-index: 1
+        }
+
+        .hr-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 16px
+        }
+
+        .hr-left {}
+
+        .hr-eyebrow {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .12em;
+            color: #EF4444;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+        }
+
+        .hr-eye-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #EF4444;
+            animation: blink 1.2s infinite
+        }
+
+        .hr-val {
+            font-family: 'Sora', sans-serif;
+            font-size: 48px;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1
+        }
+
+        .hr-unit {
+            font-size: 14px;
+            color: rgba(255, 255, 255, .4);
+            font-weight: 500;
+            margin-left: 4px
+        }
+
+        .hr-status {
+            font-size: 12px;
+            color: rgba(255, 255, 255, .45);
+            margin-top: 3px
+        }
+
+        .hr-zones {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap
+        }
+
+        .hr-zone {
+            padding: 5px 13px;
+            border-radius: 20px;
+            font-size: 11.5px;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, .1);
+            color: rgba(255, 255, 255, .55)
+        }
+
+        .hr-zone.active {
+            background: rgba(239, 68, 68, .2);
+            border-color: rgba(239, 68, 68, .4);
+            color: #FCA5A5
+        }
+
+        /* HR chart */
+        .hr-chart-wrap {
+            margin-top: 16px;
+            height: 72px;
+            position: relative
+        }
+
+        #hrCanvas {
+            width: 100%;
+            height: 72px;
+            display: block
+        }
+
+        /* ─── SLEEP SECTION ─── */
+        .sleep-card {
+            background: linear-gradient(135deg, #1E1040, #2D1B69);
+            border-radius: var(--r-xl);
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, .06);
+            box-shadow: var(--sh-lg);
+            position: relative;
+            overflow: hidden
+        }
+
+        .sleep-mesh {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 60% 60% at 85% 15%, rgba(124, 58, 237, .25) 0%, transparent 65%), radial-gradient(ellipse 45% 45% at 10% 85%, rgba(79, 70, 229, .18) 0%, transparent 65%);
+            pointer-events: none
+        }
+
+        .sleep-inner {
+            position: relative;
+            z-index: 1
+        }
+
+        .sleep-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 12px
+        }
+
+        .sleep-left {}
+
+        .sleep-eyebrow {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .12em;
+            color: #A78BFA;
+            text-transform: uppercase;
+            margin-bottom: 4px
+        }
+
+        .sleep-val {
+            font-family: 'Sora', sans-serif;
+            font-size: 44px;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1
+        }
+
+        .sleep-unit {
+            font-size: 13px;
+            color: rgba(255, 255, 255, .4);
+            font-weight: 500;
+            margin-left: 3px
+        }
+
+        .sleep-score-ring {
+            text-align: center
+        }
+
+        .sleep-score-val {
+            font-family: 'Sora', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            color: #fff
+        }
+
+        .sleep-score-lbl {
+            font-size: 10px;
+            color: rgba(255, 255, 255, .35);
+            margin-top: 1px
+        }
+
+        /* Sleep stages bar */
+        .sleep-stages {
+            margin-bottom: 16px
+        }
+
+        .sleep-stage-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px
+        }
+
+        .stage-label {
+            width: 60px;
+            font-size: 11.5px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, .55);
+            flex-shrink: 0
+        }
+
+        .stage-bar-bg {
+            flex: 1;
+            height: 8px;
+            background: rgba(255, 255, 255, .06);
+            border-radius: 8px;
+            overflow: hidden
+        }
+
+        .stage-bar-fill {
+            height: 100%;
+            border-radius: 8px;
+            transition: width 1.3s cubic-bezier(.4, 0, .2, 1);
+            width: 0
+        }
+
+        .stage-time {
+            font-size: 11px;
+            color: rgba(255, 255, 255, .35);
+            width: 42px;
+            text-align: right;
+            flex-shrink: 0
+        }
+
+        /* Sleep metrics row */
+        .sleep-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px
+        }
+
+        .sleep-metric {
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .08);
+            border-radius: var(--r);
+            padding: 12px
+        }
+
+        .sm-val {
+            font-family: 'Sora', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff
+        }
+
+        .sm-lbl {
+            font-size: 10.5px;
+            color: rgba(255, 255, 255, .35);
+            margin-top: 2px
+        }
+
+        /* ─── ACTIVITY TIMELINE ─── */
+        .activity-card {
+            background: var(--card);
+            border-radius: var(--r-xl);
+            padding: 22px;
+            border: 1.5px solid var(--border);
+            box-shadow: var(--sh-sm)
+        }
+
+        .hour-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+            height: 60px;
+            margin-top: 12px
+        }
+
+        .hour-bar {
+            flex: 1;
+            border-radius: 4px 4px 0 0;
+            min-height: 4px;
+            transition: height .8s cubic-bezier(.4, 0, .2, 1), background .3s;
+            cursor: pointer;
+            position: relative
+        }
+
+        .hour-bar:hover::after {
+            content: attr(data-tip);
+            position: absolute;
+            bottom: calc(100%+6px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: #0F1C3F;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 6px;
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 10
+        }
+
+        .hour-labels {
+            display: flex;
+            gap: 3px;
+            margin-top: 4px
+        }
+
+        .hour-lbl {
+            flex: 1;
+            font-size: 8.5px;
+            color: var(--muted);
+            text-align: center;
+            font-weight: 500
+        }
+
+        /* ─── BOTTOM METRIC GRID ─── */
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px
+        }
+
+        /* ─── HYDRATION CARD ─── */
+        .hydration-card {
+            background: var(--card);
+            border-radius: var(--r-xl);
+            padding: 22px;
+            border: 1.5px solid var(--border);
+            box-shadow: var(--sh-sm)
+        }
+
+        .water-glasses {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 12px
+        }
+
+        .glass {
+            width: 36px;
+            height: 44px;
+            border-radius: 4px 4px 10px 10px;
+            border: 2px solid var(--border);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: border-color .2s
+        }
+
+        .glass.filled {
+            border-color: var(--teal)
+        }
+
+        .glass-fill {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, var(--teal), rgba(10, 191, 188, .6));
+            transition: height .5s ease
+        }
+
+        .glass-icon {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px
+        }
+
+        /* ─── STRESS ─── */
+        .stress-card {
+            background: var(--card);
+            border-radius: var(--r-xl);
+            padding: 22px;
+            border: 1.5px solid var(--border);
+            box-shadow: var(--sh-sm)
+        }
+
+        .stress-gauge {
+            margin: 12px 0
+        }
+
+        .stress-bar-bg {
+            height: 10px;
+            background: linear-gradient(90deg, #10B981, #F59E0B 50%, #EF4444);
+            border-radius: 10px;
+            position: relative
+        }
+
+        .stress-needle {
+            position: absolute;
+            top: -4px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2.5px solid var(--text);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
+            transform: translateX(-50%);
+            transition: left 1.2s cubic-bezier(.4, 0, .2, 1)
+        }
+
+        .stress-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 6px
+        }
+
+        .stress-lbl {
+            font-size: 10px;
+            color: var(--muted);
+            font-weight: 500
+        }
+
+        /* ─── MENSTRUAL / WELLNESS ─── */
+        .wellness-card {
+            background: var(--card);
+            border-radius: var(--r-xl);
+            padding: 22px;
+            border: 1.5px solid var(--border);
+            box-shadow: var(--sh-sm)
+        }
+
+        .wellness-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 12px
+        }
+
+        .wt {
+            background: var(--bg);
+            border-radius: var(--r);
+            padding: 12px 14px;
+            border: 1px solid var(--border)
+        }
+
+        .wt-val {
+            font-family: 'Sora', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1
+        }
+
+        .wt-lbl {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 3px
+        }
+
+        /* ─── LAST SYNC BANNER ─── */
+        .sync-banner {
+            background: var(--card);
+            border: 1.5px solid var(--border);
+            border-radius: var(--r-lg);
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            box-shadow: var(--sh-sm)
+        }
+
+        .sync-left {
+            display: flex;
+            align-items: center;
+            gap: 12px
+        }
+
+        .sync-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, .2);
+            flex-shrink: 0;
+            animation: blink 2s infinite
+        }
+
+        .sync-txt {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text)
+        }
+
+        .sync-time {
+            font-size: 11.5px;
+            color: var(--muted);
+            margin-top: 1px
+        }
+
+        .sync-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap
+        }
+
+        .fitbit-badge {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            background: #00B0B9;
+            color: #fff;
+            border-radius: 20px;
+            padding: 5px 14px;
+            font-size: 12px;
+            font-weight: 700
+        }
+
+        /* SKELETON */
+        .skel {
+            background: linear-gradient(90deg, #f0f4fa 25%, #e2e8f4 50%, #f0f4fa 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s infinite;
+            border-radius: 6px;
+            display: inline-block
+        }
+
+        /* BOTTOM NAV */
+        .bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, .96);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
+            padding: 8px 0 max(10px, env(safe-area-inset-bottom));
+            z-index: 150
+        }
+
+        .bnav-inner {
+            display: flex;
+            justify-content: space-around;
+            align-items: center
+        }
+
+        .bn-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            padding: 4px 12px;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--muted);
+            text-decoration: none;
+            transition: color .2s
+        }
+
+        .bn-item.active {
+            color: var(--blue)
+        }
+
+        .bn-center {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+            display: grid;
+            place-items: center;
+            box-shadow: 0 4px 18px rgba(27, 111, 235, .45);
+            cursor: pointer;
+            margin-top: -14px;
+            transition: all .2s
+        }
+
+        /* ANIMATIONS */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(14px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .page>* {
+            animation: fadeUp .4s ease both
+        }
+
+        .page>*:nth-child(1) {
+            animation-delay: .04s
+        }
+
+        .page>*:nth-child(2) {
+            animation-delay: .08s
+        }
+
+        .page>*:nth-child(3) {
+            animation-delay: .12s
+        }
+
+        .page>*:nth-child(4) {
+            animation-delay: .16s
+        }
+
+        .page>*:nth-child(5) {
+            animation-delay: .20s
+        }
+
+        .page>*:nth-child(6) {
+            animation-delay: .24s
+        }
+
+        .page>*:nth-child(7) {
+            animation-delay: .28s
+        }
+
+        .page>*:nth-child(8) {
+            animation-delay: .32s
+        }
+
+        .page>*:nth-child(9) {
+            animation-delay: .36s
+        }
+
+        .page>*:nth-child(10) {
+            animation-delay: .40s
+        }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: #0F1C3F;
+            color: #fff;
+            padding: 11px 22px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 999;
+            box-shadow: var(--sh-lg);
+            transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+            white-space: nowrap;
+            pointer-events: none
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0)
+        }
+
+        /* RESPONSIVE */
+        @media(max-width:1100px) {
+            .summary-strip {
+                grid-template-columns: repeat(3, 1fr)
+            }
+
+            .metric-grid {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            .bottom-grid {
+                grid-template-columns: repeat(2, 1fr)
+            }
+        }
+
+        @media(max-width:900px) {
+            .sidebar {
+                transform: translateX(-100%)
+            }
+
+            .sidebar.open {
+                transform: translateX(0)
+            }
+
+            .main-content {
+                margin-left: 0
+            }
+
+            .topbar {
+                display: none
+            }
+
+            .mobile-topbar {
+                display: flex
+            }
+
+            .page {
+                padding: 16px 16px 90px;
+                gap: 18px
+            }
+
+            .summary-strip {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            .metric-grid {
+                grid-template-columns: 1fr 1fr
+            }
+
+            .bottom-grid {
+                grid-template-columns: 1fr
+            }
+
+            .bottom-nav {
+                display: block
+            }
+        }
+
+        @media(max-width:480px) {
+            .summary-strip {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            .metric-grid {
+                grid-template-columns: 1fr
+            }
+
+            .sleep-metrics {
+                grid-template-columns: 1fr 1fr
+            }
+
+            .hr-val {
+                font-size: 38px
+            }
+
+            .sleep-val {
+                font-size: 34px
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="toast" id="toast"></div>
+    <div class="shell">
+
+        <!-- ─── SIDEBAR ─── -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <div class="logo-icon"><i data-lucide="activity" style="width:18px;height:18px;color:#fff"></i></div>
+                <div class="logo-text">Health<span>Pulse</span> AI</div>
+            </div>
+            <nav class="sidebar-nav">
+                <span class="nav-label">Features</span>
+                <a class="nav-item" href="dashboard.html"><i data-lucide="layout-dashboard"
+                        style="width:17px;height:17px"></i>Dashboard</a>
+                <a class="nav-item" href="diagnosis.html"><i data-lucide="activity"
+                        style="width:17px;height:17px"></i>AI Diagnosis</a>
+                <a class="nav-item" href="escalation.html"><i data-lucide="alert-triangle"
+                        style="width:17px;height:17px"></i>Escalation</a>
+                <a class="nav-item" href="hospital-finder.html"><i data-lucide="map-pin"
+                        style="width:17px;height:17px"></i>Hospital Finder</a>
+                <a class="nav-item" href="specialist-routing.html"><i data-lucide="stethoscope"
+                        style="width:17px;height:17px"></i>Specialist Route</a>
+                <a class="nav-item" href="chat.html"><i data-lucide="message-circle"
+                        style="width:17px;height:17px"></i>Chat Assistant</a>
+                <a class="nav-item active" href="wearables.html"><i data-lucide="watch"
+                        style="width:17px;height:17px"></i>Wearables</a>
+                <a class="nav-item" href="alerts.html"><i data-lucide="bell" style="width:17px;height:17px"></i>Health
+                    Alerts</a>
+                <a class="nav-item" href="insights.html"><i data-lucide="brain" style="width:17px;height:17px"></i>AI
+                    Insights</a>
+                <span class="nav-label">Account</span>
+                <a class="nav-item" href="messages.html"><i data-lucide="mail"
+                        style="width:17px;height:17px"></i>Messages<span class="nav-badge">5</span></a>
+                <a class="nav-item" href="#"><i data-lucide="settings"
+                        style="width:17px;height:17px"></i>Preferences</a>
+                <a class="nav-item" href="#"><i data-lucide="user-circle" style="width:17px;height:17px"></i>Profile</a>
+            </nav>
+            <div class="sidebar-user">
+                <div class="sidebar-avatar">OB</div>
+                <div>
+                    <div class="sidebar-user-name">Oliver Brooks</div>
+                    <div class="sidebar-user-role">Patient #HP-2847</div>
+                </div>
+            </div>
+        </aside>
+        <div class="overlay" id="overlay"></div>
+
+        <!-- ─── MAIN ─── -->
+        <div class="main-content">
+
+            <!-- DESKTOP TOPBAR -->
+            <header class="topbar">
+                <div class="topbar-title">Fitbit Inspire HR — Wearables</div>
+                <div class="topbar-right">
+                    <button id="syncBtn" class="sync-btn fitbit-login-btn" onclick="syncData()">
+                        <i data-lucide="refresh-cw" style="width:14px;height:14px"></i>
+                        Sync Now
+                    </button>
+                    <a id="connectFitbit" class="sync-btn" target="_blank" href="http://localhost:3000/api/fitbit/login?_bust=1"
+                        style="background:linear-gradient(135deg,#00B0B9,#008F95);margin-left:8px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;">
+                        <i data-lucide="log-in" style="width:14px;height:14px;color:#fff"></i>
+                        Connect Fitbit
+                    </a>
+                    <div class="icon-btn">
+                        <i data-lucide="bell" style="width:16px;height:16px;color:var(--sub)"></i>
+                        <div class="dot"></div>
+                    </div>
+                    <div class="tav">OB</div>
+                </div>
+            </header>
+
+            <!-- MOBILE TOPBAR -->
+            <header class="mobile-topbar">
+                <div class="mob-ham" id="hamburgerBtn"><i data-lucide="menu"
+                        style="width:19px;height:19px;color:var(--text)"></i></div>
+                <div class="mob-logo">
+                    <div class="mob-logo-ic"><i data-lucide="activity" style="width:14px;height:14px;color:#fff"></i>
+                    </div>
+                    <div class="mob-logo-txt">Wear<span>ables</span></div>
+                </div>
+                <div style="display:flex;gap:8px;align-items:center">
+                    <div class="mob-notif"><i data-lucide="bell" style="width:15px;height:15px;color:var(--sub)"></i>
+                        <div class="dot"></div>
+                    </div>
+                    <div class="mob-av">OB</div>
+                </div>
+            </header>
+
+            <!-- PAGE -->
+            <main class="page">
+
+                <!-- ══ LAST SYNC BANNER ══ -->
+                <div class="sync-banner">
+                    <div class="sync-left" id="authStatus">
+                        <div class="sync-dot disconnected" id="syncDot"></div>
+                        <div>
+                            <div class="sync-txt" id="authText">🔐 Connect Fitbit</div>
+                            <div class="sync-time" id="syncTime">No connection yet</div>
+                        </div>
+                    </div>
+
+                    <script>
+                        async function checkAuthStatus() {
+                            try {
+                                const res = await fetch('http://localhost:3000/api/fitbit/device');
+                                const data = await res.json();
+                                const status = document.getElementById('authStatus');
+                                const dot = document.getElementById('syncDot');
+                                const text = document.getElementById('authText');
+                                const time = document.getElementById('syncTime');
+
+                                if (data && data.lastSync) {
+                                    status.classList.add('connected');
+                                    status.classList.remove('disconnected');
+                                    dot.classList.remove('disconnected');
+                                    text.textContent = '✅ Fitbit Connected';
+                                    const syncDate = new Date(data.lastSync);
+                                    time.textContent = `Last synced: ${syncDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+                                } else {
+                                    status.classList.remove('connected');
+                                    status.classList.add('disconnected');
+                                    dot.classList.add('disconnected');
+                                    text.textContent = '🔐 Connect Fitbit';
+                                    time.textContent = 'No connection yet';
+                                }
+                            } catch (e) {
+                                console.log('Auth check failed:', e);
+                                // Default to disconnected
+                            }
+                        }
+
+                        // Check on load and every 30s
+                        checkAuthStatus();
+                        setInterval(checkAuthStatus, 30000);
+                    </script>
+                    <div class="sync-right">
+                        <div class="fitbit-badge">
+                            <i data-lucide="watch" style="width:14px;height:14px"></i>
+                            Inspire HR
+                        </div>
+                        <div style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px">
+                            <i data-lucide="battery-medium" style="width:14px;height:14px;color:var(--green)"
+                                id="battIcon"></i>
+                            <span id="battLevel">—</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ══ HERO BANNER — IMAGE SLOT ══ -->
+                <div class="hero-banner-slot">
+                    <!--
+        ┌─────────────────────────────────────────────────────────────────────┐
+        │  TO ADD YOUR IMAGE:                                                  │
+        │  Replace the div below with:                                         │
+        │  <img src="your-fitbit-banner.jpg"                                   │
+        │       alt="Fitbit Inspire HR"                                        │
+        │       style="width:100%;height:200px;object-fit:cover;display:block">│
+        └─────────────────────────────────────────────────────────────────────┘
+      -->
+                    <img src="assets/watch.png" alt="Fitbit Inspire HR Banner"
+                        style="display:block;margin:0 auto;max-width:100%;height:auto">
+                </div>
+
+                <!-- ══ TODAY'S SUMMARY STRIP ══ -->
+                <div>
+                    <div class="section-hdr" style="margin-bottom:14px">
+                        <div>
+                            <div class="section-title">Today's Summary</div>
+                            <div class="section-sub" id="summaryDate">Loading from Fitbit…</div>
+                        </div>
+                        <button class="view-all">View History</button>
+                    </div>
+                    <div class="summary-strip">
+
+                        <div class="sum-tile">
+                            <div class="sum-tile-accent" style="background:var(--blue)"></div>
+                            <div class="sum-icon" style="background:var(--blue-light)">
+                                <i data-lucide="footprints" style="width:20px;height:20px;color:var(--blue)"></i>
+                            </div>
+                            <div class="sum-val" id="s-steps">—</div>
+                            <div class="sum-unit">steps</div>
+                            <div class="sum-label">Steps</div>
+                            <div class="sum-trend" id="s-steps-trend"><span class="trend-ok">—</span></div>
+                            <div class="sum-progress-bg">
+                                <div class="sum-progress-fill" id="sp-steps" style="background:var(--blue)"></div>
+                            </div>
+                        </div>
+
+                        <div class="sum-tile">
+                            <div class="sum-tile-accent" style="background:var(--coral)"></div>
+                            <div class="sum-icon" style="background:var(--coral-light)">
+                                <i data-lucide="heart-pulse" style="width:20px;height:20px;color:var(--coral)"></i>
+                            </div>
+                            <div class="sum-val" id="s-hr">—</div>
+                            <div class="sum-unit">bpm</div>
+                            <div class="sum-label">Heart Rate</div>
+                            <div class="sum-trend" id="s-hr-trend"><span class="trend-ok">—</span></div>
+                            <div class="sum-progress-bg">
+                                <div class="sum-progress-fill" id="sp-hr" style="background:var(--coral)"></div>
+                            </div>
+                        </div>
+
+                        <div class="sum-tile">
+                            <div class="sum-tile-accent" style="background:var(--amber)"></div>
+                            <div class="sum-icon" style="background:var(--amber-light)">
+                                <i data-lucide="flame" style="width:20px;height:20px;color:var(--amber)"></i>
+                            </div>
+                            <div class="sum-val" id="s-cal">—</div>
+                            <div class="sum-unit">kcal</div>
+                            <div class="sum-label">Calories</div>
+                            <div class="sum-trend" id="s-cal-trend"><span class="trend-ok">—</span></div>
+                            <div class="sum-progress-bg">
+                                <div class="sum-progress-fill" id="sp-cal" style="background:var(--amber)"></div>
+                            </div>
+                        </div>
+
+                        <div class="sum-tile">
+                            <div class="sum-tile-accent" style="background:var(--purple)"></div>
+                            <div class="sum-icon" style="background:var(--purple-light)">
+                                <i data-lucide="moon" style="width:20px;height:20px;color:var(--purple)"></i>
+                            </div>
+                            <div class="sum-val" id="s-sleep">—</div>
+                            <div class="sum-unit">hrs</div>
+                            <div class="sum-label">Sleep</div>
+                            <div class="sum-trend" id="s-sleep-trend"><span class="trend-ok">—</span></div>
+                            <div class="sum-progress-bg">
+                                <div class="sum-progress-fill" id="sp-sleep" style="background:var(--purple)"></div>
+                            </div>
+                        </div>
+
+                        <div class="sum-tile">
+                            <div class="sum-tile-accent" style="background:var(--green)"></div>
+                            <div class="sum-icon" style="background:var(--green-light)">
+                                <i data-lucide="map" style="width:20px;height:20px;color:var(--green)"></i>
+                            </div>
+                            <div class="sum-val" id="s-dist">—</div>
+                            <div class="sum-unit">km</div>
+                            <div class="sum-label">Distance</div>
+                            <div class="sum-trend" id="s-dist-trend"><span class="trend-ok">—</span></div>
+                            <div class="sum-progress-bg">
+                                <div class="sum-progress-fill" id="sp-dist" style="background:var(--green)"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ══ HEART RATE (dark card) + ACTIVITY (hourly) ══ -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+
+                    <!-- Heart Rate Live -->
+                    <div class="hr-card">
+                        <div class="hr-mesh"></div>
+                        <div class="hr-scan"></div>
+                        <div class="hr-glow"></div>
+                        <div class="hr-inner">
+                            <div class="hr-top">
+                                <div class="hr-left">
+                                    <div class="hr-eyebrow">
+                                        <div class="hr-eye-dot"></div>Heart Rate · Live
+                                    </div>
+                                    <div class="hr-val" id="hr-current">—<span class="hr-unit">bpm</span></div>
+                                    <div class="hr-status" id="hr-zone-label">Loading…</div>
+                                </div>
+                                <div class="hr-zones">
+                                    <div class="hr-zone" id="zone-rest">Resting</div>
+                                    <div class="hr-zone" id="zone-fat">Fat Burn</div>
+                                    <div class="hr-zone" id="zone-cardio">Cardio</div>
+                                    <div class="hr-zone" id="zone-peak">Peak</div>
+                                </div>
+                            </div>
+                            <!-- Mini HR stats -->
+                            <div style="display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap">
+                                <div
+                                    style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:8px 14px;min-width:80px">
+                                    <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:800;color:#fff"
+                                        id="hr-resting">—</div>
+                                    <div style="font-size:10px;color:rgba(255,255,255,.35);margin-top:1px">Resting</div>
+                                </div>
+                                <div
+                                    style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:8px 14px;min-width:80px">
+                                    <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:800;color:#fff"
+                                        id="hr-min">—</div>
+                                    <div style="font-size:10px;color:rgba(255,255,255,.35);margin-top:1px">Min today
+                                    </div>
+                                </div>
+                                <div
+                                    style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:8px 14px;min-width:80px">
+                                    <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:800;color:#fff"
+                                        id="hr-max">—</div>
+                                    <div style="font-size:10px;color:rgba(255,255,255,.35);margin-top:1px">Max today
+                                    </div>
+                                </div>
+                                <div
+                                    style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:8px 14px;min-width:80px">
+                                    <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:800;color:#fff"
+                                        id="hr-avg">—</div>
+                                    <div style="font-size:10px;color:rgba(255,255,255,.35);margin-top:1px">Avg today
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- HR chart canvas -->
+                            <div class="hr-chart-wrap">
+                                <canvas id="hrCanvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hourly Activity -->
+                    <div class="activity-card">
+                        <div class="section-hdr">
+                            <div>
+                                <div style="font-family:'Sora',sans-serif;font-size:15px;font-weight:700">Hourly
+                                    Activity</div>
+                                <div style="font-size:11.5px;color:var(--muted);margin-top:2px">Steps per hour today
+                                </div>
+                            </div>
+                            <div style="font-size:12px;font-weight:700;color:var(--blue)" id="activeHours">— active hrs
+                            </div>
+                        </div>
+                        <div class="hour-chart" id="hourChart"></div>
+                        <div class="hour-labels" id="hourLabels"></div>
+                        <!-- Active minutes breakdown -->
+                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px">
+                            <div
+                                style="background:var(--green-light);border-radius:var(--r);padding:10px;text-align:center">
+                                <div style="font-family:'Sora',sans-serif;font-size:18px;font-weight:800;color:var(--green)"
+                                    id="am-fairly">—</div>
+                                <div style="font-size:10px;color:var(--green);font-weight:600;margin-top:2px">Fairly
+                                    Active</div>
+                                <div style="font-size:9.5px;color:var(--muted)">minutes</div>
+                            </div>
+                            <div
+                                style="background:var(--amber-light);border-radius:var(--r);padding:10px;text-align:center">
+                                <div style="font-family:'Sora',sans-serif;font-size:18px;font-weight:800;color:var(--amber)"
+                                    id="am-very">—</div>
+                                <div style="font-size:10px;color:var(--amber);font-weight:600;margin-top:2px">Very
+                                    Active</div>
+                                <div style="font-size:9.5px;color:var(--muted)">minutes</div>
+                            </div>
+                            <div
+                                style="background:var(--blue-light);border-radius:var(--r);padding:10px;text-align:center">
+                                <div style="font-family:'Sora',sans-serif;font-size:18px;font-weight:800;color:var(--blue)"
+                                    id="am-sedentary">—</div>
+                                <div style="font-size:10px;color:var(--blue);font-weight:600;margin-top:2px">Sedentary
+                                </div>
+                                <div style="font-size:9.5px;color:var(--muted)">minutes</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ══ METRIC GRID (SpO2, Calories, Floors, BMI-ish) ══ -->
+                <div>
+                    <div class="section-hdr" style="margin-bottom:14px">
+                        <div>
+                            <div class="section-title">Key Metrics</div>
+                            <div class="section-sub">All synced from Fitbit Inspire HR</div>
+                        </div>
+                    </div>
+                    <div class="metric-grid">
+
+                        <!-- SpO2 -->
+                        <div class="mcard">
+                            <div class="mcard-hdr">
+                                <div class="mcard-icon" style="background:var(--blue-light)">
+                                    <i data-lucide="droplets" style="width:20px;height:20px;color:var(--blue)"></i>
+                                </div>
+                                <span class="mcard-badge" id="spo2-badge"
+                                    style="background:var(--green-light);color:var(--green)">—</span>
+                            </div>
+                            <div>
+                                <div class="mcard-val" id="spo2-val">—<span class="unit">%</span></div>
+                                <div class="mcard-label">Blood Oxygen (SpO₂)</div>
+                                <div class="mcard-sub" id="spo2-sub">Loading…</div>
+                            </div>
+                            <div class="mcard-bar-bg">
+                                <div class="mcard-bar" id="spo2-bar" style="background:var(--blue)"></div>
+                            </div>
+                        </div>
+
+                        <!-- Calories Goal -->
+                        <div class="mcard">
+                            <div class="mcard-hdr">
+                                <div class="mcard-icon" style="background:var(--amber-light)">
+                                    <i data-lucide="zap" style="width:20px;height:20px;color:var(--amber)"></i>
+                                </div>
+                                <span class="mcard-badge" id="cal-badge"
+                                    style="background:var(--amber-light);color:var(--amber)">—</span>
+                            </div>
+                            <div>
+                                <div class="mcard-val" id="cal-val">—<span class="unit">kcal</span></div>
+                                <div class="mcard-label">Calories Burned</div>
+                                <div class="mcard-sub" id="cal-sub">Goal: — kcal</div>
+                            </div>
+                            <div class="mcard-bar-bg">
+                                <div class="mcard-bar" id="cal-bar" style="background:var(--amber)"></div>
+                            </div>
+                            <div class="ring-wrap">
+                                <div class="ring-svg-wrap">
+                                    <svg viewBox="0 0 70 70">
+                                        <circle class="ring-bg" cx="35" cy="35" r="28" />
+                                        <circle class="ring-fill" id="cal-ring" cx="35" cy="35" r="28"
+                                            stroke="var(--amber)" stroke-dasharray="176" stroke-dashoffset="176" />
+                                    </svg>
+                                    <div class="ring-label-inner">
+                                        <div class="ring-num" id="cal-pct">—</div>
+                                        <div class="ring-pct">%</div>
+                                    </div>
+                                </div>
+                                <div style="font-size:12px;color:var(--sub);line-height:1.55">of daily<br>calorie
+                                    goal<br>completed</div>
+                            </div>
+                        </div>
+
+                        <!-- Steps Goal -->
+                        <div class="mcard">
+                            <div class="mcard-hdr">
+                                <div class="mcard-icon" style="background:var(--blue-light)">
+                                    <i data-lucide="footprints" style="width:20px;height:20px;color:var(--blue)"></i>
+                                </div>
+                                <span class="mcard-badge" id="steps-badge"
+                                    style="background:var(--blue-light);color:var(--blue)">—</span>
+                            </div>
+                            <div>
+                                <div class="mcard-val" id="steps-val">—<span class="unit">steps</span></div>
+                                <div class="mcard-label">Steps Today</div>
+                                <div class="mcard-sub" id="steps-sub">Goal: — steps</div>
+                            </div>
+                            <div class="mcard-bar-bg">
+                                <div class="mcard-bar" id="steps-bar" style="background:var(--blue)"></div>
+                            </div>
+                            <div class="ring-wrap">
+                                <div class="ring-svg-wrap">
+                                    <svg viewBox="0 0 70 70">
+                                        <circle class="ring-bg" cx="35" cy="35" r="28" />
+                                        <circle class="ring-fill" id="steps-ring" cx="35" cy="35" r="28"
+                                            stroke="var(--blue)" stroke-dasharray="176" stroke-dashoffset="176" />
+                                    </svg>
+                                    <div class="ring-label-inner">
+                                        <div class="ring-num" id="steps-pct">—</div>
+                                        <div class="ring-pct">%</div>
+                                    </div>
+                                </div>
+                                <div style="font-size:12px;color:var(--sub);line-height:1.55">of daily<br>step
+                                    goal<br>completed</div>
+                            </div>
+                        </div>
+
+                        <!-- Distance -->
+                        <div class="mcard">
+                            <div class="mcard-hdr">
+                                <div class="mcard-icon" style="background:var(--green-light)">
+                                    <i data-lucide="map" style="width:20px;height:20px;color:var(--green)"></i>
+                                </div>
+                                <span class="mcard-badge" id="dist-badge"
+                                    style="background:var(--green-light);color:var(--green)">—</span>
+                            </div>
+                            <div>
+                                <div class="mcard-val" id="dist-val">—<span class="unit">km</span></div>
+                                <div class="mcard-label">Distance Covered</div>
+                                <div class="mcard-sub" id="dist-sub">Goal: — km</div>
+                            </div>
+                            <div class="mcard-bar-bg">
+                                <div class="mcard-bar" id="dist-bar" style="background:var(--green)"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ══ SLEEP SECTION (dark purple) ══ -->
+                <div class="sleep-card">
+                    <div class="sleep-mesh"></div>
+                    <div class="sleep-inner">
+                        <div class="sleep-top">
+                            <div class="sleep-left">
+                                <div class="sleep-eyebrow">Last Night's Sleep</div>
+                                <div><span class="sleep-val" id="sleep-total">—</span><span
+                                        class="sleep-unit">hrs</span></div>
+                                <div style="font-size:12px;color:rgba(255,255,255,.4);margin-top:4px" id="sleep-window">
+                                    — — to — —</div>
+                            </div>
+                            <div class="sleep-score-ring">
+                                <div class="ring-svg-wrap" style="width:80px;height:80px">
+                                    <svg viewBox="0 0 80 80" width="80" height="80">
+                                        <circle fill="none" stroke="rgba(255,255,255,.08)" stroke-width="8" cx="40"
+                                            cy="40" r="32" />
+                                        <circle class="ring-fill" id="sleep-ring" fill="none" stroke-width="8"
+                                            stroke-linecap="round" stroke="url(#sleepGrad)" cx="40" cy="40" r="32"
+                                            stroke-dasharray="201" stroke-dashoffset="201" />
+                                        <defs>
+                                            <linearGradient id="sleepGrad" x1="0" y1="0" x2="1" y2="1">
+                                                <stop offset="0%" stop-color="#A78BFA" />
+                                                <stop offset="100%" stop-color="#7C3AED" />
+                                            </linearGradient>
+                                        </defs>
+                                    </svg>
+                                    <div class="ring-label-inner">
+                                        <div class="sleep-score-val" id="sleep-score">—</div>
+                                        <div class="sleep-score-lbl">score</div>
+                                    </div>
+                                </div>
+                                <div style="font-size:10px;color:rgba(255,255,255,.3);margin-top:4px">Sleep Score</div>
+                            </div>
+                        </div>
+
+                        <!-- Sleep stages -->
+                        <div class="sleep-stages">
+                            <div class="sleep-stage-row">
+                                <div class="stage-label">Awake</div>
+                                <div class="stage-bar-bg">
+                                    <div class="stage-bar-fill" id="stage-awake" style="background:#EF4444"></div>
+                                </div>
+                                <div class="stage-time" id="st-awake">—</div>
+                            </div>
+                            <div class="sleep-stage-row">
+                                <div class="stage-label">REM</div>
+                                <div class="stage-bar-bg">
+                                    <div class="stage-bar-fill" id="stage-rem" style="background:#7C3AED"></div>
+                                </div>
+                                <div class="stage-time" id="st-rem">—</div>
+                            </div>
+                            <div class="sleep-stage-row">
+                                <div class="stage-label">Light</div>
+                                <div class="stage-bar-bg">
+                                    <div class="stage-bar-fill" id="stage-light" style="background:#818CF8"></div>
+                                </div>
+                                <div class="stage-time" id="st-light">—</div>
+                            </div>
+                            <div class="sleep-stage-row">
+                                <div class="stage-label">Deep</div>
+                                <div class="stage-bar-bg">
+                                    <div class="stage-bar-fill" id="stage-deep" style="background:#4F46E5"></div>
+                                </div>
+                                <div class="stage-time" id="st-deep">—</div>
+                            </div>
+                        </div>
+
+                        <!-- Sleep extra metrics -->
+                        <div class="sleep-metrics">
+                            <div class="sleep-metric">
+                                <div class="sm-val" id="sl-efficiency">—%</div>
+                                <div class="sm-lbl">Efficiency</div>
+                            </div>
+                            <div class="sleep-metric">
+                                <div class="sm-val" id="sl-latency">— min</div>
+                                <div class="sm-lbl">Onset time</div>
+                            </div>
+                            <div class="sleep-metric">
+                                <div class="sm-val" id="sl-awakenings">—</div>
+                                <div class="sm-lbl">Awakenings</div>
+                            </div>
+                            <div class="sleep-metric">
+                                <div class="sm-val" id="sl-hrv">— ms</div>
+                                <div class="sm-lbl">HRV (overnight)</div>
+                            </div>
+                            <div class="sleep-metric">
+                                <div class="sm-val" id="sl-breathing">—</div>
+                                <div class="sm-lbl">Breathing Rate</div>
+                            </div>
+                            <div class="sleep-metric">
+                                <div class="sm-val" id="sl-temp">—°C</div>
+                                <div class="sm-lbl">Skin Temp Δ</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ══ BOTTOM GRID: Hydration · Stress · Wellness ══ -->
+                <div class="bottom-grid">
+
+                    <!-- Hydration -->
+                    <div class="hydration-card">
+                        <div class="section-hdr">
+                            <div>
+                                <div style="font-family:'Sora',sans-serif;font-size:15px;font-weight:700">Hydration
+                                </div>
+                                <div style="font-size:11.5px;color:var(--muted);margin-top:2px">Daily water intake</div>
+                            </div>
+                            <div style="text-align:right">
+                                <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:800;color:var(--teal)"
+                                    id="water-consumed">— ml</div>
+                                <div style="font-size:10.5px;color:var(--muted)">of <span id="water-goal">—</span> ml
+                                    goal</div>
+                            </div>
+                        </div>
+                        <div class="water-glasses" id="waterGlasses">
+                            <!-- Built by JS from backend data -->
+                        </div>
+                        <div style="margin-top:12px">
+                            <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+                                <span style="font-size:11.5px;color:var(--sub);font-weight:500">Progress</span>
+                                <span style="font-size:11.5px;font-weight:700;color:var(--teal)"
+                                    id="water-pct">—%</span>
+                            </div>
+                            <div style="height:6px;background:var(--border);border-radius:6px;overflow:hidden">
+                                <div id="water-bar"
+                                    style="height:100%;background:linear-gradient(90deg,var(--teal),#0ABFBC);border-radius:6px;width:0;transition:width 1.2s cubic-bezier(.4,0,.2,1)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stress Score -->
+                    <div class="stress-card">
+                        <div class="section-hdr">
+                            <div>
+                                <div style="font-family:'Sora',sans-serif;font-size:15px;font-weight:700">Stress
+                                    Management</div>
+                                <div style="font-size:11.5px;color:var(--muted);margin-top:2px">Fitbit stress score
+                                </div>
+                            </div>
+                            <div style="text-align:right">
+                                <div style="font-family:'Sora',sans-serif;font-size:24px;font-weight:800;color:var(--text)"
+                                    id="stress-val">—</div>
+                                <div style="font-size:11px;font-weight:700" id="stress-label"
+                                    style="color:var(--green)">—</div>
+                            </div>
+                        </div>
+                        <div class="stress-gauge">
+                            <div class="stress-bar-bg">
+                                <div class="stress-needle" id="stress-needle" style="left:50%"></div>
+                            </div>
+                            <div class="stress-labels">
+                                <span class="stress-lbl" style="color:var(--green)">Low</span>
+                                <span class="stress-lbl" style="color:var(--amber)">Medium</span>
+                                <span class="stress-lbl" style="color:var(--red)">High</span>
+                            </div>
+                        </div>
+                        <!-- HRV + Breathing -->
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px">
+                            <div
+                                style="background:var(--bg);border-radius:var(--r);padding:10px 12px;border:1px solid var(--border)">
+                                <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--text)"
+                                    id="hrv-daily">— ms</div>
+                                <div style="font-size:10.5px;color:var(--muted);margin-top:2px">Daily HRV</div>
+                            </div>
+                            <div
+                                style="background:var(--bg);border-radius:var(--r);padding:10px 12px;border:1px solid var(--border)">
+                                <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:var(--text)"
+                                    id="breathing-rate">— /min</div>
+                                <div style="font-size:10.5px;color:var(--muted);margin-top:2px">Breathing Rate</div>
+                            </div>
+                        </div>
+                        <!-- Mindful minutes -->
+                        <div
+                            style="margin-top:10px;background:var(--purple-light);border-radius:var(--r);padding:12px 14px;display:flex;align-items:center;gap:10px">
+                            <i data-lucide="brain" style="width:18px;height:18px;color:var(--purple)"></i>
+                            <div>
+                                <div style="font-size:13px;font-weight:700;color:var(--purple)" id="mindful-min">— mins
+                                </div>
+                                <div style="font-size:10.5px;color:var(--muted)">Mindful minutes today</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Wellness / Body -->
+                    <div class="wellness-card">
+                        <div style="font-family:'Sora',sans-serif;font-size:15px;font-weight:700;margin-bottom:12px">
+                            Body & Wellness</div>
+                        <div class="wellness-grid">
+                            <div class="wt">
+                                <div class="wt-val" id="w-weight">— kg</div>
+                                <div class="wt-lbl">Weight</div>
+                            </div>
+                            <div class="wt">
+                                <div class="wt-val" id="w-bmi">—</div>
+                                <div class="wt-lbl">BMI</div>
+                            </div>
+                            <div class="wt">
+                                <div class="wt-val" id="w-fat">—%</div>
+                                <div class="wt-lbl">Body Fat</div>
+                            </div>
+                            <div class="wt">
+                                <div class="wt-val" id="w-vo2">—</div>
+                                <div class="wt-lbl">VO₂ Max</div>
+                            </div>
+                        </div>
+                        <!-- Weekly step chart -->
+                        <div style="margin-top:14px">
+                            <div style="font-size:12px;font-weight:600;color:var(--sub);margin-bottom:8px">Weekly Steps
+                            </div>
+                            <div style="display:flex;align-items:flex-end;gap:4px;height:48px" id="weekStepChart"></div>
+                            <div style="display:flex;gap:4px;margin-top:4px" id="weekDayLabels"></div>
+                        </div>
+                        <!-- Menstrual / cycle (optional — shows if data present) -->
+                        <div id="cycleSection"
+                            style="display:none;margin-top:12px;background:var(--pink-light);border-radius:var(--r);padding:12px 14px;border:1px solid rgba(236,72,153,.15)">
+                            <div
+                                style="font-size:12px;font-weight:700;color:var(--pink);margin-bottom:4px;display:flex;align-items:center;gap:6px">
+                                <i data-lucide="calendar-heart" style="width:14px;height:14px"></i>
+                                Menstrual Cycle
+                            </div>
+                            <div style="display:flex;gap:12px;flex-wrap:wrap">
+                                <div>
+                                    <div style="font-size:14px;font-weight:700;color:var(--text)" id="cycle-day">—</div>
+                                    <div style="font-size:10px;color:var(--muted)">Cycle day</div>
+                                </div>
+                                <div>
+                                    <div style="font-size:14px;font-weight:700;color:var(--text)" id="cycle-phase">—
+                                    </div>
+                                    <div style="font-size:10px;color:var(--muted)">Phase</div>
+                                </div>
+                                <div>
+                                    <div style="font-size:14px;font-weight:700;color:var(--text)" id="cycle-next">—
+                                    </div>
+                                    <div style="font-size:10px;color:var(--muted)">Next period</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </main><!-- /page -->
+        </div><!-- /main-content -->
+    </div><!-- /shell -->
+
+    <!-- MOBILE BOTTOM NAV -->
+    <nav class="bottom-nav">
+        <div class="bnav-inner">
+            <a class="bn-item" href="dashboard.html"><i data-lucide="layout-dashboard"
+                    style="width:20px;height:20px"></i>Home</a>
+            <div class="bn-item active"><i data-lucide="watch" style="width:20px;height:20px"></i>Wearables</div>
+            <div style="display:flex;flex-direction:column;align-items:center">
+                <div class="bn-center" onclick="window.location.href='diagnosis.html'">
+                    <i data-lucide="activity" style="width:22px;height:22px;color:#fff"></i>
+                </div>
+            </div>
+            <a class="bn-item" href="chat.html"><i data-lucide="message-circle"
+                    style="width:20px;height:20px"></i>Chat</a>
+            <div class="bn-item"><i data-lucide="user-circle" style="width:20px;height:20px"></i>Profile</div>
+        </div>
+    </nav>
+
+    <script>
+        /* ══════════════════════════════════════════════════════
+           CONFIG — point to your Express server
+           All data is expected at /api/fitbit/*
+           Your Fitbit auth tokens live in the backend session.
+        ══════════════════════════════════════════════════════ */
+        const API_BASE = 'http://localhost:3000';   // explicitly hit the running backend from file:///
+
+        /* ══════════════════════════════════════════════════════
+           EXPECTED BACKEND ENDPOINTS
+           (You build these — frontend just fetches them)
+        
+           GET /api/fitbit/summary       → today's summary (steps, HR, cal, sleep, distance)
+           GET /api/fitbit/heartrate     → HR details (current, resting, min, max, avg, zones, intraday)
+           GET /api/fitbit/sleep         → sleep details (total, stages, score, efficiency, HRV, etc.)
+           GET /api/fitbit/activity      → hourly steps, active minutes
+           GET /api/fitbit/body          → weight, BMI, body fat, VO2 max
+           GET /api/fitbit/water         → consumed ml, goal ml
+           GET /api/fitbit/stress        → stress score, HRV, breathing rate, mindful minutes
+           GET /api/fitbit/device        → battery level, last sync time
+           GET /api/fitbit/cycle         → menstrual cycle (optional, null if not set up)
+           GET /api/fitbit/weekly        → 7-day step array
+        ══════════════════════════════════════════════════════ */
+
+        /* ──────────────────────────────────────────────────
+           FETCH HELPER — gracefully handles errors
+        ────────────────────────────────────────────────── */
+        async function apiFetch(path) {
+            try {
+                const r = await fetch(`${API_BASE}${path}`, {
+                    credentials: 'include'   // 🔥 REQUIRED FOR FITBIT SESSION
+                });
+                if (!r.ok) { console.warn(`${path} → ${r.status}`); return null; }
+                return await r.json();
+            } catch (e) {
+                console.error(`${path} fetch failed:`, e);
+                return null;
+            }
+        }
+
+        /* ──────────────────────────────────────────────────
+           INIT — load all sections in parallel
+        ────────────────────────────────────────────────── */
+        async function init() {
+            lucide.createIcons();
+
+            await Promise.allSettled([
+                loadDevice(),
+                loadSummary(),
+                loadHeartRate(),
+                loadSleep(),
+                loadActivity(),
+                loadBody(),
+                loadWater(),
+                loadStress(),
+                loadWeekly(),
+                loadCycle(),
+            ]);
+        }
+
+        /* ══ DEVICE ══ */
+        async function loadDevice() {
+            const d = await apiFetch('/api/fitbit/device');
+            if (!d) return;
+            // d = { lastSync: "2025-03-20T09:32:00", batteryLevel: "High|Medium|Low|Empty|<number>" }
+            const t = d.lastSync ? new Date(d.lastSync) : null;
+            document.getElementById('syncTime').textContent = t
+                ? `Last synced: ${t.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} · ${t.toLocaleDateString([], { month: 'short', day: 'numeric' })}`
+                : 'Last sync time unavailable';
+
+            if (d.batteryLevel) {
+                const batt = String(d.batteryLevel).toLowerCase();
+                const battIcon = document.getElementById('battIcon');
+                const battEl = document.getElementById('battLevel');
+                battEl.textContent = d.batteryLevel;
+                if (batt === 'low' || batt === 'empty') {
+                    battIcon.setAttribute('data-lucide', 'battery-low');
+                    battIcon.style.color = 'var(--coral)';
+                } else if (batt === 'medium') {
+                    battIcon.setAttribute('data-lucide', 'battery-medium');
+                    battIcon.style.color = 'var(--amber)';
+                } else {
+                    battIcon.setAttribute('data-lucide', 'battery-full');
+                    battIcon.style.color = 'var(--green)';
+                }
+                lucide.createIcons();
+            }
+        }
+
+        /* ══ SUMMARY ══ */
+        async function loadSummary() {
+            const d = await apiFetch('/api/fitbit/summary');
+            if (!d) { setLoadingFailed(['s-steps', 's-hr', 's-cal', 's-sleep', 's-dist']); return; }
+            /*
+              d = {
+                date: "2025-03-20",
+                steps: 7241, stepsGoal: 10000,
+                heartRate: 74,
+                calories: 1832, caloriesGoal: 2500,
+                sleep: 7.2,
+                distance: 5.4, distanceGoal: 8
+              }
+            */
+            const today = d.date ? new Date(d.date) : new Date();
+            console.log("SUMMARY DATA:", d);
+            setText('s-steps', d.steps?.toLocaleString() || '0');
+            setText('s-hr', d.heartRate || '0');
+            setText('s-cal', d.calories?.toLocaleString() || '0');
+            setText('s-sleep', d.sleep != null ? Number(d.sleep).toFixed(1) : '0.0');
+            setText('s-dist', d.distance != null ? Number(d.distance).toFixed(1) : '0.0');
+
+            // Device strip
+            setText('dsSteps', d.steps ? d.steps.toLocaleString() + ' steps' : '—');
+            setText('dsHR', d.heartRate ? d.heartRate + ' bpm' : '—');
+            setText('dsCal', d.calories ? d.calories.toLocaleString() + ' kcal' : '—');
+            setText('dsSleep', d.sleep != null ? Number(d.sleep).toFixed(1) + ' hrs sleep' : '—');
+
+            // Progress bars (pct of goal)
+            setBar('sp-steps', d.steps, d.stepsGoal);
+            setBar('sp-hr', d.heartRate, 120);   // 120 bpm rough max reference
+            setBar('sp-cal', d.calories, d.caloriesGoal);
+            setBar('sp-sleep', d.sleep, 8);
+            setBar('sp-dist', d.distance, d.distanceGoal);
+
+            // Trend labels
+            trendLabel('s-steps-trend', d.steps, d.stepsGoal * 0.75, `${pct(d.steps, d.stepsGoal)}% of goal`);
+            trendLabel('s-cal-trend', d.calories, d.caloriesGoal * 0.7, `${pct(d.calories, d.caloriesGoal)}% of goal`);
+            trendLabel('s-dist-trend', d.distance, d.distanceGoal * 0.7, `${pct(d.distance, d.distanceGoal)}% of goal`);
+        }
+
+        /* ══ HEART RATE ══ */
+        async function loadHeartRate() {
+            const d = await apiFetch('/api/fitbit/heartrate');
+            if (!d) return;
+            /*
+              d = {
+                current: 74, resting: 62, min: 55, max: 142, avg: 76,
+                zone: "Fat Burn",   // "Out of Range" | "Fat Burn" | "Cardio" | "Peak"
+                intraday: [72,74,70,...]  // array of HR readings for chart
+              }
+            */
+            setText('hr-current', d.current || '—');
+            setText('hr-resting', d.resting || '—');
+            setText('hr-min', d.min || '—');
+            setText('hr-max', d.max || '—');
+            setText('hr-avg', d.avg || '—');
+            setText('hr-zone-label', d.zone || 'Normal');
+
+            // Zone pills
+            const zoneMap = { 'Out of Range': 'zone-rest', 'Normal': 'zone-rest', 'Fat Burn': 'zone-fat', 'Cardio': 'zone-cardio', 'Peak': 'zone-peak' };
+            Object.values(zoneMap).forEach(id => document.getElementById(id)?.classList.remove('active'));
+            if (d.zone && zoneMap[d.zone]) document.getElementById(zoneMap[d.zone])?.classList.add('active');
+            else document.getElementById('zone-rest')?.classList.add('active'); // Default
+
+            // Intraday chart
+            if (Array.isArray(d.intraday) && d.intraday.length) drawHRChart(d.intraday);
+        }
+
+        /* ══ SLEEP ══ */
+        async function loadSleep() {
+            const d = await apiFetch('/api/fitbit/sleep');
+            if (!d) return;
+            /*
+              d = {
+                totalHours: 7.2,
+                score: 78,
+                bedtime: "2025-03-19T23:15:00",
+                wakeTime: "2025-03-20T06:27:00",
+                efficiency: 91,
+                latencyMin: 12,
+                awakenings: 3,
+                hrv: 42,
+                breathingRate: 15.2,
+                skinTempDelta: 0.3,
+                stages: {
+                  awakeMin: 18, remMin: 88, lightMin: 204, deepMin: 122
+                }
+              }
+            */
+            setText('sleep-total', d.totalHours != null ? Number(d.totalHours).toFixed(1) : '0.0');
+            setText('sleep-score', d.score ?? '—');
+
+            if (d.bedtime && d.wakeTime) {
+                const bed = new Date(d.bedtime);
+                const wake = new Date(d.wakeTime);
+                document.getElementById('sleep-window').textContent =
+                    `${bed.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} → ${wake.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+            }
+
+            // Sleep ring (score out of 100)
+            setRing('sleep-ring', d.score, 100, 201);
+
+            // Sleep stages
+            const total = ((d.stages?.awakeMin || 0) + (d.stages?.remMin || 0) + (d.stages?.lightMin || 0) + (d.stages?.deepMin || 0)) || 1;
+            setStagebar('stage-awake', d.stages?.awakeMin, total, 'st-awake');
+            setStagebar('stage-rem', d.stages?.remMin, total, 'st-rem');
+            setStagebar('stage-light', d.stages?.lightMin, total, 'st-light');
+            setStagebar('stage-deep', d.stages?.deepMin, total, 'st-deep');
+
+            setText('sl-efficiency', d.efficiency != null ? d.efficiency + '%' : '—%');
+            setText('sl-latency', d.latencyMin != null ? d.latencyMin + ' min' : '— min');
+            setText('sl-awakenings', d.awakenings ?? '—');
+            setText('sl-hrv', d.hrv != null ? d.hrv + ' ms' : '— ms');
+            setText('sl-breathing', d.breathingRate != null ? d.breathingRate.toFixed(1) + '/min' : '—');
+            setText('sl-temp', d.skinTempDelta != null ? (d.skinTempDelta >= 0 ? '+' : '') + d.skinTempDelta.toFixed(1) + '°C' : '—°C');
+        }
+
+        /* ══ ACTIVITY ══ */
+        async function loadActivity() {
+            const d = await apiFetch('/api/fitbit/activity');
+            if (!d) return;
+            /*
+              d = {
+                hourlySteps: [0,0,0,0,0,0,120,430,...],   // 24 values (midnight→11pm)
+                fairlyActiveMin: 32,
+                veryActiveMin: 18,
+                sedentaryMin: 712
+              }
+            */
+            setText('am-fairly', d.fairlyActiveMin ?? '—');
+            setText('am-very', d.veryActiveMin ?? '—');
+            setText('am-sedentary', d.sedentaryMin ?? '—');
+
+            if (Array.isArray(d.hourlySteps)) drawHourChart(d.hourlySteps);
+        }
+
+        /* ══ BODY ══ */
+        async function loadBody() {
+            const d = await apiFetch('/api/fitbit/body');
+            if (!d) return;
+            // d = { weight: 74.2, bmi: 22.1, bodyFatPct: 18.4, vo2max: 42 }
+            setText('w-weight', d.weight != null ? d.weight.toFixed(1) + ' kg' : '— kg');
+            setText('w-bmi', d.bmi != null ? d.bmi.toFixed(1) : '—');
+            setText('w-fat', d.bodyFatPct != null ? d.bodyFatPct.toFixed(1) + '%' : '—%');
+            setText('w-vo2', d.vo2max ?? '—');
+
+            // Summary tile SpO2 (if not separate endpoint, body may include it)
+            if (d.spo2 != null) fillSpO2(d.spo2);
+
+            // Metrics section SpO2 card
+            const s = await apiFetch('/api/fitbit/body');
+            // (SpO2 populated separately if available)
+        }
+
+        /* ══ SPO2 METRIC CARD ══ */
+        async function loadSpO2() {
+            // Sometimes Fitbit includes SpO2 in body or a separate endpoint
+            // Adjust path to match your backend
+        }
+
+        /* ══ WATER ══ */
+        async function loadWater() {
+            const d = await apiFetch('/api/fitbit/water');
+            if (!d) return;
+            // d = { consumed: 1600, goal: 2500 }
+            setText('water-consumed', d.consumed != null ? d.consumed.toLocaleString() + ' ml' : '— ml');
+            setText('water-goal', d.goal ?? '—');
+            const p = pct(d.consumed, d.goal);
+            setText('water-pct', p + '%');
+            setWidth('water-bar', p);
+
+            // Water glasses (8 glasses = goal)
+            const glasses = document.getElementById('waterGlasses');
+            glasses.innerHTML = '';
+            const totalGlasses = 8;
+            const filledGlasses = d.goal ? Math.round((d.consumed / d.goal) * totalGlasses) : 0;
+            for (let i = 0; i < totalGlasses; i++) {
+                const g = document.createElement('div');
+                g.className = 'glass' + (i < filledGlasses ? ' filled' : '');
+                const fillH = i < filledGlasses ? 100 : 0;
+                g.innerHTML = `<div class="glass-fill" style="height:${fillH}%"></div><div class="glass-icon">${i < filledGlasses ? '💧' : '🫙'}</div>`;
+                glasses.appendChild(g);
+            }
+        }
+
+        /* ══ STRESS ══ */
+        async function loadStress() {
+            const d = await apiFetch('/api/fitbit/stress');
+            if (!d) return;
+            /*
+              d = {
+                score: 42,         // 0-100 (lower = more stressed in Fitbit's model)
+                label: "Low",      // "Low" | "Medium" | "High"
+                hrv: 38,
+                breathingRate: 15.1,
+                mindfulMin: 10
+              }
+            */
+            setText('stress-val', d.score ?? '—');
+            const el = document.getElementById('stress-label');
+            if (d.label) {
+                el.textContent = d.label;
+                el.style.color = d.label === 'Low' ? 'var(--green)' : d.label === 'Medium' ? 'var(--amber)' : 'var(--red)';
+            }
+            // Needle: score 0-100 maps to 0-100% of bar width
+            const needlePos = d.score != null ? Math.min(Math.max(d.score, 2), 98) : 50;
+            document.getElementById('stress-needle').style.left = needlePos + '%';
+
+            setText('hrv-daily', d.hrv != null ? d.hrv + ' ms' : '— ms');
+            setText('breathing-rate', d.breathingRate != null ? d.breathingRate.toFixed(1) + '/min' : '— /min');
+            setText('mindful-min', d.mindfulMin != null ? d.mindfulMin + ' mins' : '— mins');
+        }
+
+        /* ══ WEEKLY STEPS ══ */
+        async function loadWeekly() {
+            const d = await apiFetch('/api/fitbit/weekly');
+            if (!d) return;
+            // d = { days: ["Mon","Tue",...], steps: [8200,7400,...] }
+            if (Array.isArray(d.steps) && d.steps.length) drawWeekChart(d.days, d.steps);
+        }
+
+        /* ══ CYCLE ══ */
+        async function loadCycle() {
+            const d = await apiFetch('/api/fitbit/cycle');
+            if (!d || !d.cycleDay) return;
+            // d = { cycleDay: 14, phase: "Ovulatory", nextPeriodDays: "in 16 days" }
+            document.getElementById('cycleSection').style.display = 'block';
+            setText('cycle-day', 'Day ' + d.cycleDay);
+            setText('cycle-phase', d.phase ?? '—');
+            setText('cycle-next', d.nextPeriodDays ?? '—');
+            lucide.createIcons();
+        }
+
+        /* ══ METRIC CARDS — spo2 + cal + steps + dist ══ */
+        async function loadMetricCards() {
+            // These are populated by the same summary + body calls above.
+            // SpO2 is handled if your backend exposes it.
+            // Wire: fillSpO2(val), fillCalGoal(burned, goal), fillStepsGoal(steps, goal), fillDist(dist, goal)
+        }
+
+        function fillSpO2(val) {
+            setText('spo2-val', val);
+            const badge = document.getElementById('spo2-badge');
+            if (val >= 95) { badge.textContent = 'Normal'; badge.style.background = 'var(--green-light)'; badge.style.color = 'var(--green)'; }
+            else if (val >= 90) { badge.textContent = 'Low'; badge.style.background = 'var(--amber-light)'; badge.style.color = 'var(--amber)'; }
+            else { badge.textContent = 'Critical'; badge.style.background = 'var(--red-light)'; badge.style.color = 'var(--red)'; }
+            document.getElementById('spo2-sub').textContent = val >= 95 ? 'Normal range (≥95%)' : val >= 90 ? 'Slightly low — monitor closely' : 'Low — consult doctor';
+            setWidth('spo2-bar', val);
+        }
+
+        /* ──────────────────────────────────────────────────
+           SYNC BUTTON
+        ────────────────────────────────────────────────── */
+        async function syncData() {
+            const btn = document.getElementById('syncBtn');
+            btn.classList.add('syncing');
+            btn.innerHTML = '<i data-lucide="refresh-cw" style="width:14px;height:14px"></i> Syncing…';
+            lucide.createIcons();
+            try {
+                // Tell your backend to re-pull from Fitbit API
+                await fetch(`${API_BASE}/api/fitbit/sync`, { method: 'POST' });
+                await init();
+                showToast('✓ Synced with Fitbit Inspire HR');
+            } catch {
+                showToast('Sync failed — check your connection');
+            }
+            btn.classList.remove('syncing');
+            btn.innerHTML = '<i data-lucide="refresh-cw" style="width:14px;height:14px"></i> Sync Now';
+            lucide.createIcons();
+        }
+
+        /* ──────────────────────────────────────────────────
+           CHART: HEART RATE (Canvas sparkline)
+        ────────────────────────────────────────────────── */
+        function drawHRChart(data) {
+            const canvas = document.getElementById('hrCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const dpr = window.devicePixelRatio || 1;
+            const w = canvas.offsetWidth, h = canvas.offsetHeight || 72;
+            canvas.width = w * dpr;
+            canvas.height = h * dpr;
+            ctx.scale(dpr, dpr);
+
+            const mn = Math.min(...data) - 5, mx = Math.max(...data) + 5;
+            const pts = data.map((v, i) => ({
+                x: (i / (data.length - 1)) * w,
+                y: h - ((v - mn) / (mx - mn)) * (h - 8) - 4
+            }));
+
+            // Gradient fill
+            const grad = ctx.createLinearGradient(0, 0, 0, h);
+            grad.addColorStop(0, 'rgba(239,68,68,.25)');
+            grad.addColorStop(1, 'rgba(239,68,68,0)');
+
+            ctx.beginPath();
+            pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.bezierCurveTo(
+                pts[i - 1].x + (p.x - pts[i - 1].x) / 2, pts[i - 1].y,
+                p.x - (p.x - pts[i - 1].x) / 2, p.y, p.x, p.y
+            ));
+            ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
+            ctx.fillStyle = grad; ctx.fill();
+
+            // Line
+            ctx.beginPath();
+            pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.bezierCurveTo(
+                pts[i - 1].x + (p.x - pts[i - 1].x) / 2, pts[i - 1].y,
+                p.x - (p.x - pts[i - 1].x) / 2, p.y, p.x, p.y
+            ));
+            ctx.strokeStyle = '#EF4444'; ctx.lineWidth = 2.5; ctx.lineJoin = 'round'; ctx.stroke();
+        }
+
+        /* ──────────────────────────────────────────────────
+           CHART: HOURLY ACTIVITY
+        ────────────────────────────────────────────────── */
+        function drawHourChart(hourlySteps) {
+            const chart = document.getElementById('hourChart');
+            const labels = document.getElementById('hourLabels');
+            const maxVal = Math.max(...hourlySteps, 1);
+            const now = new Date().getHours();
+            let activeCount = 0;
+
+            chart.innerHTML = ''; labels.innerHTML = '';
+
+            hourlySteps.forEach((val, i) => {
+                const h = (i % 12 || 12) + (i < 12 ? 'a' : 'p');
+                const pct = Math.max((val / maxVal) * 100, 3);
+                const isActive = val > 100;
+                if (isActive) activeCount++;
+                const isCurrent = i === now;
+                const bar = document.createElement('div');
+                bar.className = 'hour-bar';
+                bar.dataset.tip = `${h}: ${val} steps`;
+                bar.style.height = pct + '%';
+                bar.style.background = isCurrent
+                    ? 'linear-gradient(to top,var(--blue),#60A5FA)'
+                    : isActive
+                        ? 'linear-gradient(to top,var(--green),#34D399)'
+                        : 'var(--border)';
+                chart.appendChild(bar);
+
+                // Labels every 3 hours
+                const lbl = document.createElement('div');
+                lbl.className = 'hour-lbl';
+                lbl.textContent = i % 3 === 0 ? h : '';
+                labels.appendChild(lbl);
+            });
+
+            setText('activeHours', activeCount + ' active hrs');
+        }
+
+        /* ──────────────────────────────────────────────────
+           CHART: WEEKLY STEPS
+        ────────────────────────────────────────────────── */
+        function drawWeekChart(days, steps) {
+            const chart = document.getElementById('weekStepChart');
+            const lbls = document.getElementById('weekDayLabels');
+            const max = Math.max(...steps, 1);
+            chart.innerHTML = ''; lbls.innerHTML = '';
+            steps.forEach((val, i) => {
+                const p = Math.max((val / max) * 100, 4);
+                const bar = document.createElement('div');
+                bar.style.cssText = `flex:1;border-radius:4px 4px 0 0;background:${val >= 10000 ? 'var(--green)' : 'var(--blue-light)'};height:${p}%;min-height:4px;transition:height .8s ease;cursor:default`;
+                bar.title = `${days[i]}: ${val?.toLocaleString()} steps`;
+                chart.appendChild(bar);
+
+                const lbl = document.createElement('div');
+                lbl.style.cssText = 'flex:1;font-size:9px;color:var(--muted);text-align:center;font-weight:500';
+                lbl.textContent = days?.[i] || i;
+                lbls.appendChild(lbl);
+            });
+        }
+
+        /* ──────────────────────────────────────────────────
+           SMALL HELPERS
+        ────────────────────────────────────────────────── */
+        function setText(id, val) {
+            const el = document.getElementById(id);
+            if (el) el.textContent = val != null ? val : '—';
+        }
+        function setWidth(id, val) {
+            const el = document.getElementById(id);
+            if (el) setTimeout(() => { el.style.width = Math.min(Math.max(+val || 0, 0), 100) + '%'; }, 200);
+        }
+        function setBar(id, val, goal) {
+            setWidth(id, pct(val, goal));
+        }
+        function setRing(id, val, max, circumference) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const p = Math.min(Math.max((val || 0) / max, 0), 1);
+            setTimeout(() => { el.style.strokeDashoffset = circumference * (1 - p); }, 300);
+        }
+        function setStagebar(fillId, minutes, total, timeId) {
+            const p = minutes != null ? Math.min((minutes / total) * 100, 100) : 0;
+            const el = document.getElementById(fillId);
+            if (el) setTimeout(() => { el.style.width = p + '%'; }, 300);
+            const te = document.getElementById(timeId);
+            if (te) te.textContent = minutes != null ? fmtMin(minutes) : '—';
+        }
+        function fmtMin(m) {
+            if (m == null) return '—';
+            const h = Math.floor(m / 60), min = m % 60;
+            return h > 0 ? `${h}h ${min}m` : `${min}m`;
+        }
+        function pct(val, goal) {
+            if (!val || !goal) return 0;
+            return Math.min(Math.round((val / goal) * 100), 100);
+        }
+        function trendLabel(id, val, threshold, label) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const isGood = val >= threshold;
+            el.innerHTML = `<span class="${isGood ? 'trend-up' : 'trend-down'}">${isGood ? '↑' : '↓'} ${label}</span>`;
+        }
+        function setLoadingFailed(ids) {
+            ids.forEach(id => setText(id, '—'));
+        }
+
+        /* ──────────────────────────────────────────────────
+           TOAST
+        ────────────────────────────────────────────────── */
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3200);
+        }
+
+        /* ──────────────────────────────────────────────────
+           SIDEBAR
+        ────────────────────────────────────────────────── */
+        const sidebarEl = document.getElementById('sidebar');
+        const overlayEl = document.getElementById('overlay');
+        document.getElementById('hamburgerBtn').addEventListener('click', () => {
+            sidebarEl.classList.add('open'); overlayEl.classList.add('show'); document.body.style.overflow = 'hidden';
+        });
+        overlayEl.addEventListener('click', () => {
+            sidebarEl.classList.remove('open'); overlayEl.classList.remove('show'); document.body.style.overflow = '';
+        });
+        document.querySelectorAll('.nav-item').forEach(el => el.addEventListener('click', () => {
+            if (window.innerWidth <= 900) { sidebarEl.classList.remove('open'); overlayEl.classList.remove('show'); document.body.style.overflow = ''; }
+        }));
+        document.querySelectorAll('.bn-item').forEach(el => el.addEventListener('click', function () {
+            document.querySelectorAll('.bn-item').forEach(i => i.classList.remove('active')); this.classList.add('active');
+        }));
+
+        /* ── START ── */
+        init();
+    </script>
+</body>
+
+</html>

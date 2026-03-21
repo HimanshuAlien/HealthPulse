@@ -1,0 +1,2013 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthPulse AI — Hospital Finder</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Sora:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+    <!-- Leaflet (free, no API key) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+        /* ─── TOKENS ─── */
+        :root {
+            --blue: #1B6FEB;
+            --blue-deep: #0D4FC4;
+            --blue-light: #EBF2FF;
+            --teal: #0ABFBC;
+            --green: #10B981;
+            --green-light: #D1FAE5;
+            --coral: #FF6B6B;
+            --coral-light: #FFF0F0;
+            --amber: #F59E0B;
+            --amber-light: #FEF3C7;
+            --purple: #7C3AED;
+            --purple-light: #EDE9FE;
+            --red: #EF4444;
+            --red-light: #FEE2E2;
+            --bg: #F4F7FC;
+            --card: #fff;
+            --text: #0F1C3F;
+            --sub: #6B7A99;
+            --muted: #A0ABBE;
+            --border: #E8EDF5;
+            --sidebar-w: 260px;
+            --sh-sm: 0 2px 8px rgba(27, 111, 235, .07);
+            --sh-md: 0 8px 28px rgba(27, 111, 235, .11);
+            --sh-lg: 0 20px 50px rgba(27, 111, 235, .15);
+            --r: 14px;
+            --r-lg: 22px;
+            --r-xl: 30px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden
+        }
+
+        /* ─── SHELL ─── */
+        .shell {
+            display: flex;
+            height: 100vh;
+            overflow: hidden
+        }
+
+        /* ─── SIDEBAR ─── */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--card);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 300;
+            padding: 26px 0;
+            transition: transform .32s cubic-bezier(.4, 0, .2, 1);
+            overflow-y: auto
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 22px 24px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            box-shadow: 0 4px 12px rgba(27, 111, 235, .3);
+            flex-shrink: 0
+        }
+
+        .logo-text {
+            font-family: 'Sora', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--text)
+        }
+
+        .logo-text span {
+            color: var(--blue)
+        }
+
+        .sidebar-nav {
+            padding: 16px 12px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .12em;
+            color: var(--muted);
+            text-transform: uppercase;
+            padding: 10px 10px 4px;
+            margin-top: 4px
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 10px 13px;
+            border-radius: var(--r);
+            cursor: pointer;
+            transition: all .18s;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--sub);
+            text-decoration: none;
+            position: relative;
+            white-space: nowrap
+        }
+
+        .nav-item:hover {
+            background: var(--blue-light);
+            color: var(--blue)
+        }
+
+        .nav-item.active {
+            background: var(--blue-light);
+            color: var(--blue);
+            font-weight: 600
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 22%;
+            bottom: 22%;
+            width: 3px;
+            border-radius: 4px;
+            background: var(--blue)
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            background: var(--coral);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 20px
+        }
+
+        .sidebar-user {
+            padding: 14px 18px;
+            margin: 0 12px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .sidebar-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue), var(--teal));
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+            font-size: 13px;
+            color: #fff;
+            flex-shrink: 0
+        }
+
+        .sidebar-user-name {
+            font-size: 13px;
+            font-weight: 600
+        }
+
+        .sidebar-user-role {
+            font-size: 11px;
+            color: var(--muted)
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 28, 63, .38);
+            backdrop-filter: blur(4px);
+            z-index: 290
+        }
+
+        .overlay.show {
+            display: block
+        }
+
+        /* ─── MAIN ─── */
+        .main-content {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden
+        }
+
+        /* TOPBAR */
+        .topbar {
+            background: rgba(255, 255, 255, .92);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 28px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-shrink: 0;
+            z-index: 50
+        }
+
+        .topbar-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            background: linear-gradient(110deg, var(--text), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            flex: 1
+        }
+
+        .search-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            border-radius: 30px;
+            padding: 8px 16px;
+            min-width: 220px;
+            transition: all .2s
+        }
+
+        .search-pill:focus-within {
+            border-color: var(--blue);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(27, 111, 235, .08)
+        }
+
+        .search-pill input {
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 13px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--text);
+            width: 100%
+        }
+
+        .search-pill input::placeholder {
+            color: var(--muted)
+        }
+
+        .icon-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            transition: all .2s;
+            position: relative;
+            flex-shrink: 0
+        }
+
+        .icon-btn:hover {
+            background: var(--blue-light);
+            border-color: var(--blue);
+            transform: scale(1.05)
+        }
+
+        .icon-btn .dot {
+            position: absolute;
+            top: 7px;
+            right: 7px;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--coral);
+            border: 2px solid #fff
+        }
+
+        .tav {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue), var(--teal));
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+            color: #fff;
+            font-size: 13px;
+            box-shadow: 0 0 0 3px rgba(27, 111, 235, .2);
+            cursor: pointer;
+            flex-shrink: 0
+        }
+
+        /* MOBILE TOPBAR */
+        .mobile-topbar {
+            display: none;
+            background: rgba(255, 255, 255, .92);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 16px;
+            height: 60px;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+            z-index: 50
+        }
+
+        .mob-ham {
+            width: 38px;
+            height: 38px;
+            border-radius: 11px;
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all .2s
+        }
+
+        .mob-ham:hover {
+            background: var(--blue-light);
+            border-color: var(--blue)
+        }
+
+        .mob-logo {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .mob-logo-ic {
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+            background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+            display: grid;
+            place-items: center
+        }
+
+        .mob-logo-txt {
+            font-family: 'Sora', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--text)
+        }
+
+        .mob-logo-txt span {
+            color: var(--blue)
+        }
+
+        .mob-notif {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            display: grid;
+            place-items: center;
+            position: relative;
+            cursor: pointer
+        }
+
+        .mob-notif .dot {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--coral);
+            border: 2px solid #fff
+        }
+
+        .mob-av {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue), var(--teal));
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+            color: #fff;
+            font-size: 12px;
+            cursor: pointer
+        }
+
+        /* FILTER BAR */
+        .filter-bar {
+            padding: 12px 24px;
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+            overflow-x: auto;
+            scrollbar-width: none
+        }
+
+        .filter-bar::-webkit-scrollbar {
+            display: none
+        }
+
+        .chip {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 16px;
+            border-radius: 30px;
+            border: 1.5px solid var(--border);
+            background: #fff;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--sub);
+            cursor: pointer;
+            transition: all .2s;
+            white-space: nowrap;
+            font-family: 'Plus Jakarta Sans', sans-serif
+        }
+
+        .chip:hover {
+            border-color: var(--blue);
+            color: var(--blue)
+        }
+
+        .chip.active {
+            background: var(--blue);
+            border-color: var(--blue);
+            color: #fff;
+            box-shadow: 0 3px 12px rgba(27, 111, 235, .3)
+        }
+
+        /* CONTENT GRID */
+        .content-area {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 420px 1fr;
+            overflow: hidden
+        }
+
+        /* ─── LIST PANEL ─── */
+        .list-panel {
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+            background: var(--bg);
+            overflow: hidden
+        }
+
+        .list-stats {
+            padding: 13px 18px;
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0
+        }
+
+        .stats-txt {
+            font-size: 13px;
+            font-weight: 700
+        }
+
+        .stats-sub {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 1px
+        }
+
+        .list-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px
+        }
+
+        .list-scroll::-webkit-scrollbar {
+            width: 4px
+        }
+
+        .list-scroll::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px
+        }
+
+        /* ─── HOSPITAL CARD ─── */
+        .hcard {
+            background: var(--card);
+            border-radius: var(--r-lg);
+            border: 1.5px solid var(--border);
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all .25s cubic-bezier(.4, 0, .2, 1);
+            overflow: hidden;
+            animation: cardIn .35s ease both
+        }
+
+        @keyframes cardIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .hcard:hover {
+            border-color: var(--blue);
+            box-shadow: var(--sh-md);
+            transform: translateX(3px)
+        }
+
+        .hcard.selected {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(27, 111, 235, .12), var(--sh-md)
+        }
+
+        /* Photo */
+        .hcard-photo {
+            width: 100%;
+            height: 130px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--blue-light), var(--purple-light));
+            flex-shrink: 0
+        }
+
+        .hcard-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .4s ease;
+            display: block
+        }
+
+        .hcard:hover .hcard-photo img {
+            transform: scale(1.04)
+        }
+
+        .hcard-photo-fallback {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px
+        }
+
+        .photo-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 55%, rgba(15, 28, 63, .4))
+        }
+
+        /* Badges on photo */
+        .badge-status {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .03em
+        }
+
+        .badge-status.open {
+            background: rgba(16, 185, 129, .9);
+            color: #fff
+        }
+
+        .badge-status.closed {
+            background: rgba(239, 68, 68, .85);
+            color: #fff
+        }
+
+        .badge-dist {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            padding: 4px 11px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            background: rgba(15, 28, 63, .75);
+            backdrop-filter: blur(6px);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 5px
+        }
+
+        .badge-rank {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .95);
+            display: grid;
+            place-items: center;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--blue)
+        }
+
+        /* Body */
+        .hcard-body {
+            padding: 14px 16px
+        }
+
+        .hcard-name {
+            font-size: 14.5px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 4px;
+            line-height: 1.25
+        }
+
+        .hcard-addr {
+            display: flex;
+            align-items: flex-start;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--sub);
+            margin-bottom: 10px;
+            line-height: 1.45
+        }
+
+        .hcard-addr i {
+            flex-shrink: 0;
+            margin-top: 2px
+        }
+
+        /* Meta row */
+        .hcard-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 11px;
+            flex-wrap: wrap
+        }
+
+        .rating-stars {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            font-size: 13px
+        }
+
+        .star-f {
+            color: #F59E0B
+        }
+
+        .star-e {
+            color: #E8EDF5
+        }
+
+        .rating-val {
+            font-size: 12.5px;
+            font-weight: 700
+        }
+
+        .rating-cnt {
+            font-size: 11px;
+            color: var(--muted)
+        }
+
+        .phone-tag {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--green-light);
+            color: var(--green);
+            font-size: 11.5px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 20px;
+            white-space: nowrap
+        }
+
+        /* Action row */
+        .hcard-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center
+        }
+
+        .btn-dir {
+            flex: 1;
+            padding: 9px 14px;
+            background: linear-gradient(135deg, var(--green), #059669);
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            font-size: 12.5px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all .2s;
+            box-shadow: 0 3px 10px rgba(16, 185, 129, .28)
+        }
+
+        .btn-dir:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(16, 185, 129, .4)
+        }
+
+        .btn-call {
+            flex: 0;
+            padding: 9px 16px;
+            background: var(--blue-light);
+            color: var(--blue);
+            border: none;
+            border-radius: 30px;
+            font-size: 12.5px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all .2s;
+            white-space: nowrap
+        }
+
+        .btn-call:hover {
+            background: var(--blue);
+            color: #fff
+        }
+
+        .btn-save {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            transition: all .2s;
+            flex-shrink: 0
+        }
+
+        .btn-save:hover,
+        .btn-save.saved {
+            background: var(--coral-light);
+            border-color: var(--coral)
+        }
+
+        /* Skeleton */
+        .skel-card {
+            background: var(--card);
+            border-radius: var(--r-lg);
+            border: 1.5px solid var(--border);
+            margin-bottom: 10px;
+            overflow: hidden
+        }
+
+        .skel-photo {
+            height: 110px;
+            background: linear-gradient(90deg, #f0f4fa 25%, #e2e8f4 50%, #f0f4fa 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s infinite
+        }
+
+        .skel-body {
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px
+        }
+
+        .skel-line {
+            background: linear-gradient(90deg, #f0f4fa 25%, #e2e8f4 50%, #f0f4fa 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s infinite;
+            border-radius: 6px
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0
+            }
+
+            100% {
+                background-position: -200% 0
+            }
+        }
+
+        /* ─── MAP PANEL ─── */
+        .map-panel {
+            position: relative;
+            overflow: hidden
+        }
+
+        #leafletMap {
+            width: 100%;
+            height: 100%;
+            z-index: 1
+        }
+
+        /* Map UI overlays */
+        .map-loc-pill {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, .96);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, .7);
+            border-radius: 30px;
+            padding: 10px 18px;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .1);
+            z-index: 10;
+            white-space: nowrap;
+            max-width: calc(100% - 40px)
+        }
+
+        .loc-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--blue);
+            flex-shrink: 0;
+            box-shadow: 0 0 0 3px rgba(27, 111, 235, .25);
+            animation: locPulse 2s ease-in-out infinite
+        }
+
+        @keyframes locPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 3px rgba(27, 111, 235, .25)
+            }
+
+            50% {
+                box-shadow: 0 0 0 7px rgba(27, 111, 235, .08)
+            }
+        }
+
+        .map-count-pill {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: var(--blue);
+            color: #fff;
+            border-radius: 30px;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 700;
+            z-index: 10;
+            box-shadow: 0 4px 14px rgba(27, 111, 235, .35);
+            display: flex;
+            align-items: center;
+            gap: 7px
+        }
+
+        .map-recenter {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, .96);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, .6);
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, .1);
+            z-index: 10;
+            transition: all .2s
+        }
+
+        .map-recenter:hover {
+            box-shadow: 0 4px 18px rgba(0, 0, 0, .15)
+        }
+
+        /* ─── LOADING SCREEN ─── */
+        .loading-screen {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #050D1E, #0D1A3A);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            gap: 14px;
+            transition: opacity .4s
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none
+        }
+
+        .ld-mesh {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 70% 60% at 75% 20%, rgba(27, 111, 235, .22) 0%, transparent 70%), radial-gradient(ellipse 50% 50% at 20% 80%, rgba(124, 58, 237, .16) 0%, transparent 70%);
+            pointer-events: none
+        }
+
+        .ld-spinner {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, .08);
+            border-top: 3px solid var(--blue);
+            animation: spin 1s linear infinite;
+            z-index: 1
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        .ld-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            color: #fff;
+            z-index: 1
+        }
+
+        .ld-sub {
+            font-size: 12.5px;
+            color: rgba(255, 255, 255, .38);
+            z-index: 1;
+            text-align: center;
+            max-width: 260px;
+            line-height: 1.6
+        }
+
+        .ld-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 1;
+            max-width: 240px;
+            width: 100%
+        }
+
+        .ls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, .28);
+            transition: color .4s
+        }
+
+        .ls.active {
+            color: #fff
+        }
+
+        .ls.done {
+            color: rgba(255, 255, 255, .55)
+        }
+
+        .ls-ic {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(255, 255, 255, .12);
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            font-size: 9px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, .3);
+            transition: all .4s
+        }
+
+        .ls.active .ls-ic {
+            background: var(--blue);
+            border-color: var(--blue);
+            color: #fff;
+            box-shadow: 0 0 0 3px rgba(27, 111, 235, .25)
+        }
+
+        .ls.done .ls-ic {
+            background: var(--green);
+            border-color: var(--green);
+            color: #fff
+        }
+
+        /* ERROR */
+        .error-screen {
+            display: none;
+            position: absolute;
+            inset: 0;
+            background: var(--bg);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            z-index: 200;
+            text-align: center;
+            padding: 32px
+        }
+
+        .error-screen.show {
+            display: flex
+        }
+
+        .retry-btn {
+            padding: 12px 28px;
+            background: var(--blue);
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            box-shadow: 0 4px 16px rgba(27, 111, 235, .3);
+            transition: all .2s
+        }
+
+        .retry-btn:hover {
+            transform: translateY(-2px)
+        }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: #0F1C3F;
+            color: #fff;
+            padding: 11px 22px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 999;
+            box-shadow: var(--sh-lg);
+            transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+            white-space: nowrap;
+            pointer-events: none
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0)
+        }
+
+        /* BOTTOM NAV */
+        .bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, .96);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
+            padding: 8px 0 max(10px, env(safe-area-inset-bottom));
+            z-index: 400
+        }
+
+        .bnav-inner {
+            display: flex;
+            justify-content: space-around;
+            align-items: center
+        }
+
+        .bn-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            padding: 4px 12px;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--muted);
+            text-decoration: none;
+            transition: color .2s
+        }
+
+        .bn-item.active {
+            color: var(--blue)
+        }
+
+        .bn-center {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+            display: grid;
+            place-items: center;
+            box-shadow: 0 4px 18px rgba(27, 111, 235, .45);
+            cursor: pointer;
+            margin-top: -14px;
+            transition: all .2s
+        }
+
+        /* RESPONSIVE */
+        @media(max-width:900px) {
+            .sidebar {
+                transform: translateX(-100%)
+            }
+
+            .sidebar.open {
+                transform: translateX(0)
+            }
+
+            .main-content {
+                margin-left: 0
+            }
+
+            .topbar {
+                display: none
+            }
+
+            .mobile-topbar {
+                display: flex
+            }
+
+            html,
+            body {
+                overflow: auto;
+                height: auto
+            }
+
+            .main-content {
+                height: auto;
+                overflow: visible
+            }
+
+            .content-area {
+                grid-template-columns: 1fr;
+                height: auto;
+                overflow: visible
+            }
+
+            .list-panel {
+                height: auto;
+                overflow: visible
+            }
+
+            .list-scroll {
+                overflow: visible;
+                height: auto
+            }
+
+            .map-panel {
+                height: 380px
+            }
+
+            .bottom-nav {
+                display: block
+            }
+
+            .shell {
+                height: auto
+            }
+        }
+
+        @media(max-width:480px) {
+            .hcard-photo {
+                height: 110px
+            }
+        }
+
+        /* Leaflet popup style override */
+        .leaflet-popup-content-wrapper {
+            border-radius: 14px !important;
+            box-shadow: var(--sh-lg) !important;
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+            border: 1.5px solid var(--border) !important
+        }
+
+        .leaflet-popup-content {
+            margin: 14px 16px !important;
+            font-size: 13px !important
+        }
+
+        .leaflet-popup-tip-container {
+            margin-top: -1px
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="toast" id="toast"></div>
+
+    <div class="shell">
+
+        <!-- ─── SIDEBAR ─── -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <div class="logo-icon"><i data-lucide="activity" style="width:18px;height:18px;color:#fff"></i></div>
+                <div class="logo-text">Health<span>Pulse</span> AI</div>
+            </div>
+            <nav class="sidebar-nav">
+                <span class="nav-label">Features</span>
+                <a class="nav-item" href="dashboard.html"><i data-lucide="layout-dashboard"
+                        style="width:17px;height:17px"></i>Dashboard</a>
+                <a class="nav-item" href="diagnosis.html"><i data-lucide="activity"
+                        style="width:17px;height:17px"></i>AI Diagnosis</a>
+                <a class="nav-item" href="escalation.html"><i data-lucide="alert-triangle"
+                        style="width:17px;height:17px"></i>Escalation</a>
+                <a class="nav-item active" href="hospital-finder.html"><i data-lucide="map-pin"
+                        style="width:17px;height:17px"></i>Hospital Finder</a>
+                <a class="nav-item" href="specialist-routing.html"><i data-lucide="stethoscope"
+                        style="width:17px;height:17px"></i>Specialist Route</a>
+                <a class="nav-item" href="chat.html"><i data-lucide="message-circle"
+                        style="width:17px;height:17px"></i>Chat Assistant</a>
+                <a class="nav-item" href="wearables.html"><i data-lucide="watch"
+                        style="width:17px;height:17px"></i>Wearables</a>
+                <a class="nav-item" href="alerts.html"><i data-lucide="bell" style="width:17px;height:17px"></i>Health
+                    Alerts</a>
+                <a class="nav-item" href="insights.html"><i data-lucide="brain" style="width:17px;height:17px"></i>AI
+                    Insights</a>
+                <span class="nav-label">Account</span>
+                <a class="nav-item" href="messages.html"><i data-lucide="mail"
+                        style="width:17px;height:17px"></i>Messages<span class="nav-badge">5</span></a>
+                <a class="nav-item" href="#"><i data-lucide="settings"
+                        style="width:17px;height:17px"></i>Preferences</a>
+                <a class="nav-item" href="#"><i data-lucide="user-circle" style="width:17px;height:17px"></i>Profile</a>
+            </nav>
+            <div class="sidebar-user">
+                <div class="sidebar-avatar">OB</div>
+                <div>
+                    <div class="sidebar-user-name">Oliver Brooks</div>
+                    <div class="sidebar-user-role">Patient #HP-2847</div>
+                </div>
+            </div>
+        </aside>
+        <div class="overlay" id="overlay"></div>
+
+        <!-- ─── MAIN ─── -->
+        <div class="main-content">
+
+            <!-- DESKTOP TOPBAR -->
+            <header class="topbar">
+                <div class="topbar-title">Hospital Finder</div>
+                <div class="search-pill">
+                    <i data-lucide="search" style="width:14px;height:14px;color:var(--muted)"></i>
+                    <input id="searchInput" placeholder="Search by hospital name…" oninput="filterCards()">
+                </div>
+                <div style="display:flex;align-items:center;gap:10px">
+                    <div class="icon-btn" title="Refresh" onclick="startAll()">
+                        <i data-lucide="refresh-cw" style="width:16px;height:16px;color:var(--sub)"></i>
+                    </div>
+                    <div class="icon-btn">
+                        <i data-lucide="bell" style="width:16px;height:16px;color:var(--sub)"></i>
+                        <div class="dot"></div>
+                    </div>
+                    <div class="tav">OB</div>
+                </div>
+            </header>
+
+            <!-- MOBILE TOPBAR -->
+            <header class="mobile-topbar">
+                <div class="mob-ham" id="hamBtn"><i data-lucide="menu"
+                        style="width:19px;height:19px;color:var(--text)"></i></div>
+                <div class="mob-logo">
+                    <div class="mob-logo-ic"><i data-lucide="activity" style="width:14px;height:14px;color:#fff"></i>
+                    </div>
+                    <div class="mob-logo-txt">Hospital<span> Finder</span></div>
+                </div>
+                <div style="display:flex;gap:8px;align-items:center">
+                    <div class="mob-notif"><i data-lucide="bell" style="width:15px;height:15px;color:var(--sub)"></i>
+                        <div class="dot"></div>
+                    </div>
+                    <div class="mob-av">OB</div>
+                </div>
+            </header>
+
+            <!-- FILTER BAR -->
+            <div class="filter-bar">
+                <div class="chip active" id="chipNearest" onclick="sortBy('distance',this)">
+                    <i data-lucide="navigation" style="width:13px;height:13px"></i>Nearest
+                </div>
+                <div class="chip" id="chipName" onclick="sortBy('name',this)">
+                    <i data-lucide="text" style="width:13px;height:13px"></i>A–Z
+                </div>
+                <div class="chip" id="chipSaved" onclick="showSaved(this)">
+                    <i data-lucide="heart" style="width:13px;height:13px"></i>Saved
+                </div>
+                <div class="chip" id="chipAll" onclick="showAll(this)" style="display:none">
+                    <i data-lucide="layout-grid" style="width:13px;height:13px"></i>Show All
+                </div>
+            </div>
+
+            <!-- CONTENT -->
+            <div class="content-area">
+
+                <!-- LIST -->
+                <div class="list-panel">
+                    <div class="list-stats">
+                        <div>
+                            <div class="stats-txt" id="statsTxt">Finding hospitals…</div>
+                            <div class="stats-sub" id="statsSub">Requesting your location</div>
+                        </div>
+                    </div>
+                    <!-- Skeletons while loading -->
+                    <div class="list-scroll" id="skelWrap">
+                        <div class="skel-card">
+                            <div class="skel-photo"></div>
+                            <div class="skel-body">
+                                <div class="skel-line" style="height:16px;width:70%"></div>
+                                <div class="skel-line" style="height:12px;width:90%"></div>
+                                <div class="skel-line" style="height:12px;width:50%"></div>
+                            </div>
+                        </div>
+                        <div class="skel-card">
+                            <div class="skel-photo"></div>
+                            <div class="skel-body">
+                                <div class="skel-line" style="height:16px;width:80%"></div>
+                                <div class="skel-line" style="height:12px;width:60%"></div>
+                                <div class="skel-line" style="height:12px;width:75%"></div>
+                            </div>
+                        </div>
+                        <div class="skel-card">
+                            <div class="skel-photo"></div>
+                            <div class="skel-body">
+                                <div class="skel-line" style="height:16px;width:65%"></div>
+                                <div class="skel-line" style="height:12px;width:85%"></div>
+                                <div class="skel-line" style="height:12px;width:40%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Real cards go here -->
+                    <div class="list-scroll" id="listScroll" style="display:none"></div>
+                </div>
+
+                <!-- MAP -->
+                <div class="map-panel" id="mapPanel">
+                    <!-- Loading overlay on the map -->
+                    <div class="loading-screen" id="loadingScreen">
+                        <div class="ld-mesh"></div>
+                        <div class="ld-spinner"></div>
+                        <div class="ld-title">Finding Hospitals Near You</div>
+                        <div class="ld-sub">Allow location access when prompted — we never store it.</div>
+                        <div class="ld-steps">
+                            <div class="ls active" id="ls0">
+                                <div class="ls-ic">1</div><span>Requesting your location</span>
+                            </div>
+                            <div class="ls" id="ls1">
+                                <div class="ls-ic">2</div><span>Loading map</span>
+                            </div>
+                            <div class="ls" id="ls2">
+                                <div class="ls-ic">3</div><span>Fetching hospitals from Foursquare</span>
+                            </div>
+                            <div class="ls" id="ls3">
+                                <div class="ls-ic">4</div><span>Loading photos &amp; details</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Error overlay -->
+                    <div class="error-screen" id="errScreen">
+                        <div style="font-size:44px">📍</div>
+                        <div style="font-family:'Sora',sans-serif;font-size:17px;font-weight:700" id="errTitle">Location
+                            Needed</div>
+                        <div style="font-size:13px;color:var(--sub);max-width:300px;line-height:1.6" id="errSub">Please
+                            allow location access to find hospitals near you.</div>
+                        <button class="retry-btn" onclick="startAll()">Try Again</button>
+                    </div>
+
+                    <!-- Leaflet map -->
+                    <div id="leafletMap"></div>
+
+                    <!-- Map overlays (shown after load) -->
+                    <div class="map-recenter" id="mapRecenter" style="display:none" onclick="recenter()"
+                        title="My location">
+                        <i data-lucide="locate" style="width:16px;height:16px;color:var(--blue)"></i>
+                    </div>
+                    <div class="map-count-pill" id="mapCount" style="display:none">
+                        <i data-lucide="hospital" style="width:13px;height:13px"></i>
+                        <span id="mapCountTxt">0 found</span>
+                    </div>
+                    <div class="map-loc-pill" id="mapLocPill" style="display:none">
+                        <div class="loc-dot"></div>
+                        <span id="locPillTxt">Locating…</span>
+                    </div>
+                </div>
+
+            </div><!-- /content-area -->
+        </div><!-- /main-content -->
+    </div><!-- /shell -->
+
+    <!-- MOBILE BOTTOM NAV -->
+    <nav class="bottom-nav">
+        <div class="bnav-inner">
+            <a class="bn-item" href="dashboard.html"><i data-lucide="layout-dashboard"
+                    style="width:20px;height:20px"></i>Home</a>
+            <div class="bn-item active"><i data-lucide="map-pin" style="width:20px;height:20px"></i>Hospitals</div>
+            <div style="display:flex;flex-direction:column;align-items:center">
+                <div class="bn-center" onclick="window.location.href='diagnosis.html'">
+                    <i data-lucide="activity" style="width:22px;height:22px;color:#fff"></i>
+                </div>
+            </div>
+            <a class="bn-item" href="chat.html"><i data-lucide="message-circle"
+                    style="width:20px;height:20px"></i>Chat</a>
+            <div class="bn-item"><i data-lucide="user-circle" style="width:20px;height:20px"></i>Profile</div>
+        </div>
+    </nav>
+
+    <script>
+        /* ══════════════════════════════════════════════════
+           CONFIG — set this to your Express server URL
+           Leave '' if frontend is served from the same origin
+        ══════════════════════════════════════════════════ */
+        const API_BASE = 'http://localhost:3000';   // Backend server URL
+
+        /* ─── STATE ─── */
+        let map, userMarker, userCircle;
+        let allHospitals = [];   // full list from /api/hospitals/nearby
+        let displayList = [];   // after filter/sort
+        let leafletMarkers = {};  // { id: L.marker }
+        let savedSet = new Set();
+        let userLat, userLng;
+        let currentSort = 'distance';
+        let showingSaved = false;
+        let lsStep = 0;
+
+        /* ─── LOADING STEPS ─── */
+        const LS = ['ls0', 'ls1', 'ls2', 'ls3'];
+        function advLS() {
+            if (lsStep > 0) {
+                const p = document.getElementById(LS[lsStep - 1]);
+                if (p) { p.classList.remove('active'); p.classList.add('done'); p.querySelector('.ls-ic').textContent = '✓'; }
+            }
+            const c = document.getElementById(LS[lsStep]);
+            if (c) c.classList.add('active');
+            lsStep++;
+        }
+
+        /* ─── ENTRY POINT ─── */
+        function startAll() {
+            // Reset
+            lsStep = 0;
+            LS.forEach((id, i) => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                el.classList.remove('active', 'done');
+                el.querySelector('.ls-ic').textContent = i + 1;
+            });
+            document.getElementById('loadingScreen').classList.remove('hidden');
+            document.getElementById('errScreen').classList.remove('show');
+            document.getElementById('skelWrap').style.display = 'block';
+            document.getElementById('listScroll').style.display = 'none';
+            document.getElementById('mapRecenter').style.display = 'none';
+            document.getElementById('mapCount').style.display = 'none';
+            document.getElementById('mapLocPill').style.display = 'none';
+            document.getElementById('statsTxt').textContent = 'Finding hospitals…';
+            document.getElementById('statsSub').textContent = 'Requesting your location';
+            allHospitals = []; displayList = [];
+            clearMarkers();
+
+            advLS(); // step 1: location
+
+            if (!navigator.geolocation) {
+                showErr('Not Supported', 'Your browser does not support geolocation.');
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(gotLocation, locationErr, {
+                enableHighAccuracy: true, timeout: 12000, maximumAge: 30000
+            });
+        }
+
+        function locationErr(err) {
+            const m = {
+                1: ['Location Denied', 'Enable location in your browser settings, then click Try Again.'],
+                2: ['Location Unavailable', 'Could not determine your position. Ensure GPS is on.'],
+                3: ['Timed Out', 'Location request timed out. Check your signal and try again.'],
+            };
+            const [t, s] = m[err.code] || ['Error', 'Unknown location error.'];
+            showErr(t, s);
+        }
+
+        function showErr(t, s) {
+            document.getElementById('loadingScreen').classList.add('hidden');
+            document.getElementById('skelWrap').style.display = 'none';
+            document.getElementById('listScroll').style.display = 'block';
+            document.getElementById('listScroll').innerHTML = `<div style="text-align:center;padding:48px 20px;color:var(--muted)"><div style="font-size:36px;margin-bottom:12px">📍</div><div style="font-size:14px;font-weight:600;color:var(--sub);margin-bottom:6px">${t}</div><div style="font-size:12.5px;line-height:1.6">${s}</div></div>`;
+            document.getElementById('statsTxt').textContent = 'Error';
+            document.getElementById('statsSub').textContent = t;
+            document.getElementById('errTitle').textContent = t;
+            document.getElementById('errSub').textContent = s;
+            document.getElementById('errScreen').classList.add('show');
+        }
+
+        /* ─── GOT LOCATION ─── */
+        function gotLocation(pos) {
+            userLat = pos.coords.latitude;
+            userLng = pos.coords.longitude;
+            advLS(); // step 2: map
+
+            initLeaflet();
+            reverseGeocode();
+            fetchHospitals();
+        }
+
+        /* ─── LEAFLET MAP ─── */
+        function initLeaflet() {
+            if (map) {
+                map.setView([userLat, userLng], 14);
+                if (userMarker) userMarker.setLatLng([userLat, userLng]);
+                advLS();
+                return;
+            }
+            map = L.map('leafletMap', {
+                center: [userLat, userLng], zoom: 14,
+                zoomControl: false,
+                attributionControl: true
+            });
+
+            // Satellite map with 3D-like appearance - Esri World Imagery
+            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: '© Esri, DigitalGlobe, Earthstar Geographics',
+                maxZoom: 19
+            }).addTo(map);
+
+            // Add labels layer on top for readability
+            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+                attribution: '© Esri',
+                maxZoom: 19,
+                opacity: 0.7
+            }).addTo(map);
+
+            // User dot marker
+            const userIcon = L.divIcon({
+                className: '',
+                html: `<div style="width:16px;height:16px;background:#1B6FEB;border-radius:50%;border:2.5px solid #fff;box-shadow:0 0 0 5px rgba(27,111,235,.2)"></div>`,
+                iconSize: [16, 16], iconAnchor: [8, 8]
+            });
+            userMarker = L.marker([userLat, userLng], { icon: userIcon, zIndexOffset: 1000 })
+                .addTo(map)
+                .bindPopup('<strong style="font-family:Plus Jakarta Sans">You are here</strong>');
+
+            userCircle = L.circle([userLat, userLng], {
+                radius: 100, color: '#1B6FEB', fillColor: '#1B6FEB',
+                fillOpacity: .08, weight: 1, opacity: .3
+            }).addTo(map);
+
+            advLS(); // step 3 done (map ready)
+        }
+
+        /* ─── REVERSE GEOCODE (OpenStreetMap Nominatim — free) ─── */
+        async function reverseGeocode() {
+            try {
+                const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${userLat}&lon=${userLng}&format=json`);
+                const d = await r.json();
+                const addr = d.display_name || `${userLat.toFixed(4)}, ${userLng.toFixed(4)}`;
+                document.getElementById('locPillTxt').textContent = addr.length > 55 ? addr.slice(0, 52) + '…' : addr;
+                document.getElementById('mapLocPill').style.display = 'flex';
+            } catch {
+                document.getElementById('locPillTxt').textContent = `${userLat.toFixed(4)}, ${userLng.toFixed(4)}`;
+                document.getElementById('mapLocPill').style.display = 'flex';
+            }
+        }
+
+        /* ══════════════════════════════════════════════════
+           FOURSQUARE — your 3 backend routes
+        ══════════════════════════════════════════════════ */
+
+        /* Route 1: GET /api/hospitals/nearby?lat=&lng= */
+        async function fetchHospitals() {
+            try {
+                const resp = await fetch(`${API_BASE}/api/hospitals/nearby?lat=${userLat}&lng=${userLng}`);
+                if (!resp.ok) throw new Error(`Server: ${resp.status}`);
+                const data = await resp.json();
+
+                advLS(); // step 4: photos/details
+
+                if (!Array.isArray(data) || data.length === 0) {
+                    noResults();
+                    return;
+                }
+
+                // Compute haversine distance and attach
+                allHospitals = data.map(h => ({
+                    ...h,
+                    distKm: haversine(userLat, userLng, h.lat, h.lng)
+                })).sort((a, b) => a.distKm - b.distKm);
+
+                renderList(allHospitals);
+                placeAllMarkers(allHospitals);
+
+                // Fetch photos + details async (non-blocking)
+                allHospitals.forEach(h => {
+                    fetchPhotos(h.id);
+                    fetchDetails(h.id);
+                });
+
+                document.getElementById('loadingScreen').classList.add('hidden');
+                document.getElementById('mapRecenter').style.display = 'grid';
+                document.getElementById('mapCount').style.display = 'flex';
+                document.getElementById('mapCountTxt').textContent = `${allHospitals.length} found`;
+                document.getElementById('statsTxt').textContent = `${allHospitals.length} hospital${allHospitals.length !== 1 ? 's' : ''} found`;
+                document.getElementById('statsSub').textContent = 'Near your current location';
+                lucide.createIcons();
+
+            } catch (err) {
+                console.error('fetchHospitals error:', err);
+                showErr('Backend Error', err.message + ' — check console and ensure your server is running.');
+            }
+        }
+
+        /* Route 2: GET /api/hospitals/photos?id= */
+        async function fetchPhotos(id) {
+            const photoEl = document.getElementById(`photo-${id}`);
+            if (!photoEl) return;
+
+            // Use mock gradient backgrounds with hospital icons - no network calls needed!
+            const gradients = [
+                'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+                'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+                'linear-gradient(135deg, #30cfd0 0%, #330867 100%)',
+                'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
+                'linear-gradient(135deg, #ff9a6c 0%, #ff6b6b 100%)'
+            ];
+
+            const gradient = gradients[Math.floor(Math.random() * gradients.length)];
+            photoEl.innerHTML = `
+                <div style="
+                    width: 100%; 
+                    height: 100%; 
+                    background: ${gradient};
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: center; 
+                    color: white; 
+                    font-size: 48px;
+                    position: relative;
+                    font-weight: bold;
+                ">
+                    🏥
+                </div>
+                <div class="photo-overlay"></div>
+            `;
+        }
+
+        /* Route 3: GET /api/hospitals/details?id= */
+        async function fetchDetails(id) {
+            try {
+                const resp = await fetch(`${API_BASE}/api/hospitals/details?id=${id}`);
+                if (!resp.ok) return;
+                const detail = await resp.json();
+
+                // Update hospital object
+                const h = allHospitals.find(x => x.id === id);
+                if (h) { h.phone = detail.phone; h.website = detail.website; }
+
+                // Update phone tag in card
+                const phoneEl = document.getElementById(`phone-${id}`);
+                if (phoneEl && detail.phone) {
+                    phoneEl.style.display = 'flex';
+                    phoneEl.querySelector('span').textContent = detail.phone;
+                }
+                // Update call button
+                const callBtn = document.getElementById(`call-${id}`);
+                if (callBtn && detail.phone) {
+                    callBtn.onclick = () => window.location.href = `tel:${detail.phone.replace(/\s/g, '')}`;
+                    callBtn.style.opacity = '1';
+                }
+            } catch { /* silently ignore */ }
+        }
+
+        /* ─── RENDER CARDS ─── */
+        function renderList(hospitals) {
+            displayList = hospitals;
+            const scroll = document.getElementById('listScroll');
+            scroll.innerHTML = '';
+            document.getElementById('skelWrap').style.display = 'none';
+            scroll.style.display = 'block';
+
+            if (hospitals.length === 0) {
+                scroll.innerHTML = `<div style="text-align:center;padding:48px 20px;color:var(--muted)"><div style="font-size:36px;margin-bottom:12px">🏥</div><div style="font-size:14px;font-weight:600;color:var(--sub);margin-bottom:6px">No hospitals found</div><div style="font-size:12.5px;line-height:1.6">Try refreshing or checking your connection.</div></div>`;
+                return;
+            }
+
+            hospitals.forEach((h, idx) => {
+                scroll.appendChild(buildCard(h, idx));
+            });
+        }
+
+        function buildCard(h, idx) {
+            const card = document.createElement('div');
+            card.className = 'hcard';
+            card.dataset.id = h.id;
+
+            const dist = h.distKm != null ? h.distKm.toFixed(2) : '—';
+            const isSaved = savedSet.has(h.id);
+
+            card.innerHTML = `
+    <div class="hcard-photo" id="photo-${h.id}">
+      <div class="hcard-photo-fallback">🏥</div>
+    </div>
+
+    <div class="hcard-body">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:4px">
+        <div class="hcard-name">${h.name}</div>
+        <div style="background:var(--blue-light);color:var(--blue);font-size:10px;font-weight:800;padding:3px 8px;border-radius:20px;white-space:nowrap;margin-top:2px">#${idx + 1}</div>
+      </div>
+
+      <div class="hcard-addr">
+        <i data-lucide="map-pin" style="width:12px;height:12px;color:var(--muted)"></i>
+        <span>${h.address || 'Address unavailable'}</span>
+      </div>
+
+      <div class="hcard-meta">
+        <div style="display:flex;align-items:center;gap:6px;background:var(--green-light);padding:6px 12px;border-radius:20px;font-weight:700">
+          <i data-lucide="navigation" style="width:12px;height:12px;color:var(--green)"></i>
+          <span style="font-size:12px;color:var(--green)">${dist} km</span>
+        </div>
+        ${h.phone ? `<div style="display:flex;align-items:center;gap:6px;background:#FEE2E2;padding:6px 12px;border-radius:20px;font-weight:700">
+          <i data-lucide="phone" style="width:12px;height:12px;color:#EF4444"></i>
+          <span style="font-size:12px;color:#EF4444;font-family:monospace">${h.phone}</span>
+        </div>` : '<div style="font-size:11px;color:var(--muted)">No phone available</div>'}
+      </div>
+
+      <div class="hcard-actions">
+        <button class="btn-dir" onclick="directions(${h.lat},${h.lng},'${encodeURIComponent(h.name)}')">
+          <i data-lucide="navigation" style="width:13px;height:13px"></i>Directions
+        </button>
+        <button class="btn-call" id="call-${h.id}" style="opacity:.45" onclick="callHosp('${h.id}')">
+          <i data-lucide="phone" style="width:13px;height:13px"></i>Call
+        </button>
+        <div class="btn-save ${isSaved ? 'saved' : ''}" onclick="toggleSave('${h.id}',this)"
+             title="${isSaved ? 'Remove' : 'Save'}">
+          <i data-lucide="heart" style="width:15px;height:15px;color:${isSaved ? 'var(--coral)' : 'var(--muted)'}"></i>
+        </div>
+      </div>
+    </div>`;
+
+            card.addEventListener('click', e => {
+                if (e.target.closest('.hcard-actions')) return;
+                selectHospital(h.id);
+            });
+
+            return card;
+        }
+
+        /* ─── MARKERS ─── */
+        const H_ICON_HTML = (num, isSelected) => `
+  <div style="
+    width:32px;height:40px;position:relative;
+    display:flex;flex-direction:column;align-items:center
+  ">
+    <div style="
+      width:32px;height:32px;border-radius:50% 50% 50% 0;
+      transform:rotate(-45deg);
+      background:${isSelected ? '#10B981' : '#EF4444'};
+      border:2.5px solid #fff;
+      box-shadow:0 3px 12px rgba(${isSelected ? '16,185,129' : '239,68,68'},.4);
+      display:flex;align-items:center;justify-content:center;
+      transition:all .25s
+    ">
+      <span style="transform:rotate(45deg);color:#fff;font-size:10px;font-weight:800">${num}</span>
+    </div>
+    <div style="width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:8px solid ${isSelected ? '#10B981' : '#EF4444'};margin-top:-1px"></div>
+  </div>`;
+
+        function placeAllMarkers(hospitals) {
+            clearMarkers();
+            hospitals.forEach((h, idx) => {
+                const icon = L.divIcon({
+                    className: '', html: H_ICON_HTML(idx + 1, false),
+                    iconSize: [32, 40], iconAnchor: [16, 40], popupAnchor: [0, -40]
+                });
+                const marker = L.marker([h.lat, h.lng], { icon })
+                    .addTo(map)
+                    .bindPopup(buildPopupHTML(h, null), { maxWidth: 240 });
+
+                marker.on('click', () => selectHospital(h.id));
+                leafletMarkers[h.id] = marker;
+            });
+
+            // Fit bounds
+            if (hospitals.length > 0) {
+                const coords = hospitals.map(h => [h.lat, h.lng]);
+                coords.push([userLat, userLng]);
+                map.fitBounds(coords, { padding: [40, 40], maxZoom: 15 });
+            }
+        }
+
+        function buildPopupHTML(h, photoUrl) {
+            const dist = h.distKm != null ? `${h.distKm.toFixed(2)} km` : '—';
+            const photo = photoUrl ? `<img src="${photoUrl}" style="width:100%;height:80px;object-fit:cover;border-radius:8px;margin-bottom:8px">` : '';
+            return `${photo}
+    <div style="font-weight:800;font-size:13.5px;margin-bottom:3px;color:#0F1C3F">${h.name}</div>
+    <div style="font-size:11.5px;color:#6B7A99;margin-bottom:5px;line-height:1.4">${h.address || ''}</div>
+    <div style="font-size:11px;display:flex;align-items:center;gap:4px;color:#1B6FEB;font-weight:700">
+      <span>📍</span> ${dist} away
+    </div>
+    ${h.phone ? `<div style="font-size:11px;color:#10B981;margin-top:3px;font-weight:600">📞 ${h.phone}</div>` : ''}`;
+        }
+
+        function clearMarkers() {
+            Object.values(leafletMarkers).forEach(m => map && m.remove());
+            leafletMarkers = {};
+        }
+
+        /* ─── SELECT ─── */
+        function selectHospital(id) {
+            // Highlight card
+            document.querySelectorAll('.hcard').forEach(c => c.classList.remove('selected'));
+            const card = document.querySelector(`.hcard[data-id="${id}"]`);
+            if (card) { card.classList.add('selected'); card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+
+            // Update marker colour
+            const h = allHospitals.find(x => x.id === id);
+            const idx = allHospitals.indexOf(h);
+            Object.entries(leafletMarkers).forEach(([hid, m]) => {
+                const i = allHospitals.findIndex(x => x.id === hid);
+                m.setIcon(L.divIcon({
+                    className: '', html: H_ICON_HTML(i + 1, hid === id),
+                    iconSize: [32, 40], iconAnchor: [16, 40], popupAnchor: [0, -40]
+                }));
+            });
+
+            // Pan + open popup
+            const marker = leafletMarkers[id];
+            if (marker && h) {
+                map.panTo([h.lat, h.lng], { animate: true, duration: .5 });
+                setTimeout(() => marker.openPopup(), 350);
+            }
+        }
+
+        /* ─── SORT / FILTER ─── */
+        function sortBy(by, el) {
+            document.querySelectorAll('.filter-bar .chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            currentSort = by;
+            applySort();
+        }
+
+        function applySort() {
+            let list = [...allHospitals];
+            if (showingSaved) list = list.filter(h => savedSet.has(h.id));
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            if (q) list = list.filter(h => h.name.toLowerCase().includes(q) || (h.address || '').toLowerCase().includes(q));
+            if (currentSort === 'name') list.sort((a, b) => a.name.localeCompare(b.name));
+            else list.sort((a, b) => (a.distKm || 0) - (b.distKm || 0));
+            renderList(list);
+            document.getElementById('statsTxt').textContent = `${list.length} hospital${list.length !== 1 ? 's' : ''} ${showingSaved ? 'saved' : 'found'}`;
+        }
+
+        function filterCards() { applySort(); }
+
+        function showSaved(el) {
+            showingSaved = true;
+            document.querySelectorAll('.filter-bar .chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            document.getElementById('chipAll').style.display = 'flex';
+            applySort();
+        }
+        function showAll(el) {
+            showingSaved = false;
+            document.getElementById('chipAll').style.display = 'none';
+            document.getElementById('chipNearest').classList.add('active');
+            el.classList.remove('active');
+            applySort();
+        }
+
+        /* ─── SAVE ─── */
+        function toggleSave(id, btn) {
+            if (savedSet.has(id)) {
+                savedSet.delete(id);
+                btn.classList.remove('saved');
+                btn.innerHTML = '<i data-lucide="heart" style="width:15px;height:15px;color:var(--muted)"></i>';
+                showToast('Removed from saved');
+            } else {
+                savedSet.add(id);
+                btn.classList.add('saved');
+                btn.innerHTML = '<i data-lucide="heart" style="width:15px;height:15px;color:var(--coral)"></i>';
+                showToast('Saved ❤️');
+            }
+            lucide.createIcons();
+        }
+
+        /* ─── HELPERS ─── */
+        function directions(lat, lng, name) {
+            window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving`, '_blank');
+        }
+
+        function callHosp(id) {
+            const h = allHospitals.find(x => x.id === id);
+            if (h?.phone) window.location.href = `tel:${h.phone.replace(/\s/g, '')}`;
+            else showToast('Loading phone number…');
+        }
+
+        function recenter() {
+            if (!map || !userLat) return;
+            map.setView([userLat, userLng], 14, { animate: true });
+        }
+
+        function noResults() {
+            document.getElementById('loadingScreen').classList.add('hidden');
+            document.getElementById('skelWrap').style.display = 'none';
+            document.getElementById('listScroll').style.display = 'block';
+            document.getElementById('listScroll').innerHTML = `<div style="text-align:center;padding:48px 20px;color:var(--muted)"><div style="font-size:36px;margin-bottom:12px">🏥</div><div style="font-size:14px;font-weight:600;color:var(--sub);margin-bottom:6px">No hospitals found</div><div style="font-size:12.5px;line-height:1.6">No results returned from Foursquare for this location.</div></div>`;
+            document.getElementById('statsTxt').textContent = 'No results';
+            document.getElementById('statsSub').textContent = 'Try a different location';
+        }
+
+        function haversine(lat1, lon1, lat2, lon2) {
+            const R = 6371, dl = (lat2 - lat1) * Math.PI / 180, do_ = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dl / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(do_ / 2) ** 2;
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        /* ─── SIDEBAR ─── */
+        lucide.createIcons();
+        const sidebarEl = document.getElementById('sidebar');
+        const overlayEl = document.getElementById('overlay');
+        document.getElementById('hamBtn').addEventListener('click', () => {
+            sidebarEl.classList.add('open'); overlayEl.classList.add('show'); document.body.style.overflow = 'hidden';
+        });
+        overlayEl.addEventListener('click', () => {
+            sidebarEl.classList.remove('open'); overlayEl.classList.remove('show'); document.body.style.overflow = '';
+        });
+        document.querySelectorAll('.nav-item').forEach(el => el.addEventListener('click', () => {
+            if (window.innerWidth <= 900) { sidebarEl.classList.remove('open'); overlayEl.classList.remove('show'); document.body.style.overflow = ''; }
+        }));
+        document.querySelectorAll('.bn-item').forEach(el => el.addEventListener('click', function () {
+            document.querySelectorAll('.bn-item').forEach(i => i.classList.remove('active')); this.classList.add('active');
+        }));
+
+        /* ─── KICK OFF ─── */
+        startAll();
+    </script>
+</body>
+
+</html>

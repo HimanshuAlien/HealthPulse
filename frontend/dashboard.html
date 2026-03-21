@@ -1,0 +1,1979 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HealthPulse AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Sora:wght@400;600;700&display=swap"
+    rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    :root {
+      --blue-primary: #1B6FEB;
+      --blue-deep: #0D4FC4;
+      --blue-light: #EBF2FF;
+      --teal: #0ABFBC;
+      --coral: #FF6B6B;
+      --coral-light: #FFF0F0;
+      --amber: #F59E0B;
+      --amber-light: #FEF3C7;
+      --green: #10B981;
+      --green-light: #D1FAE5;
+      --purple: #7C3AED;
+      --purple-light: #EDE9FE;
+      --bg: #F4F7FC;
+      --card: #FFFFFF;
+      --text-primary: #0F1C3F;
+      --text-secondary: #6B7A99;
+      --text-muted: #A0ABBE;
+      --border: #E8EDF5;
+      --sidebar-w: 260px;
+      --shadow-sm: 0 2px 8px rgba(27, 111, 235, 0.06);
+      --shadow-md: 0 8px 24px rgba(27, 111, 235, 0.10);
+      --shadow-lg: 0 16px 40px rgba(27, 111, 235, 0.14);
+      --r-sm: 12px;
+      --r-md: 18px;
+      --r-lg: 24px;
+      --r-xl: 32px;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden
+    }
+
+    /* ── LAYOUT ── */
+    .app-shell {
+      display: flex;
+      min-height: 100vh
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 200;
+      padding: 28px 0;
+      transition: transform .32s cubic-bezier(.4, 0, .2, 1)
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 24px 26px;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .logo-icon {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, var(--blue-primary), var(--blue-deep));
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 4px 12px rgba(27, 111, 235, .3)
+    }
+
+    .logo-text {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      color: var(--text-primary)
+    }
+
+    .logo-text span {
+      color: var(--blue-primary)
+    }
+
+    .sidebar-nav {
+      padding: 18px 14px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      overflow-y: auto
+    }
+
+    .nav-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      padding: 10px 10px 4px;
+      margin-top: 6px
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 14px;
+      border-radius: var(--r-sm);
+      cursor: pointer;
+      transition: all .18s;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      position: relative;
+      text-decoration: none
+    }
+
+    .nav-item:hover {
+      background: var(--blue-light);
+      color: var(--blue-primary)
+    }
+
+    .nav-item.active {
+      background: var(--blue-light);
+      color: var(--blue-primary);
+      font-weight: 600
+    }
+
+    .nav-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 22%;
+      bottom: 22%;
+      width: 3px;
+      border-radius: 4px;
+      background: var(--blue-primary)
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      background: var(--coral);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 20px
+    }
+
+    .sidebar-user {
+      padding: 14px 20px;
+      margin: 0 14px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 11px
+    }
+
+    .sidebar-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue-primary), var(--teal));
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 13px;
+      color: #fff;
+      flex-shrink: 0
+    }
+
+    .sidebar-user-name {
+      font-size: 13px;
+      font-weight: 600
+    }
+
+    .sidebar-user-role {
+      font-size: 11px;
+      color: var(--text-muted)
+    }
+
+    /* OVERLAY */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 28, 63, .38);
+      backdrop-filter: blur(3px);
+      z-index: 190
+    }
+
+    .overlay.show {
+      display: block;
+      animation: fadeIn .2s
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0
+      }
+
+      to {
+        opacity: 1
+      }
+    }
+
+    /* MAIN */
+    .main-content {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      display: flex;
+      flex-direction: column
+    }
+
+    /* ── DESKTOP TOPBAR ── */
+    .topbar {
+      background: rgba(255, 255, 255, .88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(232, 237, 245, .8);
+      padding: 0 32px;
+      height: 66px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 50
+    }
+
+    .topbar-greeting {
+      flex: 1
+    }
+
+    .topbar-greeting h1 {
+      font-family: 'Sora', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      background: linear-gradient(110deg, var(--text-primary) 0%, var(--blue-primary) 120%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -.3px
+    }
+
+    .search-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 30px;
+      padding: 8px 16px;
+      min-width: 210px;
+      transition: all .2s;
+      cursor: text
+    }
+
+    .search-pill:focus-within {
+      border-color: var(--blue-primary);
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(27, 111, 235, .08)
+    }
+
+    .search-pill input {
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 13px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--text-primary);
+      width: 100%
+    }
+
+    .search-pill input::placeholder {
+      color: var(--text-muted)
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: all .2s;
+      position: relative;
+      flex-shrink: 0
+    }
+
+    .icon-btn:hover {
+      background: var(--blue-light);
+      border-color: var(--blue-primary);
+      transform: scale(1.05)
+    }
+
+    .icon-btn .dot {
+      position: absolute;
+      top: 7px;
+      right: 7px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--coral);
+      border: 2px solid #fff
+    }
+
+    .topbar-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue-primary), var(--teal));
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 0 0 3px rgba(27, 111, 235, .2), 0 2px 10px rgba(27, 111, 235, .3);
+      transition: box-shadow .2s;
+      flex-shrink: 0
+    }
+
+    .topbar-avatar:hover {
+      box-shadow: 0 0 0 4px rgba(27, 111, 235, .3), 0 4px 18px rgba(27, 111, 235, .4)
+    }
+
+    /* ── MOBILE TOPBAR ── */
+    .mobile-topbar {
+      display: none;
+      background: rgba(255, 255, 255, .92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(232, 237, 245, .8);
+      padding: 0 16px;
+      height: 62px;
+      align-items: center;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 50
+    }
+
+    .mob-hamburger {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: all .2s;
+      flex-shrink: 0
+    }
+
+    .mob-hamburger:hover {
+      background: var(--blue-light);
+      border-color: var(--blue-primary)
+    }
+
+    .mob-logo {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .mob-logo-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, var(--blue-primary), var(--blue-deep));
+      display: grid;
+      place-items: center;
+      box-shadow: 0 3px 10px rgba(27, 111, 235, .3)
+    }
+
+    .mob-logo-text {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--text-primary)
+    }
+
+    .mob-logo-text span {
+      color: var(--blue-primary)
+    }
+
+    .mob-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .mob-notif {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      position: relative;
+      transition: all .2s
+    }
+
+    .mob-notif:hover {
+      background: var(--blue-light);
+      border-color: var(--blue-primary)
+    }
+
+    .mob-notif .dot {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--coral);
+      border: 2px solid #fff
+    }
+
+    .mob-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue-primary), var(--teal));
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      color: #fff;
+      font-size: 13px;
+      box-shadow: 0 0 0 3px rgba(27, 111, 235, .18);
+      cursor: pointer
+    }
+
+    /* PAGE BODY */
+    .page-body {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 24px;
+      padding: 26px 32px;
+      max-width: 1440px;
+      width: 100%;
+      align-items: start
+    }
+
+    .center-col {
+      display: flex;
+      flex-direction: column;
+      gap: 22px
+    }
+
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 18px
+    }
+
+    /* HERO */
+    .hero-banner {
+      background: linear-gradient(135deg, var(--blue-deep) 0%, var(--blue-primary) 55%, #3B9EEB 100%);
+      border-radius: var(--r-xl);
+      padding: 30px 32px;
+      position: relative;
+      overflow: hidden;
+      min-height: 175px;
+      display: flex;
+      align-items: center;
+      box-shadow: var(--shadow-lg)
+    }
+
+    .hero-bg-c {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .06)
+    }
+
+    .hero-bg-c.c1 {
+      width: 200px;
+      height: 200px;
+      top: -60px;
+      right: 100px
+    }
+
+    .hero-bg-c.c2 {
+      width: 140px;
+      height: 140px;
+      bottom: -50px;
+      right: 20px
+    }
+
+    .hero-bg-c.c3 {
+      width: 80px;
+      height: 80px;
+      top: 20px;
+      right: 60px
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 58%
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, .15);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, .2);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, .9);
+      letter-spacing: .04em;
+      margin-bottom: 11px
+    }
+
+    .hero-tag::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #4ADE80;
+      animation: blink 2s infinite
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1)
+      }
+
+      50% {
+        opacity: .6;
+        transform: scale(1.2)
+      }
+    }
+
+    .hero-content h2 {
+      font-family: 'Sora', sans-serif;
+      font-size: 27px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.25;
+      margin-bottom: 10px
+    }
+
+    .hero-content p {
+      font-size: 13px;
+      color: rgba(255, 255, 255, .72);
+      margin-bottom: 20px;
+      line-height: 1.55
+    }
+
+    .hero-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff;
+      color: var(--blue-primary);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 10px 22px;
+      border-radius: 30px;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, .15);
+      transition: all .25s;
+      font-family: 'Plus Jakarta Sans', sans-serif
+    }
+
+    .hero-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .2)
+    }
+
+    .hero-stats {
+      position: absolute;
+      right: 30px;
+      bottom: 26px;
+      z-index: 2;
+      display: flex;
+      gap: 10px
+    }
+
+    .hero-stat {
+      background: rgba(255, 255, 255, .12);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, .18);
+      border-radius: var(--r-sm);
+      padding: 10px 16px;
+      text-align: center
+    }
+
+    .hero-stat-val {
+      font-family: 'Sora', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff
+    }
+
+    .hero-stat-label {
+      font-size: 10px;
+      color: rgba(255, 255, 255, .6);
+      margin-top: 1px
+    }
+
+    /* ── AI INSIGHT — MODERN ── */
+    .ai-insight {
+      background: linear-gradient(135deg, rgba(27, 111, 235, 0.06) 0%, rgba(124, 58, 237, 0.04) 100%);
+      border-radius: var(--r-xl);
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid rgba(27, 111, 235, 0.12);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px)
+    }
+
+    .ai-mesh {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background: none;
+      animation: none
+    }
+
+    @keyframes meshPulse {
+      from {
+        opacity: 1
+      }
+
+      to {
+        opacity: 1
+      }
+    }
+
+    /* scanlines */
+    .ai-insight::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: none
+    }
+
+    /* top glare line */
+    .ai-insight::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: none;
+      z-index: 2
+    }
+
+    .ai-inner {
+      position: relative;
+      z-index: 3
+    }
+
+    /* Header row */
+    .ai-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px
+    }
+
+    .ai-badge-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, var(--blue-primary) 0%, var(--purple) 100%);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 4px 12px rgba(27, 111, 235, 0.15);
+      animation: none
+    }
+
+    @keyframes iconGlow {
+      from {
+        box-shadow: 0 4px 12px rgba(27, 111, 235, 0.15)
+      }
+
+      to {
+        box-shadow: 0 4px 12px rgba(27, 111, 235, 0.15)
+      }
+    }
+
+    .ai-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      color: var(--blue-primary);
+      text-transform: uppercase;
+      margin-bottom: 4px
+    }
+
+    .dot-blink {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      display: inline-block;
+      animation: blink 2s ease-in-out infinite
+    }
+
+    .ai-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -.2px
+    }
+
+    /* Body */
+    .ai-body {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start
+    }
+
+    /* Score ring */
+    .ai-ring-wrap {
+      flex-shrink: 0;
+      position: relative;
+      width: 82px;
+      height: 82px
+    }
+
+    .ai-ring-wrap svg {
+      width: 82px;
+      height: 82px;
+      transform: rotate(-90deg)
+    }
+
+    .ring-bg {
+      fill: none;
+      stroke: var(--border);
+      stroke-width: 6
+    }
+
+    .ring-fill {
+      fill: none;
+      stroke-width: 6;
+      stroke-linecap: round;
+      stroke-dasharray: 207;
+      stroke-dashoffset: 50;
+      stroke: url(#rg)
+    }
+
+    .ring-label {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center
+    }
+
+    .ring-val {
+      font-family: 'Sora', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--blue-primary);
+      line-height: 1
+    }
+
+    .ring-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px
+    }
+
+    .ai-content {
+      flex: 1
+    }
+
+    .ai-content p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.72;
+      margin-bottom: 16px
+    }
+
+    /* Mini metric chips */
+    .ai-metrics {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+      flex-wrap: wrap
+    }
+
+    .ai-metric {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      min-width: 80px
+    }
+
+    .ai-metric-val {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary)
+    }
+
+    .ai-metric.up .ai-metric-val {
+      color: var(--green)
+    }
+
+    .ai-metric.warn .ai-metric-val {
+      color: var(--amber)
+    }
+
+    .ai-metric-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px
+    }
+
+    /* Pills */
+    .ai-pills {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap
+    }
+
+    .ai-pill {
+      background: var(--blue-light);
+      border: 1px solid rgba(27, 111, 235, 0.2);
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--blue-primary);
+      cursor: pointer;
+      transition: all .2s;
+      display: flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .ai-pill:hover {
+      background: var(--blue-primary);
+      color: #fff;
+      border-color: var(--blue-primary)
+    }
+
+    /* ALERT */
+    .alert-strip {
+      background: linear-gradient(90deg, rgba(255, 107, 107, .08), rgba(245, 158, 11, .07));
+      border: 1px solid rgba(255, 107, 107, .18);
+      border-radius: var(--r-sm);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px
+    }
+
+    /* SECTIONS */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px
+    }
+
+    .section-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 18px;
+      font-weight: 700
+    }
+
+    .see-all {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--blue-primary);
+      cursor: pointer;
+      padding: 5px 14px;
+      border-radius: 20px;
+      background: var(--blue-light);
+      transition: all .2s;
+      border: none;
+      font-family: 'Plus Jakarta Sans', sans-serif
+    }
+
+    .see-all:hover {
+      background: var(--blue-primary);
+      color: #fff
+    }
+
+    /* SPECIALIST GRID */
+    .specialist-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 11px
+    }
+
+    .specialist-card {
+      background: var(--card);
+      border-radius: var(--r-md);
+      padding: 18px 10px 14px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .25s cubic-bezier(.4, 0, .2, 1);
+      border: 1.5px solid transparent;
+      box-shadow: var(--shadow-sm)
+    }
+
+    .specialist-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--blue-primary);
+      box-shadow: var(--shadow-md)
+    }
+
+    .specialist-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 10px;
+      transition: transform .2s
+    }
+
+    .specialist-card:hover .specialist-icon {
+      transform: scale(1.08)
+    }
+
+    .specialist-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary)
+    }
+
+    .specialist-count {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 2px
+    }
+
+    /* DOCTORS */
+    .doctor-list {
+      display: flex;
+      flex-direction: column;
+      gap: 11px
+    }
+
+    .doctor-card {
+      background: var(--card);
+      border-radius: var(--r-md);
+      padding: 15px 18px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      cursor: pointer;
+      transition: all .25s;
+      border: 1.5px solid transparent;
+      box-shadow: var(--shadow-sm)
+    }
+
+    .doctor-card:hover {
+      border-color: var(--blue-primary);
+      box-shadow: var(--shadow-md);
+      transform: translateX(4px)
+    }
+
+    .doctor-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 15px;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, var(--blue-light), #dbeafe);
+      display: grid;
+      place-items: center;
+      font-size: 22px
+    }
+
+    .doctor-info {
+      flex: 1
+    }
+
+    .doctor-name {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 2px
+    }
+
+    .doctor-spec {
+      font-size: 12px;
+      color: var(--text-muted)
+    }
+
+    .doctor-meta {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-top: 7px
+    }
+
+    .rating {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--amber)
+    }
+
+    .exp-badge {
+      font-size: 11px;
+      color: var(--text-muted);
+      background: var(--bg);
+      padding: 2px 8px;
+      border-radius: 20px
+    }
+
+    .avail-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green)
+    }
+
+    .avail-text {
+      font-size: 11px;
+      color: var(--green);
+      font-weight: 500
+    }
+
+    .book-btn {
+      background: var(--blue-light);
+      color: var(--blue-primary);
+      border: none;
+      border-radius: 10px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      white-space: nowrap;
+      font-family: 'Plus Jakarta Sans', sans-serif
+    }
+
+    .book-btn:hover {
+      background: var(--blue-primary);
+      color: #fff
+    }
+
+    /* PANEL */
+    .panel-card {
+      background: var(--card);
+      border-radius: var(--r-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-sm)
+    }
+
+    .panel-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 15px
+    }
+
+    .health-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px
+    }
+
+    .stat-tile {
+      border-radius: var(--r-sm);
+      padding: 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: transform .2s;
+      cursor: default
+    }
+
+    .stat-tile:hover {
+      transform: scale(1.03)
+    }
+
+    .stat-tile.heart {
+      background: var(--coral-light)
+    }
+
+    .stat-tile.oxygen {
+      background: var(--blue-light)
+    }
+
+    .stat-tile.sleep {
+      background: var(--purple-light)
+    }
+
+    .stat-tile.steps {
+      background: var(--green-light)
+    }
+
+    .stat-value {
+      font-family: 'Sora', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1
+    }
+
+    .stat-tile.heart .stat-value {
+      color: var(--coral)
+    }
+
+    .stat-tile.oxygen .stat-value {
+      color: var(--blue-primary)
+    }
+
+    .stat-tile.sleep .stat-value {
+      color: var(--purple)
+    }
+
+    .stat-tile.steps .stat-value {
+      color: var(--green)
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500
+    }
+
+    .stat-trend {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 20px;
+      align-self: flex-start
+    }
+
+    .trend-up {
+      background: rgba(16, 185, 129, .12);
+      color: var(--green)
+    }
+
+    .trend-down {
+      background: rgba(255, 107, 107, .12);
+      color: var(--coral)
+    }
+
+    .trend-ok {
+      background: rgba(27, 111, 235, .1);
+      color: var(--blue-primary)
+    }
+
+    .pulse-chart {
+      width: 100%;
+      height: 54px
+    }
+
+    .appt-list {
+      display: flex;
+      flex-direction: column;
+      gap: 9px
+    }
+
+    .appt-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 11px;
+      border-radius: var(--r-sm);
+      background: var(--bg);
+      transition: background .2s;
+      cursor: pointer
+    }
+
+    .appt-item:hover {
+      background: var(--blue-light)
+    }
+
+    .appt-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-size: 17px;
+      flex-shrink: 0
+    }
+
+    .appt-info {
+      flex: 1
+    }
+
+    .appt-doctor {
+      font-size: 13px;
+      font-weight: 600
+    }
+
+    .appt-spec {
+      font-size: 11px;
+      color: var(--text-muted)
+    }
+
+    .appt-day {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--blue-primary);
+      text-align: right
+    }
+
+    .appt-clock {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-align: right;
+      margin-top: 1px
+    }
+
+    .qa-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px
+    }
+
+    .qa-btn {
+      border-radius: var(--r-sm);
+      padding: 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      cursor: pointer;
+      transition: all .22s;
+      border: none;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      text-align: left
+    }
+
+    .qa-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md)
+    }
+
+    .qa-btn span {
+      font-size: 12px;
+      font-weight: 600
+    }
+
+    .qa-btn.emergency {
+      background: var(--coral-light);
+      color: var(--coral)
+    }
+
+    .qa-btn.records {
+      background: var(--blue-light);
+      color: var(--blue-primary)
+    }
+
+    .qa-btn.prescription {
+      background: var(--green-light);
+      color: var(--green)
+    }
+
+    .qa-btn.lab {
+      background: var(--amber-light);
+      color: var(--amber)
+    }
+
+    .med-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px
+    }
+
+    .med-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 11px;
+      border-radius: var(--r-sm);
+      background: var(--bg);
+      cursor: pointer;
+      transition: background .2s
+    }
+
+    .med-item:hover {
+      background: var(--blue-light)
+    }
+
+    .med-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0
+    }
+
+    .med-info {
+      flex: 1
+    }
+
+    .med-name {
+      font-size: 13px;
+      font-weight: 600
+    }
+
+    .med-dose {
+      font-size: 11px;
+      color: var(--text-muted)
+    }
+
+    .med-check {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: all .2s;
+      flex-shrink: 0
+    }
+
+    .med-check.done {
+      background: var(--green);
+      border-color: var(--green)
+    }
+
+    .med-check.done::after {
+      content: '✓';
+      font-size: 11px;
+      color: #fff;
+      font-weight: 700
+    }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, .96);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border);
+      padding: 8px 0 max(10px, env(safe-area-inset-bottom));
+      z-index: 150
+    }
+
+    .bottom-nav-inner {
+      display: flex;
+      justify-content: space-around;
+      align-items: center
+    }
+
+    .bn-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 4px 12px;
+      cursor: pointer;
+      transition: color .2s;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted)
+    }
+
+    .bn-item.active {
+      color: var(--blue-primary)
+    }
+
+    .bn-center-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue-primary), var(--blue-deep));
+      display: grid;
+      place-items: center;
+      box-shadow: 0 4px 20px rgba(27, 111, 235, .45);
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+      margin-top: -14px
+    }
+
+    .bn-center-btn:hover {
+      transform: scale(1.07);
+      box-shadow: 0 6px 28px rgba(27, 111, 235, .55)
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .hero-banner {
+      animation: fadeUp .5s ease both
+    }
+
+    .ai-insight {
+      animation: fadeUp .5s .1s ease both
+    }
+
+    .panel-card {
+      animation: fadeUp .45s .12s ease both
+    }
+
+    .specialist-card {
+      animation: fadeUp .4s ease both
+    }
+
+    .specialist-card:nth-child(1) {
+      animation-delay: .04s
+    }
+
+    .specialist-card:nth-child(2) {
+      animation-delay: .08s
+    }
+
+    .specialist-card:nth-child(3) {
+      animation-delay: .12s
+    }
+
+    .specialist-card:nth-child(4) {
+      animation-delay: .16s
+    }
+
+    .specialist-card:nth-child(5) {
+      animation-delay: .20s
+    }
+
+    .specialist-card:nth-child(6) {
+      animation-delay: .24s
+    }
+
+    .specialist-card:nth-child(7) {
+      animation-delay: .28s
+    }
+
+    .specialist-card:nth-child(8) {
+      animation-delay: .32s
+    }
+
+    .doctor-card {
+      animation: fadeUp .4s ease both
+    }
+
+    .doctor-card:nth-child(1) {
+      animation-delay: .08s
+    }
+
+    .doctor-card:nth-child(2) {
+      animation-delay: .16s
+    }
+
+    .doctor-card:nth-child(3) {
+      animation-delay: .24s
+    }
+
+    /* RESPONSIVE */
+    @media(max-width:900px) {
+      .sidebar {
+        transform: translateX(-100%)
+      }
+
+      .sidebar.open {
+        transform: translateX(0)
+      }
+
+      .main-content {
+        margin-left: 0
+      }
+
+      .topbar {
+        display: none
+      }
+
+      .mobile-topbar {
+        display: flex
+      }
+
+      .page-body {
+        grid-template-columns: 1fr;
+        padding: 14px 14px 96px;
+        gap: 16px
+      }
+
+      .right-panel {
+        order: -1
+      }
+
+      .hero-content {
+        max-width: 68%
+      }
+
+      .hero-content h2 {
+        font-size: 22px
+      }
+
+      .hero-stats {
+        right: 16px;
+        bottom: 18px;
+        flex-direction: column;
+        gap: 8px
+      }
+
+      .bottom-nav {
+        display: block
+      }
+
+      .ai-body {
+        flex-direction: column
+      }
+    }
+
+    @media(max-width:480px) {
+      .specialist-card {
+        padding: 12px 6px 10px
+      }
+
+      .specialist-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px
+      }
+
+      .hero-banner {
+        padding: 20px 18px;
+        min-height: 150px
+      }
+
+      .hero-content h2 {
+        font-size: 20px
+      }
+
+      .hero-stats {
+        display: none
+      }
+
+      .hero-content {
+        max-width: 100%
+      }
+
+      .page-body {
+        padding: 12px 12px 88px;
+        gap: 13px
+      }
+
+      .doctor-card {
+        padding: 12px 13px
+      }
+
+      .ai-insight {
+        padding: 18px
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app-shell">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon"><i data-lucide="activity" style="width:20px;height:20px;color:#fff"></i></div>
+        <div class="logo-text">Health<span>Pulse</span> AI</div>
+      </div>
+      <nav class="sidebar-nav">
+        <span class="nav-label">Features</span>
+        <a class="nav-item active" href="dashboard.html"><i data-lucide="layout-dashboard"
+            style="width:18px;height:18px"></i>Dashboard</a>
+        <a class="nav-item" href="diagnosis.html"><i data-lucide="activity" style="width:18px;height:18px"></i>AI
+          Diagnosis</a>
+        <a class="nav-item" href="escalation.html"><i data-lucide="alert-triangle"
+            style="width:18px;height:18px"></i>Escalation</a>
+        <a class="nav-item" href="hospital-finder.html"><i data-lucide="map-pin"
+            style="width:18px;height:18px"></i>Hospital Finder</a>
+        <a class="nav-item" href="specialist-routing.html"><i data-lucide="stethoscope"
+            style="width:18px;height:18px"></i>Specialist Route</a>
+        <a class="nav-item" href="chat.html"><i data-lucide="message-circle" style="width:18px;height:18px"></i>Chat
+          Assistant</a>
+        <a class="nav-item" href="wearables.html"><i data-lucide="watch"
+            style="width:18px;height:18px"></i>Wearables</a>
+        <a class="nav-item" href="alerts.html"><i data-lucide="bell" style="width:18px;height:18px"></i>Health
+          Alerts</a>
+        <a class="nav-item" href="insights.html"><i data-lucide="brain" style="width:18px;height:18px"></i>AI
+          Insights</a>
+        <span class="nav-label">Account</span>
+        <a class="nav-item" href="messages.html"><i data-lucide="mail" style="width:18px;height:18px"></i>Messages<span
+            class="nav-badge">5</span></a>
+        <a class="nav-item" href="#"><i data-lucide="settings" style="width:18px;height:18px"></i>Preferences</a>
+        <a class="nav-item" href="#"><i data-lucide="user-circle" style="width:18px;height:18px"></i>Profile</a>
+      </nav>
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">OB</div>
+        <div>
+          <div class="sidebar-user-name">Oliver Brooks</div>
+          <div class="sidebar-user-role">Patient #HP-2847</div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="overlay" id="overlay"></div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+
+      <!-- DESKTOP TOPBAR -->
+      <header class="topbar">
+        <div class="topbar-greeting">
+          <h1>Good Morning, Oliver 👋</h1>
+        </div>
+        <div class="search-pill">
+          <i data-lucide="search" style="width:15px;height:15px;color:var(--text-muted)"></i>
+          <input placeholder="Search doctors, specialties…">
+        </div>
+        <div class="topbar-actions">
+          <div class="icon-btn" title="Notifications">
+            <i data-lucide="bell" style="width:17px;height:17px;color:var(--text-secondary)"></i>
+            <div class="dot"></div>
+          </div>
+          <div class="icon-btn" title="Saved">
+            <i data-lucide="bookmark" style="width:17px;height:17px;color:var(--text-secondary)"></i>
+          </div>
+          <div class="topbar-avatar">OB</div>
+        </div>
+      </header>
+
+      <!-- MOBILE TOPBAR -->
+      <header class="mobile-topbar">
+        <div class="mob-hamburger" id="hamburgerBtn">
+          <i data-lucide="menu" style="width:20px;height:20px;color:var(--text-primary)"></i>
+        </div>
+        <div class="mob-logo">
+          <div class="mob-logo-icon"><i data-lucide="activity" style="width:15px;height:15px;color:#fff"></i></div>
+          <div class="mob-logo-text">Health<span>Pulse</span></div>
+        </div>
+        <div class="mob-actions">
+          <div class="mob-notif">
+            <i data-lucide="bell" style="width:16px;height:16px;color:var(--text-secondary)"></i>
+            <div class="dot"></div>
+          </div>
+          <div class="mob-avatar">OB</div>
+        </div>
+      </header>
+
+      <!-- PAGE BODY -->
+      <div class="page-body">
+
+        <div class="center-col">
+
+          <!-- ALERT -->
+          <div class="alert-strip">
+            <i data-lucide="triangle-alert" style="width:17px;height:17px;color:var(--coral)"></i>
+            <div><strong>AI Alert:</strong> Your heart rate was slightly elevated last night. Consider scheduling a
+              check-up.</div>
+          </div>
+
+          <img src="assets/Screenshot 2026-03-20 130218.png" alt="Medical Media Center Banner"
+            style="width:100%; display:block; margin-bottom:32px; border-radius:8px;">
+
+          <!-- AI INSIGHT -->
+          <div class="ai-insight">
+            <div class="ai-mesh"></div>
+            <!-- gradient def -->
+            <svg width="0" height="0" style="position:absolute">
+              <defs>
+                <linearGradient id="rg" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#1B6FEB" />
+                  <stop offset="100%" stop-color="#7C3AED" />
+                </linearGradient>
+              </defs>
+            </svg>
+
+            <div class="ai-inner">
+              <div class="ai-header">
+                <div class="ai-badge-icon">
+                  <i data-lucide="brain-circuit" style="width:22px;height:22px;color:#fff"></i>
+                </div>
+                <div>
+                  <div class="ai-eyebrow"><span class="dot-blink"></span>HealthPulse AI · Live Analysis</div>
+                  <div class="ai-title">Your wellness score is improving</div>
+                </div>
+              </div>
+              <div class="ai-body">
+                <div class="ai-ring-wrap">
+                  <svg viewBox="0 0 82 82">
+                    <circle class="ring-bg" cx="41" cy="41" r="33" />
+                    <circle class="ring-fill" cx="41" cy="41" r="33" />
+                  </svg>
+                  <div class="ring-label">
+                    <div class="ring-val">82</div>
+                    <div class="ring-sub">/ 100</div>
+                  </div>
+                </div>
+                <div class="ai-content">
+                  <p>Based on your sleep, activity and vitals — you're trending positively. Improve sleep consistency to
+                    push past 90 next week.</p>
+                  <div class="ai-metrics">
+                    <div class="ai-metric up">
+                      <div class="ai-metric-val">+6%</div>
+                      <div class="ai-metric-label">vs last week</div>
+                    </div>
+                    <div class="ai-metric">
+                      <div class="ai-metric-val">78 bpm</div>
+                      <div class="ai-metric-label">Avg HR</div>
+                    </div>
+                    <div class="ai-metric warn">
+                      <div class="ai-metric-val">6.4 h</div>
+                      <div class="ai-metric-label">Sleep</div>
+                    </div>
+                  </div>
+                  <div class="ai-pills">
+                    <div class="ai-pill"><i data-lucide="moon" style="width:12px;height:12px"></i>Sleep Report</div>
+                    <div class="ai-pill"><i data-lucide="heart-pulse" style="width:12px;height:12px"></i>Heart Trend
+                    </div>
+                    <div class="ai-pill"><i data-lucide="zap" style="width:12px;height:12px"></i>Full Insight</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FIND SPECIALIST -->
+          <div>
+            <div class="section-header">
+              <div class="section-title">Find Specialist</div>
+              <button class="see-all">See All</button>
+            </div>
+            <div class="specialist-grid">
+              <div class="specialist-card">
+                <div class="specialist-icon" style="background:#EBF2FF"><i data-lucide="stethoscope"
+                    style="width:23px;height:23px;color:#1B6FEB"></i></div>
+                <div class="specialist-name">General</div>
+                <div class="specialist-count">142 docs</div>
+              </div>
+              <div class="specialist-card">
+                <div class="specialist-icon" style="background:#FFF0F0"><i data-lucide="heart"
+                    style="width:23px;height:23px;color:#FF6B6B"></i></div>
+                <div class="specialist-name">Cardio</div>
+                <div class="specialist-count">87 docs</div>
+              </div>
+              <div class="specialist-card">
+                <div class="specialist-icon" style="background:#E6F9F9"><i data-lucide="smile"
+                    style="width:23px;height:23px;color:#0ABFBC"></i></div>
+                <div class="specialist-name">Dentist</div>
+                <div class="specialist-count">63 docs</div>
+              </div>
+              <div class="specialist-card">
+                <div class="specialist-icon" style="background:#EDE9FE"><i data-lucide="wind"
+                    style="width:23px;height:23px;color:#7C3AED"></i></div>
+                <div class="specialist-name">Pulmonol.</div>
+                <div class="specialist-count">44 docs</div>
+              </div>
+              <div class="specialist-card">
+                <div class="specialist-icon" style="background:#D1FAE5"><i data-lucide="baby"
+                    style="width:23px;height:23px;color:#10B981"></i></div>
+                <div class="specialist-name">Pediatrics</div>
+                <div class="specialist-count">59 docs</div>
+              </div>
+              <div class="specialist-card">
+                <div class="specialist-icon" style="background:#FEF3C7"><i data-lucide="microscope"
+                    style="width:23px;height:23px;color:#F59E0B"></i></div>
+                <div class="specialist-name">Infectiol.</div>
+                <div class="specialist-count">28 docs</div>
+              </div>
+              <div class="specialist-card">
+                <div class="specialist-icon" style="background:#EBF2FF"><i data-lucide="bone"
+                    style="width:23px;height:23px;color:#1B6FEB"></i></div>
+                <div class="specialist-name">Orthopedic</div>
+                <div class="specialist-count">51 docs</div>
+              </div>
+              <div class="specialist-card">
+                <div class="specialist-icon" style="background:#F4F7FC"><i data-lucide="more-horizontal"
+                    style="width:23px;height:23px;color:#6B7A99"></i></div>
+                <div class="specialist-name">See More</div>
+                <div class="specialist-count">+18 types</div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /center -->
+
+        <!-- RIGHT PANEL -->
+        <div class="right-panel">
+
+          <div class="panel-card">
+            <div class="panel-title">Today's Metrics</div>
+            <div class="health-stats">
+              <div class="stat-tile heart">
+                <div><i data-lucide="heart-pulse" style="width:19px;height:19px;color:var(--coral)"></i></div>
+                <div class="stat-value">78</div>
+                <div class="stat-label">Heart Rate · bpm</div>
+                <div class="stat-trend trend-ok">Normal</div>
+              </div>
+              <div class="stat-tile oxygen">
+                <div><i data-lucide="droplets" style="width:19px;height:19px;color:var(--blue-primary)"></i></div>
+                <div class="stat-value">98%</div>
+                <div class="stat-label">SpO₂ Level</div>
+                <div class="stat-trend trend-up">↑ Good</div>
+              </div>
+              <div class="stat-tile sleep">
+                <div><i data-lucide="moon" style="width:19px;height:19px;color:var(--purple)"></i></div>
+                <div class="stat-value">6.4h</div>
+                <div class="stat-label">Sleep</div>
+                <div class="stat-trend trend-down">↓ Low</div>
+              </div>
+              <div class="stat-tile steps">
+                <div><i data-lucide="footprints" style="width:19px;height:19px;color:var(--green)"></i></div>
+                <div class="stat-value">7.2k</div>
+                <div class="stat-label">Steps Today</div>
+                <div class="stat-trend trend-up">↑ On track</div>
+              </div>
+            </div>
+            <div style="margin-top:15px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">
+                <span style="font-size:12px;font-weight:600;color:var(--text-secondary)">Heart Rate · 7 Days</span>
+                <span style="font-size:11px;color:var(--text-muted)">Avg 76 bpm</span>
+              </div>
+              <canvas class="pulse-chart" id="heartChart"></canvas>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="panel-title">Quick Actions</div>
+            <div class="qa-grid">
+              <button class="qa-btn emergency" onclick="navigateTo('diagnosis.html')"><i data-lucide="ambulance"
+                  style="width:20px;height:20px"></i><span>Emergency</span></button>
+              <button class="qa-btn records" onclick="navigateTo('alerts.html')"><i data-lucide="folder-open"
+                  style="width:20px;height:20px"></i><span>Health Alerts</span></button>
+              <button class="qa-btn prescription" onclick="navigateTo('hospital-finder.html')"><i data-lucide="pill"
+                  style="width:20px;height:20px"></i><span>Hospital Finder</span></button>
+              <button class="qa-btn lab" onclick="navigateTo('messages.html')"><i data-lucide="flask-conical"
+                  style="width:20px;height:20px"></i><span>Messages</span></button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- MOBILE BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav-inner">
+      <div class="bn-item active">
+        <i data-lucide="layout-dashboard" style="width:21px;height:21px"></i>Home
+      </div>
+      <div class="bn-item">
+        <i data-lucide="search" style="width:21px;height:21px"></i>Explore
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center">
+        <div class="bn-center-btn">
+          <i data-lucide="plus" style="width:24px;height:24px;color:#fff"></i>
+        </div>
+      </div>
+      <div class="bn-item">
+        <i data-lucide="message-circle" style="width:21px;height:21px"></i>Chat
+      </div>
+      <div class="bn-item">
+        <i data-lucide="user-circle" style="width:21px;height:21px"></i>Profile
+      </div>
+    </div>
+  </nav>
+
+  <script>
+    lucide.createIcons();
+
+    // Navigation function
+    function navigateTo(page) {
+      window.location.href = page;
+    }
+
+    // Heart chart
+    (function () {
+      const c = document.getElementById('heartChart'); if (!c) return;
+      const ctx = c.getContext('2d'), dpr = window.devicePixelRatio || 1;
+      function draw() {
+        const w = c.offsetWidth, h = c.offsetHeight;
+        c.width = w * dpr; c.height = h * dpr; ctx.scale(dpr, dpr);
+        const d = [72, 76, 80, 74, 78, 82, 78], mn = 65, mx = 90;
+        const pts = d.map((v, i) => ({ x: (i / (d.length - 1)) * w, y: h - ((v - mn) / (mx - mn)) * (h - 8) - 4 }));
+        const g = ctx.createLinearGradient(0, 0, 0, h);
+        g.addColorStop(0, 'rgba(27,111,235,.18)'); g.addColorStop(1, 'rgba(27,111,235,0)');
+        ctx.beginPath();
+        pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.bezierCurveTo(pts[i - 1].x + (p.x - pts[i - 1].x) / 2, pts[i - 1].y, p.x - (p.x - pts[i - 1].x) / 2, p.y, p.x, p.y));
+        ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath(); ctx.fillStyle = g; ctx.fill();
+        ctx.beginPath();
+        pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.bezierCurveTo(pts[i - 1].x + (p.x - pts[i - 1].x) / 2, pts[i - 1].y, p.x - (p.x - pts[i - 1].x) / 2, p.y, p.x, p.y));
+        ctx.strokeStyle = '#1B6FEB'; ctx.lineWidth = 2.5; ctx.lineJoin = 'round'; ctx.stroke();
+        pts.forEach(p => { ctx.beginPath(); ctx.arc(p.x, p.y, 3.5, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill(); ctx.strokeStyle = '#1B6FEB'; ctx.lineWidth = 2; ctx.stroke() });
+      }
+      draw(); window.addEventListener('resize', draw);
+    })();
+
+    // Sidebar
+    const sidebar = document.getElementById('sidebar'), overlay = document.getElementById('overlay');
+    document.getElementById('hamburgerBtn').addEventListener('click', () => { sidebar.classList.add('open'); overlay.classList.add('show'); document.body.style.overflow = 'hidden' });
+    overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('show'); document.body.style.overflow = '' });
+
+    document.querySelectorAll('.nav-item').forEach(el => el.addEventListener('click', function (e) {
+      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+      this.classList.add('active');
+      if (window.innerWidth <= 900) { sidebar.classList.remove('open'); overlay.classList.remove('show'); document.body.style.overflow = '' }
+    }));
+    document.querySelectorAll('.bn-item').forEach(el => el.addEventListener('click', function () {
+      document.querySelectorAll('.bn-item').forEach(i => i.classList.remove('active'));
+      this.classList.add('active');
+    }));
+    document.querySelectorAll('.specialist-card').forEach(c => c.addEventListener('click', () => { c.style.transform = 'scale(0.95)'; setTimeout(() => c.style.transform = '', 140) }));
+    document.querySelectorAll('.ai-pill').forEach(p => p.addEventListener('click', function () { this.style.background = 'rgba(27,111,235,.32)'; this.style.color = '#fff'; setTimeout(() => { this.style.background = ''; this.style.color = '' }, 600) }));
+  </script>
+</body>
+
+</html>
