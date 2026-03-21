@@ -20,8 +20,13 @@ mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log("MongoDB Connected"))
     .catch((err) => console.log(err));
 
-// Test Fitbit auth
+// Serve the main dashboard on the root route
 app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "../frontend/dashboard.html"));
+});
+
+// Test Fitbit auth (moved to /api/status so it doesn't block the frontend)
+app.get("/api/status", (req, res) => {
     res.json({
         message: "HealthPulse Backend Ready",
         fitbitEndpoints: ["/api/fitbit/login", "/api/fitbit/summary", "/api/fitbit/heartrate", "/api/fitbit/sleep"],
