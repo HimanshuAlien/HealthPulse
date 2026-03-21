@@ -1479,7 +1479,7 @@
            CONFIG ΓÇö set this to your Express server URL
            Leave '' if frontend is served from the same origin
         ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ */
-        const API_BASE = 'http://localhost:3000';   // Backend server URL
+        const API_BASE = window.location.origin;   // Backend server URL
 
         /* ΓöÇΓöÇΓöÇ STATE ΓöÇΓöÇΓöÇ */
         let map, userMarker, userCircle;

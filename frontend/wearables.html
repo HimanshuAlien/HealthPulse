@@ -1740,7 +1740,7 @@
                         Sync Now
                     </button>
                     <a id="connectFitbit" class="sync-btn" target="_blank"
-                        href="http://localhost:3000/api/fitbit/login?_bust=1"
+                        href="/api/fitbit/login?_bust=1"
                         style="background:linear-gradient(135deg,#00B0B9,#008F95);margin-left:8px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;">
                         <i data-lucide="log-in" style="width:14px;height:14px;color:#fff"></i>
                         Connect Fitbit
@@ -1786,7 +1786,7 @@
                     <script>
                         async function checkAuthStatus() {
                             try {
-                                const res = await fetch('http://localhost:3000/api/fitbit/device');
+                                const res = await fetch('/api/fitbit/device');
                                 const data = await res.json();
                                 const status = document.getElementById('authStatus');
                                 const dot = document.getElementById('syncDot');
@@ -2428,7 +2428,7 @@
            All data is expected at /api/fitbit/*
            Your Fitbit auth tokens live in the backend session.
         ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ */
-        const API_BASE = 'http://localhost:3000';   // explicitly hit the running backend from file:///
+        const API_BASE = window.location.origin;   // explicitly hit the running backend
 
         /* ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ
            EXPECTED BACKEND ENDPOINTS
