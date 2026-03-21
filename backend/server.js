@@ -56,47 +56,7 @@ app.use("/api/doctors", doctorRoutes);
 app.use("/api/fitbit", require("./routes/fitbit"));
 
 // --- WebRTC Socket.IO Server Logic ---
-const rooms = {};
-
-io.on('connection', (socket) => {
-    socket.on('join-room', ({ roomId, role, name }) => {
-        socket.join(roomId);
-        if (!rooms[roomId]) rooms[roomId] = {};
-        rooms[roomId][role] = { socketId: socket.id, name };
-        
-        socket.to(roomId).emit('peer-joined', { role, name });
-        socket.emit('room-state', rooms[roomId]);
-    });
-
-    socket.on('offer', (data) => socket.to(data.roomId).emit('offer', data));
-    socket.on('answer', (data) => socket.to(data.roomId).emit('answer', data));
-    socket.on('ice-candidate', (data) => socket.to(data.roomId).emit('ice-candidate', data));
-    
-    socket.on('chat-message', (data) => {
-        io.to(data.roomId).emit('chat-message', { ...data, socketId: socket.id });
-    });
-
-    socket.on('toggle-audio', (data) => socket.to(data.roomId).emit('toggle-audio', data));
-    socket.on('toggle-video', (data) => socket.to(data.roomId).emit('toggle-video', data));
-
-    socket.on('end-call', (data) => socket.to(data.roomId).emit('call-ended', { name: "Participant" }));
-
-    socket.on('disconnecting', () => {
-        for (const roomId of socket.rooms) {
-            if (roomId !== socket.id && rooms[roomId]) {
-                const room = rooms[roomId];
-                if (room.doctor && room.doctor.socketId === socket.id) {
-                    socket.to(roomId).emit('peer-left', { role: 'doctor', name: room.doctor.name });
-                    delete room.doctor;
-                }
-                if (room.patient && room.patient.socketId === socket.id) {
-                    socket.to(roomId).emit('peer-left', { role: 'patient', name: room.patient.name });
-                    delete room.patient;
-                }
-            }
-        }
-    });
-});
+require("./routes/video")(io);
 
 server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
