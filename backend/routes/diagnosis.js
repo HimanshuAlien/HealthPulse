@@ -57,7 +57,7 @@ Use exactly this schema:
 
         // ── Call Gemini ──────────────────────────────────────────────────────
         const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -65,8 +65,7 @@ Use exactly this schema:
                     contents: [{ parts: [{ text: prompt }] }],
                     generationConfig: {
                         temperature: 0.2,
-                        maxOutputTokens: 2048,   // ← was 500 — too small, caused truncation
-                        responseMimeType: "application/json"  // tells Gemini to return pure JSON
+                        maxOutputTokens: 2048
                     }
                 })
             }
