@@ -1743,22 +1743,20 @@
                 <span class="nav-label">Features</span>
                 <a class="nav-item" href="dashboard.html"><i data-lucide="layout-dashboard"
                         style="width:17px;height:17px"></i>Dashboard</a>
-                <a class="nav-item active" href="diagnosis.html"><i data-lucide="activity"
+                <a class="nav-item" href="diagnosis.html"><i data-lucide="activity"
                         style="width:17px;height:17px"></i>AI Diagnosis</a>
-                <a class="nav-item" href="escalation.html"><i data-lucide="alert-triangle"
-                        style="width:17px;height:17px"></i>Escalation</a>
+                <a class="nav-item" href="prescription.html"><i data-lucide="file-text"
+                        style="width:17px;height:17px"></i>AI Prescription</a>
                 <a class="nav-item" href="hospital-finder.html"><i data-lucide="map-pin"
                         style="width:17px;height:17px"></i>Hospital Finder</a>
                 <a class="nav-item" href="specialist-routing.html"><i data-lucide="stethoscope"
                         style="width:17px;height:17px"></i>Specialist Route</a>
-                <a class="nav-item" href="chat.html"><i data-lucide="message-circle"
+                <a class="nav-item" href="messages.html"><i data-lucide="message-circle"
                         style="width:17px;height:17px"></i>Chat Assistant</a>
                 <a class="nav-item" href="wearables.html"><i data-lucide="watch"
                         style="width:17px;height:17px"></i>Wearables</a>
-                <a class="nav-item" href="alerts.html"><i data-lucide="bell" style="width:17px;height:17px"></i>Health
-                    Alerts</a>
-                <a class="nav-item" href="insights.html"><i data-lucide="brain" style="width:17px;height:17px"></i>AI
-                    Insights</a>
+                <a class="nav-item active" href="escalation.html"><i data-lucide="alert-triangle"
+                        style="width:17px;height:17px"></i>Escalation</a>
                 <span class="nav-label">Account</span>
                 <a class="nav-item" href="messages.html"><i data-lucide="mail"
                         style="width:17px;height:17px"></i>Messages<span class="nav-badge">5</span></a>
@@ -2141,7 +2139,7 @@
             <div style="display:flex;flex-direction:column;align-items:center">
                 <div class="bn-center"><i data-lucide="plus" style="width:22px;height:22px;color:#fff"></i></div>
             </div>
-            <a class="bn-item" href="chat.html"><i data-lucide="message-circle"
+            <a class="bn-item" href="messages.html"><i data-lucide="message-circle"
                     style="width:20px;height:20px"></i>Chat</a>
             <div class="bn-item"><i data-lucide="user-circle" style="width:20px;height:20px"></i>Profile</div>
         </div>
@@ -2151,7 +2149,7 @@
         /* ══════════════════════════════════════════
            CONFIG — change this to match your server
         ══════════════════════════════════════════ */
-        const API_BASE = 'http://localhost:5000';   // Backend server
+        const API_BASE = '';   // Use relative path for Render compatibility
 
         /* ══════════════════════════════════════════
            SYMPTOM CARDS

@@ -40,7 +40,9 @@ app.get("/api/status", (req, res) => {
     });
 });
 const diagnosisRoute = require("./routes/diagnosis");
+const prescriptionRoute = require("./routes/prescription");
 app.use("/api/diagnosis", diagnosisRoute);
+app.use("/api/prescription", prescriptionRoute);
 
 // Handle Fitbit OAuth redirect URI root path
 app.get("/callback", (req, res) => {

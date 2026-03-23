@@ -1538,8 +1538,8 @@
                         style="width:17px;height:17px"></i>Dashboard</a>
                 <a class="nav-item" href="diagnosis.html"><i data-lucide="activity"
                         style="width:17px;height:17px"></i>AI Diagnosis</a>
-                <a class="nav-item" href="escalation.html"><i data-lucide="alert-triangle"
-                        style="width:17px;height:17px"></i>Escalation</a>
+                <a class="nav-item" href="prescription.html"><i data-lucide="file-text"
+                        style="width:17px;height:17px"></i>AI Prescription</a>
                 <a class="nav-item" href="hospital-finder.html"><i data-lucide="map-pin"
                         style="width:17px;height:17px"></i>Hospital Finder</a>
                 <a class="nav-item" href="specialist-routing.html"><i data-lucide="stethoscope"
@@ -1548,10 +1548,8 @@
                         style="width:17px;height:17px"></i>Messages<span class="nav-badge">Live</span></a>
                 <a class="nav-item" href="wearables.html"><i data-lucide="watch"
                         style="width:17px;height:17px"></i>Wearables</a>
-                <a class="nav-item" href="alerts.html"><i data-lucide="bell" style="width:17px;height:17px"></i>Health
-                    Alerts</a>
-                <a class="nav-item" href="insights.html"><i data-lucide="brain" style="width:17px;height:17px"></i>AI
-                    Insights</a>
+                <a class="nav-item" href="escalation.html"><i data-lucide="alert-triangle"
+                        style="width:17px;height:17px"></i>Escalation</a>
                 <span class="nav-label">Account</span>
                 <a class="nav-item" href="#"><i data-lucide="settings"
                         style="width:17px;height:17px"></i>Preferences</a>
@@ -2192,7 +2190,7 @@ Return this exact JSON structure:
 }`;
 
             try {
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })

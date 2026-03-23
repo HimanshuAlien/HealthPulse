@@ -1,5 +1,6 @@
-﻿const express = require("express");
+const express = require("express");
 const router = express.Router();
+const fetch = (...args) => import('node-fetch').then(({ default: f }) => f(...args));
 
 // ≡ƒö╣ Get nearby hospitals using Overpass API (FREE - OpenStreetMap data)
 router.get("/nearby", async (req, res) => {
